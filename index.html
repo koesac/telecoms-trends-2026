@@ -34,10 +34,6 @@
             padding: 0;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--dark-bg);
@@ -118,7 +114,7 @@
             transition: none;
             will-change: transform;
             align-items: center;
-            padding: 0 10vw; /* Padding to center the first and last cards (100vw - 80vw = 20vw total / 2) */
+            padding: 0 10vw; /* Padding to center the first and last cards */
             margin: 0;
             align-self: flex-start;
         }
@@ -174,12 +170,12 @@
 
         .trend-card.active {
             border-color: var(--agate);
-            box-shadow: 0 0 30px rgba(214, 136, 58, 0.2);
-            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(214, 136, 58, 0.3);
+            transform: scale(1.04);
         }
 
         .trend-card:hover {
-            transform: scale(1.04);
+            transform: scale(1.06);
             border-color: var(--agate);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
@@ -188,6 +184,61 @@
             font-size: 2.5rem;
             color: var(--aventurine);
             margin-bottom: 1.5rem;
+            transition: color 0.5s ease;
+        }
+
+        /* Unique Animations for each Trend */
+        
+        /* 1. 5G Signal Pulse */
+        .trend-card-wrapper:nth-child(1) .trend-card.active .icon {
+            color: var(--agate);
+            animation: signal-pulse 2s ease-in-out infinite;
+        }
+        @keyframes signal-pulse {
+            0%, 100% { opacity: 1; filter: drop-shadow(0 0 0px var(--agate)); }
+            50% { opacity: 0.6; filter: drop-shadow(0 0 20px var(--agate)); }
+        }
+
+        /* 2. AI Brain Breathing */
+        .trend-card-wrapper:nth-child(2) .trend-card.active .icon {
+            color: var(--agate);
+            animation: brain-glow 3s ease-in-out infinite;
+        }
+        @keyframes brain-glow {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.05); filter: brightness(1.5); }
+        }
+
+        /* 3. Edge Compute Processing (3D Spin) */
+        .trend-card-wrapper:nth-child(3) .trend-card.active .icon {
+            color: var(--agate);
+            animation: compute-spin 4s linear infinite;
+        }
+        @keyframes compute-spin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        /* 4. Satellite Drifting Orbit */
+        .trend-card-wrapper:nth-child(4) .trend-card.active .icon {
+            color: var(--agate);
+            animation: satellite-drift 6s ease-in-out infinite;
+        }
+        @keyframes satellite-drift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(10px, -10px) rotate(5deg); }
+            66% { transform: translate(-5px, 5px) rotate(-5deg); }
+        }
+
+        /* 5. Quantum Jitter */
+        .trend-card-wrapper:nth-child(5) .trend-card.active .icon {
+            color: var(--agate);
+            animation: quantum-jitter 0.2s ease-in-out infinite;
+        }
+        @keyframes quantum-jitter {
+            0%, 100% { transform: translate(0, 0) scale(1); filter: blur(0); }
+            25% { transform: translate(1px, -1px) scale(1.02); filter: blur(0.5px); }
+            75% { transform: translate(-1px, 1px) scale(0.98); filter: blur(0.2px); }
         }
 
         .trend-number {
@@ -197,7 +248,7 @@
             font-size: 3rem;
             font-weight: 800;
             color: rgba(255, 255, 255, 0.05);
-            transition: color 0.5s ease, text-shadow 0.5s ease; /* Remove transform from CSS transition */
+            transition: color 0.3s ease, text-shadow 0.3s ease;
             will-change: transform, color, text-shadow;
         }
 
@@ -351,33 +402,18 @@
                     </div>
                 </div>
 
-                                <!-- Trend 5 -->
-
-                                <div class="trend-card-wrapper">
-
-                                    <div class="trend-card">
-
-                                        <div class="trend-number">5</div>
-
-                                        <div class="icon"><i class="fas fa-shield-halved"></i></div>
-
-                                        <h3>Quantum-Safe Cybersecurity</h3>
-
-                                        <p>As quantum computing advances, telecom providers are deploying Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
-
-                                        <div class="impact-box">
-
-                                            <h5>Industry Impact</h5>
-
-                                            <p>Ensures long-term data privacy and national security, making global networks resilient against the decryption threats of the next decade.</p>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                
+                <!-- Trend 5 -->
+                <div class="trend-card-wrapper">
+                    <div class="trend-card">
+                        <div class="trend-number">5</div>
+                        <div class="icon"><i class="fas fa-shield-halved"></i></div>
+                        <h3>Quantum-Safe Cybersecurity</h3>
+                        <p>As quantum computing advances, telecom providers are deploying Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
+                        <div class="impact-box">
+                            <h5>Industry Impact</h5>
+                            <p>Ensures long-term data privacy and national security, making global networks resilient against the decryption threats of the next decade.</p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -425,6 +461,15 @@
             if (myBar) myBar.style.width = scrolled + "%";
         }
 
+        // Helper to calculate exact scroll target for an index
+        const getScrollTarget = (index) => {
+            const rect = trendSection.getBoundingClientRect();
+            const top = rect.top + window.pageYOffset;
+            const sectionHeight = trendSection.offsetHeight;
+            const stickyHeight = window.innerHeight;
+            return top + (index * (sectionHeight - stickyHeight) / 4);
+        };
+
         function handleCarousel() {
             if (!trendSection || !track) return;
             
@@ -432,46 +477,19 @@
             const sectionHeight = trendSection.offsetHeight;
             const stickyHeight = window.innerHeight;
             
+            // 1. Calculate Progress (0 to 1)
             let progress = -sectionRect.top / (sectionHeight - stickyHeight);
             progress = Math.max(0, Math.min(1, progress));
 
+            // 2. Move Track
             const percentage = progress * 80; 
             track.style.transform = `translateX(-${percentage}%)`;
 
-            // Robust Index Detection: Find the card closest to the horizontal center of the viewport
-            const cards = document.querySelectorAll('.trend-card');
-            let activeIndex = 0;
-            let minDistance = Infinity;
-            const viewportCenter = window.innerWidth / 2;
+            // 3. Determine Active Index (Strictly Progress-Based for reliability)
+            const activeIndex = Math.round(progress * 4);
 
-            cards.forEach((card, idx) => {
-                const rect = card.getBoundingClientRect();
-                const cardCenter = rect.left + rect.width / 2;
-                const distance = Math.abs(viewportCenter - cardCenter);
-                
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    activeIndex = idx;
-                }
-
-                // Parallax Effect for the number
-                const number = card.querySelector('.trend-number');
-                if (number) {
-                    // Calculate offset based on distance from center
-                    // Dividing by a larger number makes the effect more subtle
-                    const offset = (cardCenter - viewportCenter) * 0.15;
-                    // Apply translate while preserving the potential scale from the .active class
-                    number.style.transform = `translateX(${offset}px) scale(${idx === activeIndex ? 1.2 : 1})`;
-                }
-            });
-
-            // Safety catch: if we are at the very end of the scroll, force the last card
-            if (progress > 0.99) activeIndex = 4;
-            if (progress < 0.01) activeIndex = 0;
-
+            // 4. Apply Atmosphere
             const stickyWrapper = document.querySelector('.sticky-wrapper');
-            
-            // Background colors for each card (atmospheric centers) - Increased intensity
             const bgColors = [
                 'rgba(62, 155, 155, 0.45)', // Aventurine
                 'rgba(214, 136, 58, 0.45)', // Agate
@@ -479,17 +497,31 @@
                 'rgba(132, 35, 102, 0.45)', // Azurite
                 'rgba(76, 25, 76, 0.6)'    // Alexandrite
             ];
-
             if (stickyWrapper) {
                 stickyWrapper.style.background = `radial-gradient(circle at center, ${bgColors[activeIndex]} 0%, var(--dark-bg) 80%)`;
             }
+
+            // 5. Update UI States
+            const icons = document.querySelectorAll('.nav-icon');
+            const cards = document.querySelectorAll('.trend-card');
+            const viewportCenter = window.innerWidth / 2;
 
             icons.forEach((icon, idx) => {
                 icon.classList.toggle('active', idx === activeIndex);
             });
             
             cards.forEach((card, idx) => {
-                card.classList.toggle('active', idx === activeIndex);
+                const isActive = (idx === activeIndex);
+                card.classList.toggle('active', isActive);
+
+                const number = card.querySelector('.trend-number');
+                if (number) {
+                    const rect = card.getBoundingClientRect();
+                    const cardCenter = rect.left + rect.width / 2;
+                    // Clamped Parallax: reduced multiplier and max offset
+                    const offset = Math.max(-40, Math.min(40, (cardCenter - viewportCenter) * 0.05));
+                    number.style.transform = `translateX(${offset}px) scale(${isActive ? 1.25 : 1})`;
+                }
             });
         }
 
@@ -512,7 +544,6 @@
         handleCarousel();
 
         // Horizontal Scroll Synchronization
-        // Converts horizontal wheel/trackpad movement into vertical page scroll
         trendSection.addEventListener('wheel', (e) => {
             if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                 window.scrollBy(0, e.deltaX);
@@ -520,7 +551,7 @@
             }
         }, { passive: false });
 
-        // Touch Swiping Synchronization (Flick to Next/Prev Card)
+        // Touch Swiping Synchronization
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -532,34 +563,21 @@
         trendSection.addEventListener('touchend', (e) => {
             const touchEndX = e.changedTouches[0].screenX;
             const touchEndY = e.changedTouches[0].screenY;
-            
             const diffX = touchStartX - touchEndX;
             const diffY = touchStartY - touchEndY;
 
-            // Threshold: If movement is > 50px and primarily horizontal
             if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
                 const sectionRect = trendSection.getBoundingClientRect();
                 const sectionHeight = trendSection.offsetHeight;
                 const stickyHeight = window.innerHeight;
-                
-                // Calculate current scroll progress
                 let progress = -sectionRect.top / (sectionHeight - stickyHeight);
-                progress = Math.max(0, Math.min(1, progress));
-                
-                // Get current card index
                 let currentIndex = Math.round(progress * 4);
                 
-                // Determine target card
-                if (diffX > 0 && currentIndex < 4) {
-                    currentIndex++; // Swipe Left -> Next
-                } else if (diffX < 0 && currentIndex > 0) {
-                    currentIndex--; // Swipe Right -> Prev
-                }
+                if (diffX > 0 && currentIndex < 4) currentIndex++; 
+                else if (diffX < 0 && currentIndex > 0) currentIndex--; 
                 
-                // Scroll to the exact vertical position for that card
-                const scrollTarget = trendSection.offsetTop + (currentIndex * (sectionHeight - stickyHeight) / 4);
                 window.scrollTo({
-                    top: scrollTarget,
+                    top: getScrollTarget(currentIndex),
                     behavior: 'smooth'
                 });
             }
@@ -568,19 +586,10 @@
         // Trend Card & Wrapper Click Interaction
         document.querySelectorAll('.trend-card-wrapper').forEach((wrapper, index) => {
             wrapper.addEventListener('click', () => {
-                const isActive = icons[index].classList.contains('active');
-
-                if (!isActive) {
-                    // Scroll to this card if it's not the centered one
-                    const sectionHeight = trendSection.offsetHeight;
-                    const stickyHeight = window.innerHeight;
-                    const scrollTarget = trendSection.offsetTop + (index * (sectionHeight - stickyHeight) / 4);
-                    
-                    window.scrollTo({
-                        top: scrollTarget,
-                        behavior: 'smooth'
-                    });
-                }
+                window.scrollTo({
+                    top: getScrollTarget(index),
+                    behavior: 'smooth'
+                });
             });
         });
 
@@ -588,11 +597,8 @@
         icons.forEach(icon => {
             icon.addEventListener('click', () => {
                 const index = parseInt(icon.getAttribute('data-index'));
-                const sectionHeight = trendSection.offsetHeight;
-                const stickyHeight = window.innerHeight;
-                const scrollTarget = trendSection.offsetTop + (index * (sectionHeight - stickyHeight) / 4);
                 window.scrollTo({
-                    top: scrollTarget,
+                    top: getScrollTarget(index),
                     behavior: 'smooth'
                 });
             });
