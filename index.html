@@ -107,6 +107,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
+            transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--dark-bg) 100%);
         }
 
         .carousel-track {
@@ -170,8 +172,14 @@
             text-shadow: 0 0 15px var(--agate);
         }
 
-        .trend-card:hover {
+        .trend-card.active {
+            border-color: var(--agate);
+            box-shadow: 0 0 30px rgba(214, 136, 58, 0.2);
             transform: scale(1.02);
+        }
+
+        .trend-card:hover {
+            transform: scale(1.04);
             border-color: var(--agate);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
@@ -345,18 +353,33 @@
                     </div>
                 </div>
 
-                <!-- Trend 5 -->
-                <div class="trend-card-wrapper">
-                    <div class="trend-card">
-                        <div class="trend-number">5</div>
-                        <div class="icon"><i class="fas fa-shield-halved"></i></div>
-                        <h3>Quantum-Safe Cybersecurity</h3>
-                        <p>As quantum computing advances, telecom providers are deploying Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
-                        <div class="impact-box">
-                            <h5>Industry Impact</h5>
-                            <p>Ensures long-term data privacy and national security, making global networks resilient against the decryption threats of the next decade.</p>
-                        </div>
-                    </div>
+                                <!-- Trend 5 -->
+
+                                <div class="trend-card-wrapper">
+
+                                    <div class="trend-card">
+
+                                        <div class="trend-number">5</div>
+
+                                        <div class="icon"><i class="fas fa-shield-halved"></i></div>
+
+                                        <h3>Quantum-Safe Cybersecurity</h3>
+
+                                        <p>As quantum computing advances, telecom providers are deploying Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
+
+                                        <div class="impact-box">
+
+                                            <h5>Industry Impact</h5>
+
+                                            <p>Ensures long-term data privacy and national security, making global networks resilient against the decryption threats of the next decade.</p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                
                 </div>
 
             </div>
@@ -414,15 +437,45 @@
             let progress = -sectionRect.top / (sectionHeight - stickyHeight);
             progress = Math.max(0, Math.min(1, progress));
 
-            // Total movement is (5-1) * 80vw = 320vw.
-            // Track width is 400vw. 320/400 = 80%.
             const percentage = progress * 80; 
             track.style.transform = `translateX(-${percentage}%)`;
 
-            // Update Icons & Cards
-            const activeIndex = Math.min(4, Math.floor(progress * 4.99)); 
+            // Robust Index Detection: Find the card closest to the horizontal center of the viewport
             const cards = document.querySelectorAll('.trend-card');
+            let activeIndex = 0;
+            let minDistance = Infinity;
+            const viewportCenter = window.innerWidth / 2;
+
+            cards.forEach((card, idx) => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(viewportCenter - cardCenter);
+                
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    activeIndex = idx;
+                }
+            });
+
+            // Safety catch: if we are at the very end of the scroll, force the last card
+            if (progress > 0.99) activeIndex = 4;
+            if (progress < 0.01) activeIndex = 0;
+
+            const stickyWrapper = document.querySelector('.sticky-wrapper');
             
+            // Background colors for each card (atmospheric centers) - Increased intensity
+            const bgColors = [
+                'rgba(62, 155, 155, 0.45)', // Aventurine
+                'rgba(214, 136, 58, 0.45)', // Agate
+                'rgba(21, 64, 79, 0.6)',   // Bloodstone
+                'rgba(132, 35, 102, 0.45)', // Azurite
+                'rgba(76, 25, 76, 0.6)'    // Alexandrite
+            ];
+
+            if (stickyWrapper) {
+                stickyWrapper.style.background = `radial-gradient(circle at center, ${bgColors[activeIndex]} 0%, var(--dark-bg) 80%)`;
+            }
+
             icons.forEach((icon, idx) => {
                 icon.classList.toggle('active', idx === activeIndex);
             });
