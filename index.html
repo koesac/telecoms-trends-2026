@@ -111,18 +111,18 @@
 
         .carousel-track {
             display: flex;
-            width: 500vw; 
+            width: 400vw; /* 5 cards * 80vw */
             height: 80vh;
             transition: none;
             will-change: transform;
             align-items: center;
-            padding: 0;
+            padding: 0 10vw; /* Padding to center the first and last cards */
             margin: 0;
             align-self: flex-start;
         }
 
         .trend-card-wrapper {
-            width: 100vw;
+            width: 80vw;
             height: 100%;
             display: flex;
             justify-content: center;
@@ -132,10 +132,10 @@
 
         .trend-card {
             background: var(--card-bg);
-            border: 1px solid #30363d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
             padding: 2.5rem;
-            width: 70vw; 
+            width: 65vw; 
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             cursor: pointer;
             position: relative;
@@ -450,15 +450,11 @@
             const sectionHeight = trendSection.offsetHeight;
             const stickyHeight = window.innerHeight;
             
-            // Calculate progress: 0 when top of section hits top of viewport
-            // 1 when bottom of section hits bottom of viewport
             let progress = -sectionRect.top / (sectionHeight - stickyHeight);
             progress = Math.max(0, Math.min(1, progress));
 
-            // Move the track. Each card is 100vw wide in a 500vw track.
-            // To show card 1, translate 0. To show card 5, translate 400vw.
-            // In percentage of track width (500vw), moving 1 card is 20%.
-            // Total translation needed is 80% of track width.
+            // Total movement is (5-1) * 80vw = 320vw.
+            // Track width is 400vw. 320/400 = 80%.
             const percentage = progress * 80; 
             track.style.transform = `translateX(-${percentage}%)`;
 
@@ -487,10 +483,29 @@
         updateProgressBar();
         handleCarousel();
 
-        // Trend Card Click Interaction
-        document.querySelectorAll('.trend-card').forEach(card => {
-            card.addEventListener('click', () => {
-                card.classList.toggle('active');
+        // Trend Card & Wrapper Click Interaction
+        document.querySelectorAll('.trend-card-wrapper').forEach((wrapper, index) => {
+            wrapper.addEventListener('click', (e) => {
+                const card = wrapper.querySelector('.trend-card');
+                const isActive = icons[index].classList.contains('active');
+
+                if (!isActive) {
+                    // Scroll to this card if it's not the centered one
+                    const sectionHeight = trendSection.offsetHeight;
+                    const stickyHeight = window.innerHeight;
+                    const scrollTarget = trendSection.offsetTop + (index * (sectionHeight - stickyHeight) / 4);
+                    
+                    window.scrollTo({
+                        top: scrollTarget,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    // Only toggle expansion if it's already the active (centered) card
+                    // and the click was specifically on the card itself (or its children)
+                    if (e.target.closest('.trend-card')) {
+                        card.classList.toggle('active');
+                    }
+                }
             });
         });
 
