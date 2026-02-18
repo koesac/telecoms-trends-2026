@@ -116,7 +116,7 @@
             transition: none;
             will-change: transform;
             align-items: center;
-            padding: 0 10vw; /* Padding to center the first and last cards */
+            padding: 0 10vw; /* Padding to center the first and last cards (100vw - 80vw = 20vw total / 2) */
             margin: 0;
             align-self: flex-start;
         }
@@ -135,7 +135,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
             padding: 2.5rem;
-            width: 65vw; 
+            width: 76vw; /* Occupies almost the entire wrapper for visibility */
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             cursor: pointer;
             position: relative;
@@ -189,7 +189,16 @@
             font-size: 3rem;
             font-weight: 800;
             color: rgba(255, 255, 255, 0.05);
-            transition: color 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1);
+            will-change: transform, color, text-shadow;
+        }
+
+        .trend-card.active .trend-number {
+            color: var(--agate);
+            opacity: 1;
+            transform: scale(1.2);
+            text-shadow: 0 0 20px var(--agate);
         }
 
         .trend-card:hover .trend-number {
@@ -198,53 +207,9 @@
         }
 
         .impact-box {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .trend-card.active .impact-box {
             margin-top: 1.5rem;
             padding-top: 1.5rem;
-            max-height: 500px;
-            opacity: 1;
-        }
-
-        .learn-more {
-            margin-top: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--agate);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: gap 0.3s ease;
-        }
-
-        .trend-card:hover .learn-more {
-            gap: 15px;
-        }
-
-        .learn-more i {
-            transition: transform 0.3s ease;
-        }
-
-        .trend-card.active .learn-more i {
-            transform: rotate(45deg);
-            color: var(--azurite);
-        }
-
-        .trend-card.active .learn-more span {
-            display: none;
-        }
-
-        .trend-card.active .learn-more::before {
-            content: 'Close Impact';
-            color: var(--azurite);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .impact-box h5 {
@@ -253,6 +218,7 @@
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 0.5rem;
         }
 
         /* Conclusion */
@@ -326,11 +292,10 @@
                 <!-- Trend 1 -->
                 <div class="trend-card-wrapper">
                     <div class="trend-card">
-                        <div class="trend-number">01</div>
+                        <div class="trend-number">1</div>
                         <div class="icon"><i class="fas fa-tower-broadcast"></i></div>
                         <h3>Hyper-Scale 5G & Early 6G Prototypes</h3>
                         <p>Global coverage of Standalone 5G has reached critical mass, while the industry begins initial pilot testing for 6G technologies targeting terahertz frequencies.</p>
-                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
                         <div class="impact-box">
                             <h5>Industry Impact</h5>
                             <p>Enables ultra-low latency applications like remote robotic surgery and massive machine-type communications (mMTC) at a scale previously thought impossible.</p>
@@ -341,11 +306,10 @@
                 <!-- Trend 2 -->
                 <div class="trend-card-wrapper">
                     <div class="trend-card">
-                        <div class="trend-number">02</div>
+                        <div class="trend-number">2</div>
                         <div class="icon"><i class="fas fa-brain"></i></div>
                         <h3>AI-Driven Network Autonomy</h3>
                         <p>Networks are no longer just "smart"; they are self-healing. AI algorithms now manage traffic routing, peak load balancing, and energy consumption in real-time.</p>
-                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
                         <div class="impact-box">
                             <h5>Industry Impact</h5>
                             <p>Reduction in operational expenditure (OPEX) by up to 30% and near-zero downtime due to predictive maintenance and automated fault resolution.</p>
@@ -356,11 +320,10 @@
                 <!-- Trend 3 -->
                 <div class="trend-card-wrapper">
                     <div class="trend-card">
-                        <div class="trend-number">03</div>
+                        <div class="trend-number">3</div>
                         <div class="icon"><i class="fas fa-microchip"></i></div>
                         <h3>Edge Computing Integration</h3>
                         <p>Processing power is moving from centralized data centers to the edge of the network, colocated with telecom base stations to minimize data travel distance.</p>
-                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
                         <div class="impact-box">
                             <h5>Industry Impact</h5>
                             <p>Powering the next generation of AR/VR and autonomous vehicles, providing sub-10ms response times by processing data locally.</p>
@@ -371,11 +334,10 @@
                 <!-- Trend 4 -->
                 <div class="trend-card-wrapper">
                     <div class="trend-card">
-                        <div class="trend-number">04</div>
+                        <div class="trend-number">4</div>
                         <div class="icon"><i class="fas fa-satellite"></i></div>
                         <h3>Satellite-to-Cell Connectivity</h3>
                         <p>The convergence of terrestrial mobile networks and Low Earth Orbit (LEO) satellite constellations has eliminated "dead zones" across the globe.</p>
-                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
                         <div class="impact-box">
                             <h5>Industry Impact</h5>
                             <p>Provides a safety net for emergency services and brings high-speed internet to the most remote corners of the planet without traditional infrastructure.</p>
@@ -386,11 +348,10 @@
                 <!-- Trend 5 -->
                 <div class="trend-card-wrapper">
                     <div class="trend-card">
-                        <div class="trend-number">05</div>
+                        <div class="trend-number">5</div>
                         <div class="icon"><i class="fas fa-shield-halved"></i></div>
                         <h3>Quantum-Safe Cybersecurity</h3>
                         <p>As quantum computing advances, telecom providers are deploying Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
-                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
                         <div class="impact-box">
                             <h5>Industry Impact</h5>
                             <p>Ensures long-term data privacy and national security, making global networks resilient against the decryption threats of the next decade.</p>
@@ -458,10 +419,16 @@
             const percentage = progress * 80; 
             track.style.transform = `translateX(-${percentage}%)`;
 
-            // Update Icons
+            // Update Icons & Cards
             const activeIndex = Math.min(4, Math.floor(progress * 4.99)); 
+            const cards = document.querySelectorAll('.trend-card');
+            
             icons.forEach((icon, idx) => {
                 icon.classList.toggle('active', idx === activeIndex);
+            });
+            
+            cards.forEach((card, idx) => {
+                card.classList.toggle('active', idx === activeIndex);
             });
         }
 
@@ -483,10 +450,63 @@
         updateProgressBar();
         handleCarousel();
 
+        // Horizontal Scroll Synchronization
+        // Converts horizontal wheel/trackpad movement into vertical page scroll
+        trendSection.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                window.scrollBy(0, e.deltaX);
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Touch Swiping Synchronization (Flick to Next/Prev Card)
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        trendSection.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        trendSection.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+
+            // Threshold: If movement is > 50px and primarily horizontal
+            if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+                const sectionRect = trendSection.getBoundingClientRect();
+                const sectionHeight = trendSection.offsetHeight;
+                const stickyHeight = window.innerHeight;
+                
+                // Calculate current scroll progress
+                let progress = -sectionRect.top / (sectionHeight - stickyHeight);
+                progress = Math.max(0, Math.min(1, progress));
+                
+                // Get current card index
+                let currentIndex = Math.round(progress * 4);
+                
+                // Determine target card
+                if (diffX > 0 && currentIndex < 4) {
+                    currentIndex++; // Swipe Left -> Next
+                } else if (diffX < 0 && currentIndex > 0) {
+                    currentIndex--; // Swipe Right -> Prev
+                }
+                
+                // Scroll to the exact vertical position for that card
+                const scrollTarget = trendSection.offsetTop + (currentIndex * (sectionHeight - stickyHeight) / 4);
+                window.scrollTo({
+                    top: scrollTarget,
+                    behavior: 'smooth'
+                });
+            }
+        }, { passive: true });
+
         // Trend Card & Wrapper Click Interaction
         document.querySelectorAll('.trend-card-wrapper').forEach((wrapper, index) => {
-            wrapper.addEventListener('click', (e) => {
-                const card = wrapper.querySelector('.trend-card');
+            wrapper.addEventListener('click', () => {
                 const isActive = icons[index].classList.contains('active');
 
                 if (!isActive) {
@@ -499,12 +519,6 @@
                         top: scrollTarget,
                         behavior: 'smooth'
                     });
-                } else {
-                    // Only toggle expansion if it's already the active (centered) card
-                    // and the click was specifically on the card itself (or its children)
-                    if (e.target.closest('.trend-card')) {
-                        card.classList.toggle('active');
-                    }
                 }
             });
         });
