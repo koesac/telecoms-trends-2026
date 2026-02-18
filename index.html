@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Top 5 Trends</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Branding Palette */
+            --alexandrite: #4C194C;
+            --agate: #D6883A;
+            --bloodstone: #15404F;
+            --azurite: #842366;
+            --aventurine: #3E9B9B;
+
+            --primary-color: var(--agate);
+            --secondary-color: var(--aventurine);
+            --accent-color: var(--azurite);
+            --dark-bg: #091a21; /* Darkened Bloodstone for depth */
+            --card-bg: #15404F; /* Bloodstone */
+            --text-main: #f0f6fc;
+            --text-muted: #a4b1bc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            z-index: 2000;
+            width: 100%;
+            height: 3px;
+            background: transparent;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--alexandrite), var(--agate), var(--aventurine));
+            width: 0%;
+            box-shadow: 0 0 10px var(--agate);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--dark-bg) 100%);
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--agate), var(--aventurine));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Trends Section - Carousel Transformation */
+        .trend-container {
+            height: 600vh;
+            position: relative;
+        }
+
+        .sticky-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .carousel-track {
+            display: flex;
+            width: 500vw; 
+            height: 80vh;
+            transition: none;
+            will-change: transform;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+            align-self: flex-start;
+        }
+
+        .trend-card-wrapper {
+            width: 100vw;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .trend-card {
+            background: var(--card-bg);
+            border: 1px solid #30363d;
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 70vw; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow-y: auto;
+            max-height: 85vh;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        /* Icon Navigation Carousel */
+        .icon-nav {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            z-index: 10;
+            align-self: center; /* Center horizontally */
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            opacity: 0.5;
+            transform: scale(0.8);
+        }
+
+        .nav-icon.active {
+            color: var(--agate);
+            opacity: 1;
+            transform: scale(1.3);
+            text-shadow: 0 0 15px var(--agate);
+        }
+
+        .trend-card:hover {
+            transform: scale(1.02);
+            border-color: var(--agate);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .trend-card .icon {
+            font-size: 2.5rem;
+            color: var(--aventurine);
+            margin-bottom: 1.5rem;
+        }
+
+        .trend-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.05);
+            transition: color 0.3s ease;
+        }
+
+        .trend-card:hover .trend-number {
+            color: var(--alexandrite);
+            opacity: 0.3;
+        }
+
+        .impact-box {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .trend-card.active .impact-box {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        .learn-more {
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--agate);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: gap 0.3s ease;
+        }
+
+        .trend-card:hover .learn-more {
+            gap: 15px;
+        }
+
+        .learn-more i {
+            transition: transform 0.3s ease;
+        }
+
+        .trend-card.active .learn-more i {
+            transform: rotate(45deg);
+            color: var(--azurite);
+        }
+
+        .trend-card.active .learn-more span {
+            display: none;
+        }
+
+        .trend-card.active .learn-more::before {
+            content: 'Close Impact';
+            color: var(--azurite);
+        }
+
+        .impact-box h5 {
+            color: var(--aventurine);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Conclusion */
+        .conclusion {
+            padding: 100px 0;
+            text-align: center;
+            background: linear-gradient(180deg, var(--dark-bg) 0%, var(--alexandrite) 100%);
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scroll Down Indicator */
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: var(--text-muted);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translate(-50%, 0);}
+            40% {transform: translate(-50%, -10px);}
+            60% {transform: translate(-50%, -5px);}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+
+    <!-- Hero / Intro -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <h1 class="reveal">The Future of Telecoms</h1>
+            <p class="reveal">Exploring the groundbreaking shifts that are redefining global connectivity in 2026 and beyond. From hyper-speed networks to intelligent automation, witness the evolution of the digital backbone.</p>
+        </div>
+        <div class="scroll-down">
+            <a href="#trends" style="color: inherit;"><i class="fas fa-chevron-down"></i></a>
+        </div>
+    </section>
+
+    <!-- Trends Section -->
+    <section class="trend-container" id="trends">
+        <div class="sticky-wrapper">
+            <!-- Dynamic Icon Carousel -->
+            <div class="icon-nav">
+                <i class="fas fa-tower-broadcast nav-icon active" data-index="0"></i>
+                <i class="fas fa-brain nav-icon" data-index="1"></i>
+                <i class="fas fa-microchip nav-icon" data-index="2"></i>
+                <i class="fas fa-satellite nav-icon" data-index="3"></i>
+                <i class="fas fa-shield-halved nav-icon" data-index="4"></i>
+            </div>
+
+            <div class="carousel-track" id="carouselTrack">
+                
+                <!-- Trend 1 -->
+                <div class="trend-card-wrapper">
+                    <div class="trend-card">
+                        <div class="trend-number">01</div>
+                        <div class="icon"><i class="fas fa-tower-broadcast"></i></div>
+                        <h3>Hyper-Scale 5G & Early 6G Prototypes</h3>
+                        <p>Global coverage of Standalone 5G has reached critical mass, while the industry begins initial pilot testing for 6G technologies targeting terahertz frequencies.</p>
+                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
+                        <div class="impact-box">
+                            <h5>Industry Impact</h5>
+                            <p>Enables ultra-low latency applications like remote robotic surgery and massive machine-type communications (mMTC) at a scale previously thought impossible.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend 2 -->
+                <div class="trend-card-wrapper">
+                    <div class="trend-card">
+                        <div class="trend-number">02</div>
+                        <div class="icon"><i class="fas fa-brain"></i></div>
+                        <h3>AI-Driven Network Autonomy</h3>
+                        <p>Networks are no longer just "smart"; they are self-healing. AI algorithms now manage traffic routing, peak load balancing, and energy consumption in real-time.</p>
+                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
+                        <div class="impact-box">
+                            <h5>Industry Impact</h5>
+                            <p>Reduction in operational expenditure (OPEX) by up to 30% and near-zero downtime due to predictive maintenance and automated fault resolution.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend 3 -->
+                <div class="trend-card-wrapper">
+                    <div class="trend-card">
+                        <div class="trend-number">03</div>
+                        <div class="icon"><i class="fas fa-microchip"></i></div>
+                        <h3>Edge Computing Integration</h3>
+                        <p>Processing power is moving from centralized data centers to the edge of the network, colocated with telecom base stations to minimize data travel distance.</p>
+                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
+                        <div class="impact-box">
+                            <h5>Industry Impact</h5>
+                            <p>Powering the next generation of AR/VR and autonomous vehicles, providing sub-10ms response times by processing data locally.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend 4 -->
+                <div class="trend-card-wrapper">
+                    <div class="trend-card">
+                        <div class="trend-number">04</div>
+                        <div class="icon"><i class="fas fa-satellite"></i></div>
+                        <h3>Satellite-to-Cell Connectivity</h3>
+                        <p>The convergence of terrestrial mobile networks and Low Earth Orbit (LEO) satellite constellations has eliminated "dead zones" across the globe.</p>
+                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
+                        <div class="impact-box">
+                            <h5>Industry Impact</h5>
+                            <p>Provides a safety net for emergency services and brings high-speed internet to the most remote corners of the planet without traditional infrastructure.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trend 5 -->
+                <div class="trend-card-wrapper">
+                    <div class="trend-card">
+                        <div class="trend-number">05</div>
+                        <div class="icon"><i class="fas fa-shield-halved"></i></div>
+                        <h3>Quantum-Safe Cybersecurity</h3>
+                        <p>As quantum computing advances, telecom providers are deploying Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
+                        <div class="learn-more"><span>Read Impact</span> <i class="fas fa-plus"></i></div>
+                        <div class="impact-box">
+                            <h5>Industry Impact</h5>
+                            <p>Ensures long-term data privacy and national security, making global networks resilient against the decryption threats of the next decade.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion -->
+    <section class="conclusion reveal" id="conclusion">
+        <div class="container">
+            <h2>The Road Ahead</h2>
+            <p class="max-width-700 mx-auto mt-4">The telecommunications landscape is undergoing a metamorphosis. By integrating intelligence, edge capability, and global reach, providers are evolving from simple utility companies into the essential architects of our digital existence. The next decade will be defined not just by how fast we connect, but how intelligently we communicate.</p>
+        </div>
+    </section>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.bundle.min.js"></script>
+
+    <!-- JS for Interactivity -->
+    <script>
+        const track = document.getElementById('carouselTrack');
+        const icons = document.querySelectorAll('.nav-icon');
+        const trendSection = document.getElementById('trends');
+
+        let isScrolling = false;
+
+        function updateAll() {
+            updateProgressBar();
+            handleCarousel();
+            reveal();
+            isScrolling = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!isScrolling) {
+                window.requestAnimationFrame(updateAll);
+                isScrolling = true;
+            }
+        });
+
+        function updateProgressBar() {
+            const winScroll = window.pageYOffset || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            const myBar = document.getElementById("myBar");
+            if (myBar) myBar.style.width = scrolled + "%";
+        }
+
+        function handleCarousel() {
+            if (!trendSection || !track) return;
+            
+            const sectionRect = trendSection.getBoundingClientRect();
+            const sectionHeight = trendSection.offsetHeight;
+            const stickyHeight = window.innerHeight;
+            
+            // Calculate progress: 0 when top of section hits top of viewport
+            // 1 when bottom of section hits bottom of viewport
+            let progress = -sectionRect.top / (sectionHeight - stickyHeight);
+            progress = Math.max(0, Math.min(1, progress));
+
+            // Move the track. Each card is 100vw wide in a 500vw track.
+            // To show card 1, translate 0. To show card 5, translate 400vw.
+            // In percentage of track width (500vw), moving 1 card is 20%.
+            // Total translation needed is 80% of track width.
+            const percentage = progress * 80; 
+            track.style.transform = `translateX(-${percentage}%)`;
+
+            // Update Icons
+            const activeIndex = Math.min(4, Math.floor(progress * 4.99)); 
+            icons.forEach((icon, idx) => {
+                icon.classList.toggle('active', idx === activeIndex);
+            });
+        }
+
+        // Reveal on Scroll
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+
+        // Initial check
+        reveal();
+        updateProgressBar();
+        handleCarousel();
+
+        // Trend Card Click Interaction
+        document.querySelectorAll('.trend-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('active');
+            });
+        });
+
+        // Icon Navigation Click
+        icons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                const index = parseInt(icon.getAttribute('data-index'));
+                const sectionHeight = trendSection.offsetHeight;
+                const stickyHeight = window.innerHeight;
+                const scrollTarget = trendSection.offsetTop + (index * (sectionHeight - stickyHeight) / 4);
+                window.scrollTo({
+                    top: scrollTarget,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
