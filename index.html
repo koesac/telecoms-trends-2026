@@ -181,10 +181,11 @@
             text-shadow: 0 0 15px var(--agate);
         }
 
+        /* Dominant Active State */
         .trend-card.active {
-            border-color: var(--agate);
-            box-shadow: 0 0 40px rgba(214, 136, 58, 0.3);
-            transform: scale(1.04);
+            border-color: var(--agate) !important;
+            box-shadow: 0 0 40px rgba(214, 136, 58, 0.3) !important;
+            transform: scale(1.06) !important;
         }
 
         .trend-card:hover {
@@ -317,20 +318,61 @@
             transform: translateY(0);
         }
 
-        /* Scroll Down Indicator */
+        @keyframes bounce-y {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        /* Hero Scroll Down */
         .scroll-down {
             position: absolute;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            animation: bounce 2s infinite;
             color: var(--text-muted);
+            z-index: 10;
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translate(-50%, 0);}
-            40% {transform: translate(-50%, -10px);}
-            60% {transform: translate(-50%, -5px);}
+        .scroll-down i {
+            display: block;
+            animation: bounce-y 2s infinite;
+            font-size: 1.5rem;
+        }
+
+        /* Conclusion Scroll Hint */
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--agate);
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .scroll-hint.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .scroll-hint i {
+            display: block;
+            animation: bounce-y 2s infinite;
+            font-size: 1.2rem;
+            margin-top: 5px;
+        }
+
+        .scroll-hint span {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
     </style>
 </head>
@@ -437,6 +479,12 @@
                 </div>
 
             </div>
+
+            <!-- Conclusion Scroll Hint -->
+            <div class="scroll-hint" id="conclusionHint">
+                <span>The Road Ahead</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
         </div>
     </section>
 
@@ -458,6 +506,7 @@
         const trendSection = document.getElementById('trends');
         const cards = document.querySelectorAll('.trend-card');
         const stickyWrapper = document.querySelector('.sticky-wrapper');
+        const conclusionHint = document.getElementById('conclusionHint');
 
         let isScrolling = false;
 
@@ -520,13 +569,12 @@
             if (myBar) myBar.style.width = scrolled + "%";
         }
 
-        // Helper to calculate exact scroll target for an index
+        // Helper to calculate exact scroll target for an index (Absolute Document Position)
         const getScrollTarget = (index) => {
-            const rect = trendSection.getBoundingClientRect();
-            const top = rect.top + window.pageYOffset;
+            const sectionTop = trendSection.getBoundingClientRect().top + window.pageYOffset;
             const sectionHeight = trendSection.offsetHeight;
             const stickyHeight = window.innerHeight;
-            return top + (index * (sectionHeight - stickyHeight) / 4);
+            return sectionTop + (index * (sectionHeight - stickyHeight) / 4);
         };
 
         function handleCarousel() {
@@ -537,37 +585,39 @@
             const stickyHeight = window.innerHeight;
             
             // 1. Transition Progress
-            // Entry Progress (Hero -> Carousel): 1 when fully entered
             let entryProgress = Math.min(1, Math.max(0, sectionRect.top / stickyHeight));
-            
-            // Exit Progress (Carousel -> Conclusion): 1 when fully exited
-            // We make it fade out twice as fast (over 50% of the scroll distance)
             let exitProgress = Math.max(0, 1 - (sectionRect.bottom / stickyHeight));
             exitProgress = Math.min(1, exitProgress * 2); 
 
             if (stickyWrapper) {
-                // Combine entry and exit for overall opacity/scale
                 const overallOpacity = (1 - entryProgress) * (1 - exitProgress);
                 const overallScale = (1 - (entryProgress * 0.03)) * (1 - (exitProgress * 0.03));
-                
                 stickyWrapper.style.opacity = overallOpacity;
                 stickyWrapper.style.transform = `scale(${overallScale})`;
             }
 
-            // 2. Calculate Progress (0 to 1) for the content itself
+            // 2. Proximity-Based Index Detection (Most robust for visual sync)
+            let activeIndex = 0;
+            let minDistance = Infinity;
+            const viewportCenter = window.innerWidth / 2;
+
+            cards.forEach((card, idx) => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.left + rect.width / 2;
+                const distance = Math.abs(viewportCenter - cardCenter);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    activeIndex = idx;
+                }
+            });
+
+            // 3. Carousel Translation
             let progress = -sectionRect.top / (sectionHeight - stickyHeight);
             progress = Math.max(0, Math.min(1, progress));
-
-            // 3. Move Track
             const percentage = progress * 80; 
             track.style.transform = `translateX(-${percentage}%)`;
 
-            // 3. Determine Active Index
-            let activeIndex = Math.round(progress * 4);
-            if (progress > 0.98) activeIndex = 4;
-            if (progress < 0.02) activeIndex = 0;
-
-            // 4. Apply Atmosphere
+            // 4. Atmosphere Update
             const bgColors = [
                 'rgba(62, 155, 155, 0.45)', // Aventurine
                 'rgba(214, 136, 58, 0.45)', // Agate
@@ -579,23 +629,24 @@
                 stickyWrapper.style.background = `radial-gradient(circle at center, ${bgColors[activeIndex]} 0%, var(--dark-bg) 80%)`;
             }
 
-            // 5. Update UI States
-            const viewportCenter = window.innerWidth / 2;
-
+            // 5. Icons and Cards Classes
             icons.forEach((icon, idx) => {
                 icon.classList.toggle('active', idx === activeIndex);
             });
             
             cards.forEach((card, idx) => {
-                const isActive = (idx === activeIndex);
-                
-                // Explicitly remove/add to prevent multiple actives
-                if (isActive) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.remove('active');
-                }
+                card.classList.toggle('active', idx === activeIndex);
             });
+
+            // 6. Toggle Conclusion Hint Visibility
+            if (conclusionHint) {
+                // Show when on Card 5 and not yet fully transitioned to conclusion
+                if (activeIndex === 4 && exitProgress < 0.1) {
+                    conclusionHint.classList.add('visible');
+                } else {
+                    conclusionHint.classList.remove('visible');
+                }
+            }
         }
 
         // Reveal on Scroll
@@ -660,7 +711,8 @@
 
         // Trend Card & Wrapper Click Interaction
         document.querySelectorAll('.trend-card-wrapper').forEach((wrapper, index) => {
-            wrapper.addEventListener('click', () => {
+            wrapper.addEventListener('click', (e) => {
+                e.preventDefault();
                 window.scrollTo({
                     top: getScrollTarget(index),
                     behavior: 'smooth'
@@ -678,6 +730,19 @@
                 });
             });
         });
+
+        // Conclusion Hint Click
+        if (conclusionHint) {
+            conclusionHint.addEventListener('click', () => {
+                const conclusion = document.getElementById('conclusion');
+                if (conclusion) {
+                    window.scrollTo({
+                        top: conclusion.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>
