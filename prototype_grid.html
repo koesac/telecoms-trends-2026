@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Interactive Dashboard</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --alexandrite: #4C194C;
+            --agate: #D6883A;
+            --bloodstone: #15404F;
+            --azurite: #842366;
+            --aventurine: #3E9B9B;
+            --dark-bg: #0f1115;
+            --card-bg: #1a1d24;
+            --text-main: #ffffff;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        h1 span {
+            color: var(--agate);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            max-width: 400px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Grid Layout */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 280px);
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Card Styles */
+        .tile {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.03), transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Specific Tile Sizing */
+        .tile-large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .tile-tall {
+            grid-row: span 2;
+        }
+
+        .tile-wide {
+            grid-column: span 2;
+        }
+
+        /* Content inside tiles */
+        .tile-content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tile-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .tile:hover .tile-icon {
+            background: var(--agate);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .tile h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .tile p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            flex-grow: 1; /* Push bottom content down */
+        }
+
+        .tile-stat {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        /* Specific Themes per Tile */
+        .tile[data-theme="5g"]:hover { border-color: var(--aventurine); }
+        .tile[data-theme="5g"]:hover .stat-val { color: var(--aventurine); }
+
+        .tile[data-theme="ai"]:hover { border-color: var(--azurite); }
+        .tile[data-theme="ai"]:hover .stat-val { color: var(--azurite); }
+
+        .tile[data-theme="edge"]:hover { border-color: var(--bloodstone); }
+        .tile[data-theme="edge"]:hover .stat-val { color: var(--bloodstone); }
+
+        .tile[data-theme="sat"]:hover { border-color: var(--agate); }
+        .tile[data-theme="sat"]:hover .stat-val { color: var(--agate); }
+
+        .tile[data-theme="security"]:hover { border-color: var(--alexandrite); }
+        .tile[data-theme="security"]:hover .stat-val { color: var(--alexandrite); }
+
+
+        /* Expanded State (Modal-ish) */
+        .overlay {
+            position: fixed;
+            top: 0; 
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border: 1px solid var(--agate);
+            border-radius: 24px;
+            padding: 3rem;
+            z-index: 101;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .modal-card.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: auto;
+            }
+            .tile-large, .tile-wide, .tile-tall {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>The Network<br><span>Evolved</span></h1>
+            <p class="subtitle">Explore the five pillars of the 2026 telecommunications landscape through this interactive dashboard.</p>
+        </div>
+        <div>
+             <a href="index.html" style="color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">Back to Menu</a>
+        </div>
+    </header>
+
+    <div class="bento-grid">
+        
+        <!-- Tile 1: 5G (Large) -->
+        <div class="tile tile-large" data-theme="5g" onclick="openModal('5g')">
+            <div class="tile-content">
+                <div class="tile-icon"><i class="fas fa-tower-broadcast"></i></div>
+                <h3>Hyper-Scale 5G & 6G</h3>
+                <p>The air interface has become a programmable fabric. Standalone 5G is ubiquitous, and 6G pilots are achieving terahertz speeds for holographic communication.</p>
+                <div class="tile-stat">
+                    <span class="stat-val">&lt;1ms</span>
+                    <span class="stat-label">Latency achieved in urban pilots</span>
+                </div>
+            </div>
+            <!-- Decorative Visual -->
+            <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.1; font-size: 10rem; transform: rotate(-15deg);">
+                <i class="fas fa-wifi"></i>
+            </div>
+        </div>
+
+        <!-- Tile 2: AI (Tall) -->
+        <div class="tile tile-tall" data-theme="ai" onclick="openModal('ai')">
+            <div class="tile-content">
+                <div class="tile-icon"><i class="fas fa-brain"></i></div>
+                <h3>Autonomous Networks</h3>
+                <p>Zero-touch provisioning driven by generative AI models ensures networks heal themselves instantly.</p>
+                <div class="tile-stat">
+                    <span class="stat-val">30%</span>
+                    <span class="stat-label">OPEX Reduction</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tile 3: Edge (Standard) -->
+        <div class="tile" data-theme="edge" onclick="openModal('edge')">
+            <div class="tile-content">
+                <div class="tile-icon"><i class="fas fa-microchip"></i></div>
+                <h3>Edge Compute</h3>
+                <p>Processing power at the base station.</p>
+                <div class="tile-stat">
+                    <span class="stat-val">90%</span>
+                    <span class="stat-label">Faster Processing</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tile 4: Satellite (Standard) -->
+        <div class="tile" data-theme="sat" onclick="openModal('sat')">
+            <div class="tile-content">
+                <div class="tile-icon"><i class="fas fa-satellite"></i></div>
+                <h3>Orbital Link</h3>
+                <p>Seamless LEO satellite handover.</p>
+                <div class="tile-stat">
+                    <span class="stat-val">100%</span>
+                    <span class="stat-label">Coverage</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tile 5: Security (Wide) -->
+        <div class="tile tile-wide" data-theme="security" onclick="openModal('security')">
+            <div class="tile-content">
+                <div class="tile-icon"><i class="fas fa-shield-halved"></i></div>
+                <h3>Quantum Defense</h3>
+                <p>Post-Quantum Cryptography (PQC) is now standard, protecting national backbones from next-gen decryption threats.</p>
+                <div class="tile-stat">
+                    <span class="stat-val">PQC-Ready</span>
+                    <span class="stat-label">Encryption Standard</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Tile -->
+        <div class="tile" style="background: var(--agate); border-color: var(--agate); color: white; justify-content: center; align-items: center; text-align: center;">
+            <div style="font-size: 1.2rem; font-weight: 700;">Download Report</div>
+            <i class="fas fa-arrow-right" style="margin-top: 1rem; font-size: 1.5rem;"></i>
+        </div>
+
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    
+    <!-- Modal Content -->
+    <div class="modal-card" id="modal">
+        <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+        <h2 id="modal-title" style="font-size: 2.5rem; margin-bottom: 1rem;">Title</h2>
+        <p id="modal-desc" style="font-size: 1.1rem; line-height: 1.6; color: var(--text-muted);">Description goes here...</p>
+        <div style="margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px;">
+            <strong>Key Insight:</strong> <span id="modal-insight">Insight text...</span>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('modal');
+        const overlay = document.getElementById('overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const modalInsight = document.getElementById('modal-insight');
+
+        const content = {
+            '5g': {
+                title: "Hyper-Scale 5G & 6G",
+                desc: "We have moved beyond simple connectivity. The new air interface is a programmable fabric, capable of sensing the physical world and transmitting holographic data streams in real-time. Standalone 5G has reached critical mass, and 6G pilots are already targeting terahertz frequencies.",
+                insight: "Remote robotic surgery is now viable with <1ms consistent latency."
+            },
+            'ai': {
+                title: "Autonomous Networks",
+                desc: "The era of manual network configuration is over. Zero-touch provisioning driven by generative AI models ensures networks heal themselves before users even notice a degradation. Traffic routing is optimized in real-time.",
+                insight: "Telcos are seeing a 30% reduction in OPEX due to AI-driven automation."
+            },
+            'edge': {
+                title: "Edge Integration",
+                desc: "Compute is no longer centralized. By embedding processing power directly into base stations, we enable a new class of latency-critical applications, from autonomous driving to industrial robotics.",
+                insight: "Data travels 90% less distance, reducing backhaul congestion."
+            },
+            'sat': {
+                title: "Orbital Connectivity",
+                desc: "Terrestrial limits no longer apply. The seamless handover between ground towers and LEO satellite constellations guarantees ubiquitous coverage for every square inch of the planet, including oceans and polar regions.",
+                insight: "Dead zones are effectively extinct."
+            },
+            'security': {
+                title: "Quantum Defense",
+                desc: "As the quantum threat looms, the telecom industry is the first line of defense. Post-Quantum Cryptography (PQC) is now the standard for all core network signaling, ensuring data remains secure against future decryption capabilities.",
+                insight: "Q-Day readiness is now a board-level metric."
+            }
+        };
+
+        function openModal(key) {
+            const data = content[key];
+            if(!data) return;
+
+            modalTitle.innerText = data.title;
+            modalDesc.innerText = data.desc;
+            modalInsight.innerText = data.insight;
+
+            overlay.classList.add('active');
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            overlay.classList.remove('active');
+            modal.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
