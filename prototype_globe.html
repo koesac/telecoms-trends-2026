@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Global Pulse</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Exo 2', sans-serif;
+            color: white;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* HUD Overlay */
+        .hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 0;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-indicator {
+            font-size: 0.8rem;
+            color: #00d2ff;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            background: rgba(0, 210, 255, 0.1);
+        }
+
+        /* Trend Card (Floating) */
+        .trend-card {
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translateY(-50%) translateX(50px);
+            width: 350px;
+            background: rgba(10, 20, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-left: 4px solid #00d2ff;
+            padding: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .trend-card.active {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+            pointer-events: auto;
+        }
+
+        .trend-card h2 {
+            font-size: 1.5rem;
+            color: #00d2ff;
+            margin-bottom: 0.5rem;
+        }
+
+        .trend-card .location {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .trend-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 1.5rem;
+        }
+
+        .trend-stat {
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+            display: block;
+        }
+        
+        .trend-stat span {
+            font-size: 0.8rem;
+            color: #888;
+            font-weight: 400;
+            margin-left: 5px;
+        }
+
+        .nav-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .marker-label {
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            pointer-events: none;
+            text-shadow: 0 0 5px black;
+            opacity: 0.8;
+            transform: translate(-50%, -20px);
+            transition: opacity 0.3s;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div class="hud">
+        <div class="header">
+            <div>
+                <h1>Global Pulse</h1>
+                <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">LIVE NETWORK TELEMETRY // 2026</div>
+            </div>
+            <div class="status-indicator">
+                <i class="fas fa-circle" style="color: #00d2ff; font-size: 8px; margin-right: 5px;"></i> SYSTEM OPTIMAL
+            </div>
+        </div>
+        
+        <div class="nav-hint">DRAG TO ROTATE • CLICK MARKERS TO SCAN</div>
+        
+        <a href="index.html" style="position: absolute; bottom: 2rem; left: 2rem; color: #666; text-decoration: none; font-size: 0.9rem; pointer-events: auto;">Exit View</a>
+    </div>
+
+    <!-- Info Panel -->
+    <div id="trend-card" class="trend-card">
+        <span class="location" id="card-loc">LOCATION</span>
+        <h2 id="card-title">Trend Title</h2>
+        <p id="card-desc">Description goes here...</p>
+        <div class="trend-stat" id="card-stat">00% <span>Metric</span></div>
+        <button onclick="closeCard()" style="margin-top: 1rem; background: transparent; border: 1px solid #666; color: #ccc; padding: 5px 15px; cursor: pointer;">CLOSE SCAN</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        // Data Points (Lat, Lon)
+        const trends = [
+            { 
+                id: 1, 
+                lat: 35.6762, lon: 139.6503, // Tokyo
+                title: "6G Pilot Zone", 
+                loc: "TOKYO, JAPAN",
+                desc: "The Shibuya district is now a live testbed for 6G terahertz communications, enabling holographic presence in public spaces.",
+                stat: "<1ms <span>LATENCY</span>"
+            },
+            { 
+                id: 2, 
+                lat: 37.7749, lon: -122.4194, // San Francisco
+                title: "AI Network Core", 
+                loc: "SILICON VALLEY, USA",
+                desc: "Generative AI models managing North American traffic have achieved 99.9999% uptime through predictive self-healing.",
+                stat: "30% <span>OPEX SAVED</span>"
+            },
+            { 
+                id: 3, 
+                lat: 51.5074, lon: -0.1278, // London
+                title: "Quantum Defense Hub", 
+                loc: "LONDON, UK",
+                desc: "The City of London's financial district is fully secured by Post-Quantum Cryptography (PQC) protocols.",
+                stat: "ZERO <span>BREACHES</span>"
+            },
+            { 
+                id: 4, 
+                lat: -33.8688, lon: 151.2093, // Sydney
+                title: "Orbital Uplink", 
+                loc: "SYDNEY, AUSTRALIA",
+                desc: "A major ground station integrating LEO satellite constellations to provide coverage across the entire Pacific region.",
+                stat: "100% <span>COVERAGE</span>"
+            },
+            { 
+                id: 5, 
+                lat: 52.5200, lon: 13.4050, // Berlin
+                title: "Edge Industrial Zone", 
+                loc: "BERLIN, GERMANY",
+                desc: "Automotive factories utilizing on-premise Edge Compute for real-time robotic coordination and AR assembly.",
+                stat: "50Gbps <span>THROUGHPUT</span>"
+            }
+        ];
+
+        // Scene Setup
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        // Background Stars
+        const starsGeo = new THREE.BufferGeometry();
+        const starsCount = 2000;
+        const posArray = new Float32Array(starsCount * 3);
+        for(let i=0; i<starsCount*3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 50; 
+        }
+        starsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const starsMat = new THREE.PointsMaterial({size: 0.02, color: 0xffffff, transparent: true, opacity: 0.5});
+        const starMesh = new THREE.Points(starsGeo, starsMat);
+        scene.add(starMesh);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 3.5;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Globe Group
+        const globeGroup = new THREE.Group();
+        scene.add(globeGroup);
+
+        // Earth Sphere (Wireframe Aesthetic)
+        const geometry = new THREE.IcosahedronGeometry(1, 12); // High detail
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x001133, 
+            wireframe: false,
+            transparent: true,
+            opacity: 0.9
+        });
+        const earth = new THREE.Mesh(geometry, material);
+        globeGroup.add(earth);
+
+        // Wireframe Overlay
+        const wireMat = new THREE.MeshBasicMaterial({
+            color: 0x00d2ff,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
+        });
+        const wireEarth = new THREE.Mesh(geometry, wireMat);
+        globeGroup.add(wireEarth);
+
+        // Atmosphere Glow
+        const atmosGeo = new THREE.IcosahedronGeometry(1.2, 12);
+        const atmosMat = new THREE.ShaderMaterial({
+            uniforms: {},
+            vertexShader: `
+                varying vec3 vNormal;
+                void main() {
+                    vNormal = normalize(normalMatrix * normal);
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vNormal;
+                void main() {
+                    float intensity = pow(0.6 - dot(vNormal, vec3(0, 0, 1.0)), 4.0);
+                    gl_FragColor = vec4(0.0, 0.8, 1.0, 1.0) * intensity;
+                }
+            `,
+            side: THREE.BackSide,
+            blending: THREE.AdditiveBlending,
+            transparent: true
+        });
+        const atmosphere = new THREE.Mesh(atmosGeo, atmosMat);
+        scene.add(atmosphere);
+
+
+        // Markers
+        const markers = [];
+        const markerGroup = new THREE.Group();
+        globeGroup.add(markerGroup);
+
+        // Helper: Lat/Lon to Vector3
+        function latLonToVector3(lat, lon, radius) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
+            const x = -(radius * Math.sin(phi) * Math.cos(theta));
+            const z = (radius * Math.sin(phi) * Math.sin(theta));
+            const y = (radius * Math.cos(phi));
+            return new THREE.Vector3(x, y, z);
+        }
+
+        trends.forEach(t => {
+            const pos = latLonToVector3(t.lat, t.lon, 1.02);
+            
+            // Glowing Dot
+            const dotGeo = new THREE.SphereGeometry(0.015, 16, 16);
+            const dotMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
+            const dot = new THREE.Mesh(dotGeo, dotMat);
+            dot.position.copy(pos);
+            dot.userData = { id: t.id, ...t }; // Store data
+            markerGroup.add(dot);
+            markers.push(dot);
+
+            // Ring (Pulsing)
+            const ringGeo = new THREE.RingGeometry(0.02, 0.025, 32);
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff, side: THREE.DoubleSide, transparent: true });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.position.copy(pos);
+            ring.lookAt(new THREE.Vector3(0,0,0)); // Face center
+            markerGroup.add(ring);
+
+            // Animate Ring
+            gsap.to(ring.scale, { x: 2, y: 2, duration: 2, repeat: -1, yoyo: true, ease: "sine.inOut" });
+            gsap.to(ring.material, { opacity: 0, duration: 2, repeat: -1, ease: "sine.out" });
+        });
+
+        // Interaction
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let targetRotation = { x: 0, y: 0 }; // Target rotation for smooth lerp
+        let autoRotate = true;
+
+        // Event Listeners
+        window.addEventListener('mousedown', () => { isDragging = true; autoRotate = false; });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        window.addEventListener('mousemove', onMouseMove);
+        
+        // Touch support
+        window.addEventListener('touchstart', (e) => {
+            isDragging = true; 
+            autoRotate = false;
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+        window.addEventListener('touchend', () => { isDragging = false; });
+        window.addEventListener('touchmove', (e) => {
+             const deltaMove = {
+                x: e.touches[0].clientX - previousMousePosition.x,
+                y: e.touches[0].clientY - previousMousePosition.y
+            };
+            if(isDragging) {
+                targetRotation.y += deltaMove.x * 0.005;
+                targetRotation.x += deltaMove.y * 0.005;
+            }
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
+
+        function onMouseMove(event) {
+            // Raycasting
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+            // Dragging Logic
+            const deltaMove = {
+                x: event.clientX - previousMousePosition.x,
+                y: event.clientY - previousMousePosition.y
+            };
+
+            if(isDragging) {
+                targetRotation.y += deltaMove.x * 0.005;
+                targetRotation.x += deltaMove.y * 0.005;
+            }
+
+            previousMousePosition = { x: event.clientX, y: event.clientY };
+        }
+        
+        window.addEventListener('click', onClick);
+
+        function onClick(event) {
+            if(isDragging) return;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(markers);
+
+            if (intersects.length > 0) {
+                const marker = intersects[0].object;
+                showTrend(marker.userData);
+                
+                // Cinematic rotation to focus on the marker
+                autoRotate = false;
+                
+                // Calculate the rotation needed to face the camera
+                const pos = marker.position.clone();
+                const targetPhi = Math.atan2(pos.x, pos.z);
+                const targetTheta = Math.asin(pos.y / pos.length());
+
+                gsap.to(targetRotation, {
+                    y: targetPhi,
+                    x: -targetTheta,
+                    duration: 1.5,
+                    ease: "power2.inOut"
+                });
+            }
+        }
+
+        // Card Logic
+        const card = document.getElementById('trend-card');
+        function showTrend(data) {
+            document.getElementById('card-loc').innerText = data.loc;
+            document.getElementById('card-title').innerText = data.title;
+            document.getElementById('card-desc').innerText = data.desc;
+            document.getElementById('card-stat').innerHTML = data.stat;
+            card.classList.add('active');
+        }
+
+        window.closeCard = function() {
+            card.classList.remove('active');
+            autoRotate = true; // Resume rotation
+        };
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Auto Rotation
+            if(autoRotate) {
+                targetRotation.y += 0.001;
+            }
+
+            // Smooth Rotation (Lerp)
+            globeGroup.rotation.y += (targetRotation.y - globeGroup.rotation.y) * 0.1;
+            globeGroup.rotation.x += (targetRotation.x - globeGroup.rotation.x) * 0.1;
+
+            // Hover Effect
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(markers);
+            if (intersects.length > 0) {
+                document.body.style.cursor = 'pointer';
+                intersects[0].object.scale.set(1.5, 1.5, 1.5);
+            } else {
+                document.body.style.cursor = 'default';
+                markers.forEach(m => m.scale.set(1, 1, 1));
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>
