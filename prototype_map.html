@@ -39,6 +39,7 @@
             background-image: 
                 radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
             background-size: 40px 40px;
+            touch-action: none; /* Essential for mobile dragging */
         }
 
         #viewport:active {
@@ -327,8 +328,14 @@
             edgeResistance: 0.5,
             bounds: { minX: -2500, maxX: 500, minY: -2500, maxY: 500 },
             onDrag: updateLines,
-            onThrowUpdate: updateLines,
-            inertia: true
+            dragClickables: true, // Allows dragging starting from nodes
+            allowNativeTouchScrolling: false, // Force GSAP to handle touch
+            onPress: function() {
+                viewport.style.cursor = 'grabbing';
+            },
+            onRelease: function() {
+                viewport.style.cursor = 'grab';
+            }
         });
 
         // Update SVG Lines
