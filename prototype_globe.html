@@ -319,14 +319,21 @@
         trends.forEach(t => {
             const pos = latLonToVector3(t.lat, t.lon, 1.02);
             
-            // Glowing Dot
+            // Glowing Dot (Visual)
             const dotGeo = new THREE.SphereGeometry(0.015, 16, 16);
             const dotMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
             const dot = new THREE.Mesh(dotGeo, dotMat);
             dot.position.copy(pos);
-            dot.userData = { id: t.id, ...t }; // Store data
             markerGroup.add(dot);
-            markers.push(dot);
+
+            // Invisible Hitbox (Much larger for easier tapping)
+            const hitGeo = new THREE.SphereGeometry(0.1, 16, 16);
+            const hitMat = new THREE.MeshBasicMaterial({ visible: false });
+            const hitbox = new THREE.Mesh(hitGeo, hitMat);
+            hitbox.position.copy(pos);
+            hitbox.userData = { id: t.id, ...t, visualDot: dot }; 
+            markerGroup.add(hitbox);
+            markers.push(hitbox);
 
             // Ring (Pulsing)
             const ringGeo = new THREE.RingGeometry(0.02, 0.025, 32);
@@ -343,24 +350,52 @@
 
         // Interaction
         const raycaster = new THREE.Raycaster();
+        // Increase the threshold to make small points easier to hit
+        raycaster.params.Points.threshold = 0.05; 
+        
         const mouse = new THREE.Vector2();
         let isDragging = false;
+        let startMousePosition = { x: 0, y: 0 };
         let previousMousePosition = { x: 0, y: 0 };
         let targetRotation = { x: 0, y: 0 }; // Target rotation for smooth lerp
         let autoRotate = true;
 
         // Event Listeners
-        window.addEventListener('mousedown', () => { isDragging = true; autoRotate = false; });
-        window.addEventListener('mouseup', () => { isDragging = false; });
+        window.addEventListener('mousedown', (e) => { 
+            isDragging = true; 
+            autoRotate = false;
+            startMousePosition = { x: e.clientX, y: e.clientY };
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+        
+        window.addEventListener('mouseup', (e) => { 
+            isDragging = false; 
+            // If the mouse hasn't moved much, treat it as a click
+            const dist = Math.sqrt(Math.pow(e.clientX - startMousePosition.x, 2) + Math.pow(e.clientY - startMousePosition.y, 2));
+            if (dist < 5) {
+                onClick(e);
+            }
+        });
+
         window.addEventListener('mousemove', onMouseMove);
         
         // Touch support
         window.addEventListener('touchstart', (e) => {
             isDragging = true; 
             autoRotate = false;
+            startMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
             previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         });
-        window.addEventListener('touchend', () => { isDragging = false; });
+
+        window.addEventListener('touchend', (e) => { 
+            isDragging = false; 
+            const touch = e.changedTouches[0];
+            const dist = Math.sqrt(Math.pow(touch.clientX - startMousePosition.x, 2) + Math.pow(touch.clientY - startMousePosition.y, 2));
+            if (dist < 20) { // Increased tolerance for mobile
+                onClick(touch);
+            }
+        });
+
         window.addEventListener('touchmove', (e) => {
              const deltaMove = {
                 x: e.touches[0].clientX - previousMousePosition.x,
@@ -376,13 +411,16 @@
 
         function onMouseMove(event) {
             // Raycasting
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            const clientX = event.clientX || (event.touches ? event.touches[0].clientX : 0);
+            const clientY = event.clientY || (event.touches ? event.touches[0].clientY : 0);
+            
+            mouse.x = (clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (clientY / window.innerHeight) * 2 + 1;
 
             // Dragging Logic
             const deltaMove = {
-                x: event.clientX - previousMousePosition.x,
-                y: event.clientY - previousMousePosition.y
+                x: clientX - previousMousePosition.x,
+                y: clientY - previousMousePosition.y
             };
 
             if(isDragging) {
@@ -390,13 +428,21 @@
                 targetRotation.x += deltaMove.y * 0.005;
             }
 
-            previousMousePosition = { x: event.clientX, y: event.clientY };
+            previousMousePosition = { x: clientX, y: clientY };
         }
         
         window.addEventListener('click', onClick);
 
         function onClick(event) {
             if(isDragging) return;
+            
+            // Re-calculate mouse position in case it's a direct tap/click event
+            const clientX = event.clientX || (event.touches ? event.touches[0].clientX : 0);
+            const clientY = event.clientY || (event.touches ? event.touches[0].clientY : 0);
+            
+            mouse.x = (clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (clientY / window.innerHeight) * 2 + 1;
+
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(markers);
 
@@ -452,12 +498,18 @@
             // Hover Effect
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(markers);
+            
+            // Reset all visual dots
+            markers.forEach(m => {
+                if(m.userData.visualDot) m.userData.visualDot.scale.set(1, 1, 1);
+            });
+
             if (intersects.length > 0) {
                 document.body.style.cursor = 'pointer';
-                intersects[0].object.scale.set(1.5, 1.5, 1.5);
+                const hit = intersects[0].object;
+                if(hit.userData.visualDot) hit.userData.visualDot.scale.set(2, 2, 2);
             } else {
                 document.body.style.cursor = 'default';
-                markers.forEach(m => m.scale.set(1, 1, 1));
             }
 
             renderer.render(scene, camera);
