@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future of Telecoms: Immersive Experience</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --alexandrite: #4C194C;
+            --agate: #D6883A;
+            --bloodstone: #15404F;
+            --azurite: #842366;
+            --aventurine: #3E9B9B;
+            --text-main: #f0f6fc;
+            --text-muted: #a4b1bc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background-color: #050a10;
+            overflow-x: hidden;
+        }
+
+        /* 3D Background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+        }
+
+        /* Scroll Content */
+        .scroll-container {
+            position: relative;
+            z-index: 10;
+        }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centered by default */
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Alternating layouts for visual interest */
+        section:nth-child(even) {
+            justify-content: flex-end;
+            padding-right: 10%;
+        }
+
+        section:nth-child(odd) {
+            justify-content: flex-start;
+            padding-left: 10%;
+        }
+
+        section:first-child, section:last-child {
+            justify-content: center;
+            text-align: center;
+            padding: 0;
+        }
+
+        /* Content Cards with Glassmorphism */
+        .content-card {
+            background: rgba(21, 64, 79, 0.25); /* Low opacity Bloodstone */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            opacity: 0; /* Hidden initially for GSAP */
+            transform: translateY(50px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: border-color 0.3s ease;
+        }
+
+        .content-card:hover {
+            border-color: var(--agate);
+        }
+
+        h1 {
+            font-size: 5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, var(--agate) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--agate);
+        }
+
+        h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--aventurine);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-highlight {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+            60% {transform: translateX(-50%) translateY(-5px);}
+        }
+
+        /* Specific tweaks for Hero */
+        .hero-card {
+            background: transparent;
+            backdrop-filter: none;
+            border: none;
+            box-shadow: none;
+            max-width: 900px;
+        }
+        
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: var(--agate);
+            transform: scale(1.5);
+            box-shadow: 0 0 10px var(--agate);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- Navigation Dots -->
+    <div class="nav-dots">
+        <div class="dot active" onclick="scrollToSection(0)"></div>
+        <div class="dot" onclick="scrollToSection(1)"></div>
+        <div class="dot" onclick="scrollToSection(2)"></div>
+        <div class="dot" onclick="scrollToSection(3)"></div>
+        <div class="dot" onclick="scrollToSection(4)"></div>
+        <div class="dot" onclick="scrollToSection(5)"></div>
+        <div class="dot" onclick="scrollToSection(6)"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="scroll-container">
+        
+        <!-- Hero Section -->
+        <section id="hero">
+            <div class="content-card hero-card">
+                <h1>The Future of<br>Telecoms</h1>
+                <p style="font-size: 1.5rem; max-width: 700px; margin: 0 auto;">
+                    Exploring the groundbreaking shifts redefining global connectivity in 2026.
+                    <br><span style="font-size: 1rem; opacity: 0.7;">Scroll to explore the network</span>
+                </p>
+            </div>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down fa-2x"></i>
+            </div>
+        </section>
+
+        <!-- Trend 1 -->
+        <section id="trend1">
+            <div class="content-card">
+                <h3><i class="fas fa-tower-broadcast"></i> Trend 01</h3>
+                <h2>Hyper-Scale 5G & 6G</h2>
+                <p>Global coverage of Standalone 5G has reached critical mass. We are now piloting 6G technologies targeting terahertz frequencies for instantaneous data transfer.</p>
+                <div class="stat-highlight">
+                    &lt;1ms Latency <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">enabling remote surgery</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trend 2 -->
+        <section id="trend2">
+            <div class="content-card">
+                <h3><i class="fas fa-brain"></i> Trend 02</h3>
+                <h2>AI-Driven Autonomy</h2>
+                <p>Networks that heal themselves. AI algorithms now manage traffic routing, load balancing, and energy consumption in real-time, eliminating human error.</p>
+                <div class="stat-highlight">
+                    30% OPEX Reduction <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">via predictive maintenance</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trend 3 -->
+        <section id="trend3">
+            <div class="content-card">
+                <h3><i class="fas fa-microchip"></i> Trend 03</h3>
+                <h2>Edge Intelligence</h2>
+                <p>Processing power has moved from centralized data centers to the edge. Colocated with base stations, data travels shorter distances for faster insights.</p>
+                <div class="stat-highlight">
+                    90% Faster Response <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">for autonomous vehicles</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trend 4 -->
+        <section id="trend4">
+            <div class="content-card">
+                <h3><i class="fas fa-satellite"></i> Trend 04</h3>
+                <h2>Satellite Integration</h2>
+                <p>The convergence of terrestrial mobile networks and LEO satellite constellations has eliminated "dead zones" forever. Connectivity is now truly global.</p>
+                <div class="stat-highlight">
+                    100% Global Coverage <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">pole to pole</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trend 5 -->
+        <section id="trend5">
+            <div class="content-card">
+                <h3><i class="fas fa-shield-halved"></i> Trend 05</h3>
+                <h2>Quantum Security</h2>
+                <p>As quantum computing advances, we deploy Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
+                <div class="stat-highlight">
+                    Unbreakable Encryption <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">future-proof security</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion">
+            <div class="content-card hero-card">
+                <h2>The Road Ahead</h2>
+                <p>The next decade will be defined not just by how fast we connect, but how intelligently we communicate.</p>
+                <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 1rem 2rem; background: var(--agate); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 2rem;">
+                    Restart Experience
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        // 1. Three.js Setup
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        // Fog for depth fading
+        scene.fog = new THREE.FogExp2(0x050a10, 0.002);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // 2. Create the Neural Network (Particles + Lines)
+        const particleCount = 700;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+
+        const colorPalette = [
+            new THREE.Color('#D6883A'), // Agate
+            new THREE.Color('#3E9B9B'), // Aventurine
+            new THREE.Color('#842366')  // Azurite
+        ];
+
+        for (let i = 0; i < particleCount; i++) {
+            // Spread particles in a long tunnel along Z-axis
+            const x = (Math.random() - 0.5) * 60;
+            const y = (Math.random() - 0.5) * 60;
+            const z = (Math.random() - 0.5) * 200 - 50; // Deep Z range
+
+            positions[i * 3] = x;
+            positions[i * 3 + 1] = y;
+            positions[i * 3 + 2] = z;
+
+            // Random color from palette
+            const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+            colors[i * 3] = color.r;
+            colors[i * 3 + 1] = color.g;
+            colors[i * 3 + 2] = color.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.3,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        // Add some "connecting lines" logic visually by adding a secondary wireframe object
+        // Or just a second particle system for "data flow"
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = new Float32Array(200 * 3);
+        for(let i=0; i<200; i++){
+            starPos[i*3] = (Math.random() - 0.5) * 100;
+            starPos[i*3+1] = (Math.random() - 0.5) * 100;
+            starPos[i*3+2] = (Math.random() - 0.5) * 100;
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1, transparent: true, opacity: 0.4 });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+
+
+        // 3. Animation Loop
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        // Subtle camera movement on mouse move
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
+        });
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            targetX = mouseX * 2;
+            targetY = mouseY * 2;
+
+            // Smoothly interpolate camera rotation
+            particles.rotation.y += 0.001;
+            particles.rotation.z += 0.0005;
+            
+            // Add "breathing" effect to particles
+            const positions = particles.geometry.attributes.position.array;
+            // Simple wave effect (computationally cheap version)
+            // Ideally done in shader, but JS is fine for prototype
+            
+            camera.rotation.x += 0.05 * (targetY - camera.rotation.x);
+            camera.rotation.y += 0.05 * (targetX - camera.rotation.y);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 4. Resize Handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // 5. Scroll Interaction (GSAP)
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Animate Camera Z position based on total scroll
+        // The total document height maps to a travel distance in 3D space
+        gsap.to(camera.position, {
+            z: -100, // Move forward deep into the tunnel
+            ease: "none",
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            }
+        });
+
+        // Animate Sections (Fade in/out + Slide)
+        const sections = document.querySelectorAll('section');
+        const dots = document.querySelectorAll('.dot');
+
+        sections.forEach((section, index) => {
+            const card = section.querySelector('.content-card');
+            
+            // Animate card entry
+            if(card) {
+                gsap.to(card, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 70%",
+                        end: "bottom 70%",
+                        toggleActions: "play reverse play reverse",
+                        // onEnter: () => updateActiveDot(index), 
+                        // onEnterBack: () => updateActiveDot(index)
+                    }
+                });
+            }
+
+            // Update Navigation Dots
+            ScrollTrigger.create({
+                trigger: section,
+                start: "top center",
+                end: "bottom center",
+                onToggle: (self) => {
+                    if (self.isActive) {
+                        dots.forEach(d => d.classList.remove('active'));
+                        if (dots[index]) dots[index].classList.add('active');
+                        
+                        // Optional: Change particle color based on section
+                        // gsap.to(material.color, {r: ..., g: ..., b: ...})
+                    }
+                }
+            });
+        });
+
+        // Helper for dot navigation
+        window.scrollToSection = (index) => {
+            const target = sections[index];
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        };
+
+    </script>
+</body>
+</html>
