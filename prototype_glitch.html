@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Glitch Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #111; color: #fff; font-family: 'Courier Prime', monospace; overflow-x: hidden; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2px; background: #333; }
+        .item { 
+            height: 400px; background: #000; position: relative; overflow: hidden; cursor: crosshair;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .label { 
+            font-size: 2rem; font-weight: 700; z-index: 10; pointer-events: none;
+            text-transform: uppercase; letter-spacing: 5px;
+        }
+
+        /* Glitch Effect */
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; clip: rect(0, 900px, 0, 0); 
+        }
+        .glitch::after {
+            left: 2px; text-shadow: -1px 0 red;
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        .glitch::before {
+            left: -2px; text-shadow: 2px 0 blue;
+            animation: glitch-anim2 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 30px, 0); }
+            20% { clip: rect(60px, 9999px, 10px, 0); }
+            40% { clip: rect(40px, 9999px, 50px, 0); }
+            100% { clip: rect(80px, 9999px, 20px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(50px, 9999px, 10px, 0); }
+            30% { clip: rect(20px, 9999px, 60px, 0); }
+            100% { clip: rect(10px, 9999px, 40px, 0); }
+        }
+
+        .noise {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://media.giphy.com/media/oEI9uWUicG3Ze/giphy.gif');
+            opacity: 0.2; pointer-events: none; mix-blend-mode: screen;
+        }
+
+        .item:hover .glitch::before, .item:hover .glitch::after { animation: none; clip: none; opacity: 0; }
+        .item:hover .noise { opacity: 0.05; }
+        .item:hover .label { color: #0f0; text-shadow: 0 0 10px #0f0; }
+
+        .header { padding: 50px; text-align: center; border-bottom: 1px solid #333; }
+        .footer { padding: 50px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SIGNAL TO NOISE</h1>
+        <p>Hover to de-glitch the trend archive</p>
+    </div>
+
+    <div class="gallery">
+        <div class="item">
+            <div class="noise"></div>
+            <div class="label glitch" data-text="TERAHERTZ">TERAHERTZ</div>
+        </div>
+        <div class="item">
+            <div class="noise"></div>
+            <div class="label glitch" data-text="NEURAL-NET">NEURAL-NET</div>
+        </div>
+        <div class="item">
+            <div class="noise"></div>
+            <div class="label glitch" data-text="EDGE-CORE">EDGE-CORE</div>
+        </div>
+        <div class="item">
+            <div class="noise"></div>
+            <div class="label glitch" data-text="ORBITAL">ORBITAL</div>
+        </div>
+        <div class="item">
+            <div class="noise"></div>
+            <div class="label glitch" data-text="QUANTUM">QUANTUM</div>
+        </div>
+        <div class="item">
+            <div class="noise"></div>
+            <div class="label glitch" data-text="PQC-LOCK">PQC-LOCK</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="index.html" style="color: #666; text-decoration: none;">[ DISCONNECT ]</a>
+    </div>
+</body>
+</html>

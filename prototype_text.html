@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Kinetic Type</title>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Anton', sans-serif; }
+        #canvas-container { width: 100vw; height: 100vh; }
+        .ui {
+            position: absolute; top: 20px; left: 20px; color: white; pointer-events: none;
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+        .controls {
+            position: absolute; bottom: 20px; right: 20px; display: flex; gap: 10px;
+        }
+        .btn {
+            background: white; border: none; padding: 10px 20px; cursor: pointer;
+            font-family: inherit; font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="ui">
+        <h1>Kinetic Infrastructure</h1>
+        <p style="opacity: 0.5;">Words as physical architecture</p>
+    </div>
+    
+    <div id="canvas-container"></div>
+
+    <div class="controls">
+        <button class="btn" onclick="spawnWord()">ADD TREND</button>
+        <a href="index.html" style="text-decoration:none;"><button class="btn">EXIT</button></a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script>
+        const { Engine, Render, Runner, Bodies, Composite, Mouse, MouseConstraint } = Matter;
+
+        const engine = Engine.create();
+        const render = Render.create({
+            element: document.getElementById('canvas-container'),
+            engine: engine,
+            options: {
+                width: window.innerWidth,
+                height: window.innerHeight,
+                wireframes: false,
+                background: 'transparent'
+            }
+        });
+
+        // Floor and Walls
+        const floor = Bodies.rectangle(window.innerWidth/2, window.innerHeight + 30, window.innerWidth, 60, { isStatic: true });
+        const wallL = Bodies.rectangle(-30, window.innerHeight/2, 60, window.innerHeight, { isStatic: true });
+        const wallR = Bodies.rectangle(window.innerWidth + 30, window.innerHeight/2, 60, window.innerHeight, { isStatic: true });
+        Composite.add(engine.world, [floor, wallL, wallR]);
+
+        const trends = ["5G", "6G", "AI", "EDGE", "SAT", "PQC", "SECURE", "TERAHERTZ", "QUANTUM"];
+        
+        function spawnWord() {
+            const word = trends[Math.floor(Math.random() * trends.length)];
+            const x = Math.random() * window.innerWidth;
+            const size = 40 + Math.random() * 60;
+            
+            const box = Bodies.rectangle(x, -100, word.length * (size * 0.6), size, {
+                render: {
+                    sprite: {
+                        texture: createTextTexture(word, size),
+                    }
+                },
+                restitution: 0.5,
+                friction: 0.1
+            });
+            Composite.add(engine.world, box);
+        }
+
+        function createTextTexture(text, size) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const width = text.length * (size * 0.7);
+            const height = size * 1.2;
+            canvas.width = width;
+            canvas.height = height;
+            
+            ctx.fillStyle = 'white';
+            ctx.font = `${size}px Anton`;
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText(text, width/2, height/2);
+            
+            return canvas.toDataURL();
+        }
+
+        // Interaction
+        const mouse = Mouse.create(render.canvas);
+        const mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: { stiffness: 0.2, render: { visible: false } }
+        });
+        Composite.add(engine.world, mouseConstraint);
+
+        Render.run(render);
+        const runner = Runner.create();
+        Runner.run(runner, engine);
+
+        // Initial spawn
+        for(let i=0; i<5; i++) spawnWord();
+
+        window.addEventListener('resize', () => {
+            render.canvas.width = window.innerWidth;
+            render.canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

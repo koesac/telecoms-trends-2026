@@ -10,7 +10,7 @@
     
     <style>
         body { margin: 0; overflow: hidden; background: #000510; font-family: 'Cinzel', serif; color: #fff; }
-        #canvas-container { width: 100vw; height: 100vh; }
+        #canvas-container { width: 100vw; height: 100vh; touch-action: none; }
         
         #ui {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
@@ -120,28 +120,68 @@
 
         // Interaction
         const raycaster = new THREE.Raycaster();
-        raycaster.params.Line.threshold = 0.2;
+        raycaster.params.Line.threshold = 0.5; // Larger hit area for mobile
         const mouse = new THREE.Vector2();
+        
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
 
+        // Mouse Events
+        window.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        
         window.addEventListener('mousemove', (e) => {
             mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
             
-            // Rotation
-            if(e.buttons === 1) {
+            if(isDragging) {
                 group.rotation.y += e.movementX * 0.005;
                 group.rotation.x += e.movementY * 0.005;
             }
         });
 
-        window.addEventListener('click', () => {
+        window.addEventListener('click', (e) => checkIntersection(e.clientX, e.clientY));
+
+        // Touch Events
+        window.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+        
+        window.addEventListener('touchend', (e) => {
+            isDragging = false;
+            // Simple tap detection (if moved less than threshold, treat as click)
+            // Ideally we track distance, but for now let's assume if not moving much it's a tap
+            // Or just check intersection on end
+            const touch = e.changedTouches[0];
+            checkIntersection(touch.clientX, touch.clientY);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const deltaMove = {
+                x: touch.clientX - previousMousePosition.x,
+                y: touch.clientY - previousMousePosition.y
+            };
+
+            if(isDragging) {
+                group.rotation.y += deltaMove.x * 0.005;
+                group.rotation.x += deltaMove.y * 0.005;
+            }
+            previousMousePosition = { x: touch.clientX, y: touch.clientY };
+        });
+
+        function checkIntersection(x, y) {
+            mouse.x = (x / window.innerWidth) * 2 - 1;
+            mouse.y = -(y / window.innerHeight) * 2 + 1;
+            
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(lines);
             
             if(intersects.length > 0) {
                 pluckString(intersects[0].object);
             }
-        });
+        }
 
         function pluckString(line) {
             if(line.userData.plucked) return;

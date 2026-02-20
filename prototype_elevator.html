@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Space Elevator</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { margin: 0; font-family: 'Oswald', sans-serif; overflow-x: hidden; background: #000; color: #fff; }
+        
+        .elevator-shaft {
+            height: 500vh; /* 5 sections */
+            background: linear-gradient(to top, 
+                #224433 0%, /* Ground */
+                #446688 20%, /* Sky */
+                #112244 40%, /* Stratosphere */
+                #000022 60%, /* LEO */
+                #000000 100% /* Deep Space */
+            );
+            position: relative;
+        }
+
+        /* Altitude Marker */
+        .altimeter {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            text-align: right;
+            mix-blend-mode: difference;
+        }
+        
+        .alt-label { font-size: 0.8rem; opacity: 0.7; display: block; }
+
+        /* Sections */
+        .layer {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+        }
+
+        .layer h2 { font-size: 4rem; text-transform: uppercase; margin: 0; opacity: 0; transform: translateY(50px); transition: 1s; }
+        .layer p { font-size: 1.5rem; max-width: 600px; opacity: 0; transform: translateY(50px); transition: 1s 0.2s; }
+        
+        .layer.active h2, .layer.active p { opacity: 1; transform: translateY(0); }
+
+        /* Elevator Cab */
+        .cab {
+            position: fixed;
+            bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 60px; height: 100px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #fff;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+        
+        .cab::after {
+            content: ''; width: 2px; height: 100vh; background: rgba(255,255,255,0.2);
+            position: absolute; bottom: 100%; left: 50%;
+        }
+
+        .scroll-hint {
+            position: fixed; bottom: 20px; width: 100%; text-align: center;
+            font-size: 0.8rem; opacity: 0.5; animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+        .btn-exit {
+            position: fixed; top: 20px; left: 20px; color: #fff; text-decoration: none; 
+            border: 1px solid #fff; padding: 5px 10px; mix-blend-mode: difference;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="altimeter">
+        <span id="alt-val">0</span> km
+        <span class="alt-label">ALTITUDE</span>
+    </div>
+
+    <div class="cab"><i class="fas fa-caret-up"></i></div>
+    <div class="scroll-hint">SCROLL TO ASCEND</div>
+    <a href="index.html" class="btn-exit">ABORT ASCENT</a>
+
+    <div class="elevator-shaft">
+        <!-- Ground -->
+        <section class="layer" data-alt="0">
+            <div>
+                <h2>Ground Layer</h2>
+                <p>Fiber optics and 5G small cells blanket the urban landscape.</p>
+            </div>
+        </section>
+
+        <!-- Air -->
+        <section class="layer" data-alt="10">
+            <div>
+                <h2>Aerial Tier</h2>
+                <p>HAPS (High Altitude Platform Stations) drones provide pop-up coverage.</p>
+            </div>
+        </section>
+
+        <!-- LEO -->
+        <section class="layer" data-alt="500">
+            <div>
+                <h2>LEO Orbit</h2>
+                <p>Starlink-style mega-constellations offer low-latency global backhaul.</p>
+            </div>
+        </section>
+
+        <!-- MEO -->
+        <section class="layer" data-alt="2000">
+            <div>
+                <h2>MEO Orbit</h2>
+                <p>Navigation and GPS satellites synchronize the network timing.</p>
+            </div>
+        </section>
+
+        <!-- GEO -->
+        <section class="layer" data-alt="36000">
+            <div>
+                <h2>GEO Orbit</h2>
+                <p>Massive legacy birds provide broadcast capacity and emergency links.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const altVal = document.getElementById('alt-val');
+        const layers = document.querySelectorAll('.layer');
+        
+        window.addEventListener('scroll', () => {
+            const scroll = window.scrollY;
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            const progress = scroll / maxScroll;
+            
+            // Update Altimeter (0 to 36000 km exponential-ish)
+            const km = Math.floor(progress * 36000);
+            altVal.innerText = km.toLocaleString();
+            
+            // Highlight Layers
+            layers.forEach(layer => {
+                const rect = layer.getBoundingClientRect();
+                if(rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+                    layer.classList.add('active');
+                } else {
+                    layer.classList.remove('active');
+                }
+            });
+        });
+        
+        // Initial check
+        window.dispatchEvent(new Event('scroll'));
+    </script>
+</body>
+</html>
