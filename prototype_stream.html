@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future of Telecoms: Data Stream</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Rajdhani', sans-serif;
+            color: white;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Overlay UI */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 0.5rem;
+        }
+
+        /* Stream Controls */
+        .stream-controls {
+            display: flex;
+            gap: 1rem;
+            pointer-events: auto;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .stream-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #aaa;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stream-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stream-btn.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-color: white;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        /* Dynamic Colors for Active States */
+        .stream-btn[data-id="1"].active { border-color: #00ffcc; box-shadow: 0 0 20px #00ffcc; color: #00ffcc; }
+        .stream-btn[data-id="2"].active { border-color: #ff00ff; box-shadow: 0 0 20px #ff00ff; color: #ff00ff; }
+        .stream-btn[data-id="3"].active { border-color: #ffff00; box-shadow: 0 0 20px #ffff00; color: #ffff00; }
+        .stream-btn[data-id="4"].active { border-color: #00ccff; box-shadow: 0 0 20px #00ccff; color: #00ccff; }
+        .stream-btn[data-id="5"].active { border-color: #ff3300; box-shadow: 0 0 20px #ff3300; color: #ff3300; }
+
+        /* Audio Visualizer Bars (Simulated) */
+        .viz-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        .viz-fill {
+            height: 100%;
+            width: 0%;
+            background: currentColor;
+            transition: width 0.1s;
+        }
+
+        /* Modal Info */
+        .info-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .info-panel.visible {
+            opacity: 1;
+        }
+
+        .info-panel h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .info-panel p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Start Overlay */
+        #start-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+        }
+
+        .btn-start {
+            background: white;
+            color: black;
+            border: none;
+            padding: 1rem 3rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 2px;
+            margin-top: 2rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="ui-layer">
+        <div>
+            <h1>The Data Stream</h1>
+            <div class="subtitle">Harmonizing the Network Architecture</div>
+        </div>
+
+        <div class="info-panel" id="info-panel">
+            <h2 id="info-title"></h2>
+            <p id="info-desc"></p>
+        </div>
+
+        <div class="stream-controls">
+            <div class="stream-btn" data-id="1" onclick="toggleStream(1)">
+                <i class="fas fa-tower-broadcast"></i> 5G/6G
+                <div class="viz-bar"><div class="viz-fill" id="viz-1"></div></div>
+            </div>
+            <div class="stream-btn" data-id="2" onclick="toggleStream(2)">
+                <i class="fas fa-brain"></i> AI Core
+                <div class="viz-bar"><div class="viz-fill" id="viz-2"></div></div>
+            </div>
+            <div class="stream-btn" data-id="3" onclick="toggleStream(3)">
+                <i class="fas fa-microchip"></i> Edge
+                <div class="viz-bar"><div class="viz-fill" id="viz-3"></div></div>
+            </div>
+            <div class="stream-btn" data-id="4" onclick="toggleStream(4)">
+                <i class="fas fa-satellite"></i> Orbit
+                <div class="viz-bar"><div class="viz-fill" id="viz-4"></div></div>
+            </div>
+            <div class="stream-btn" data-id="5" onclick="toggleStream(5)">
+                <i class="fas fa-shield-halved"></i> Secure
+                <div class="viz-bar"><div class="viz-fill" id="viz-5"></div></div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; pointer-events: auto;">
+             <a href="index.html" style="color: #666; text-decoration: none;">Exit Experience</a>
+        </div>
+    </div>
+
+    <div id="start-overlay">
+        <h1>Audio-Visual Experience</h1>
+        <p style="color: #aaa; margin-top: 1rem;">Headphones Recommended</p>
+        <button class="btn-start" onclick="init()">INITIALIZE</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const infoPanel = document.getElementById('info-panel');
+        const infoTitle = document.getElementById('info-title');
+        const infoDesc = document.getElementById('info-desc');
+
+        // State
+        let isRunning = false;
+        let activeStreams = [false, false, false, false, false]; // Indices 0-4 map to IDs 1-5
+        let streamData = [
+            { id: 1, color: '#00ffcc', title: "Hyper-Scale 5G", desc: "High-frequency carrier waves enabling terahertz speeds.", speed: 2, amp: 50 },
+            { id: 2, color: '#ff00ff', title: "Autonomous AI", desc: "Self-healing algorithmic patterns optimizing flow.", speed: 1, amp: 30 },
+            { id: 3, color: '#ffff00', title: "Edge Compute", desc: "Rapid, localized processing bursts at the network edge.", speed: 4, amp: 20 },
+            { id: 4, color: '#00ccff', title: "Orbital Link", desc: "Long-range satellite sine waves covering the globe.", speed: 0.5, amp: 80 },
+            { id: 5, color: '#ff3300', title: "Quantum Defense", desc: "Unbreakable cryptographic noise shielding the core.", speed: 8, amp: 10 }
+        ];
+
+        // Resize
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Audio Context (Web Audio API)
+        let audioCtx;
+        let oscillators = [];
+        let gains = [];
+
+        function initAudio() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+
+            // Create oscillators for each stream
+            // 1. 5G: High pitch sine
+            createOscillator(0, 'sine', 440); 
+            // 2. AI: Square wave (computational)
+            createOscillator(1, 'square', 110); 
+            // 3. Edge: Sawtooth (aggressive/fast)
+            createOscillator(2, 'sawtooth', 220); 
+            // 4. Orbit: Low sine (deep space)
+            createOscillator(3, 'sine', 55); 
+            // 5. Secure: Triangle (stable)
+            createOscillator(4, 'triangle', 880); 
+        }
+
+        function createOscillator(index, type, freq) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = type;
+            osc.frequency.value = freq;
+            
+            gain.gain.value = 0; // Muted initially
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            
+            oscillators[index] = osc;
+            gains[index] = gain;
+        }
+
+        function init() {
+            document.getElementById('start-overlay').style.display = 'none';
+            initAudio();
+            isRunning = true;
+            animate();
+            
+            // Auto-activate first stream
+            toggleStream(1);
+        }
+
+        function toggleStream(id) {
+            if(!isRunning) return;
+            
+            const index = id - 1;
+            activeStreams[index] = !activeStreams[index];
+            
+            // Toggle Visual Class
+            const btn = document.querySelector(`.stream-btn[data-id="${id}"]`);
+            btn.classList.toggle('active', activeStreams[index]);
+            
+            // Toggle Audio
+            if(audioCtx) {
+                const targetGain = activeStreams[index] ? 0.1 : 0;
+                const now = audioCtx.currentTime;
+                gains[index].gain.setTargetAtTime(targetGain, now, 0.1);
+            }
+
+            // Show Info briefly
+            if(activeStreams[index]) {
+                infoTitle.innerText = streamData[index].title;
+                infoDesc.innerText = streamData[index].desc;
+                infoTitle.style.color = streamData[index].color;
+                infoPanel.classList.add('visible');
+                
+                // Hide existing timeout if any
+                if(window.infoTimeout) clearTimeout(window.infoTimeout);
+                window.infoTimeout = setTimeout(() => {
+                    infoPanel.classList.remove('visible');
+                }, 3000);
+            }
+        }
+
+        // Animation Loop
+        let time = 0;
+        function animate() {
+            if(!isRunning) return;
+            requestAnimationFrame(animate);
+            
+            // Fade effect for trails
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            time += 0.01;
+
+            activeStreams.forEach((active, i) => {
+                if(active) {
+                    drawStream(i);
+                    updateViz(i);
+                } else {
+                    // Reset viz bar
+                    document.getElementById(`viz-${i+1}`).style.width = '0%';
+                }
+            });
+        }
+
+        function drawStream(index) {
+            const data = streamData[index];
+            const yBase = (canvas.height / 6) * (index + 1);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = data.color;
+            ctx.lineWidth = 2;
+            
+            for(let x = 0; x < canvas.width; x += 5) {
+                // Complex wave function
+                const y = yBase + 
+                          Math.sin(x * 0.01 * data.speed + time * data.speed) * data.amp +
+                          Math.cos(x * 0.005 + time) * (data.amp / 2);
+                
+                if(x===0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Particles
+            if(Math.random() > 0.8) {
+                ctx.fillStyle = data.color;
+                const px = Math.random() * canvas.width;
+                const py = yBase + Math.sin(px * 0.01 * data.speed + time * data.speed) * data.amp;
+                ctx.fillRect(px, py, 4, 4);
+            }
+        }
+
+        function updateViz(index) {
+            // Simulated visualizer bounce
+            const val = 30 + Math.random() * 70;
+            document.getElementById(`viz-${index+1}`).style.width = val + '%';
+        }
+
+    </script>
+</body>
+</html>
