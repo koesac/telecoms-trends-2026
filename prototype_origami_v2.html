@@ -27,12 +27,61 @@
             font-family: "Avenir Next LT", "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #fff;
             height: 100vh;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
             perspective: 1500px;
         }
+
+        /* Atmosphere Layers */
+        #bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            transition: background 1s ease;
+        }
+
+        .bg-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: opacity 1s ease;
+        }
+        .bg-layer.active { opacity: 1; }
+
+        /* Branded Gradients */
+        #bg-0 { background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--bg-dark) 100%); }
+        #bg-1 { background: radial-gradient(circle at center, var(--agate) 0%, var(--bg-dark) 100%); }
+        #bg-2 { background: radial-gradient(circle at center, var(--azurite) 0%, var(--bg-dark) 100%); }
+        #bg-3 { background: radial-gradient(circle at center, var(--aventurine) 0%, var(--bg-dark) 100%); }
+        #bg-4 { background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--bg-dark) 100%); }
+        #bg-5 { background: radial-gradient(circle at center, var(--alexandrite) 0%, var(--bg-dark) 100%); }
+
+        /* UI Overlays */
+        #ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 40px;
+            z-index: 100;
+        }
+
+        h1 {
+            font-family: inherit; font-size: 1.5rem; letter-spacing: 5px; margin: 0;
+            text-transform: uppercase; color: var(--agate);
+            display: flex; align-items: center; gap: 15px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            fill: none; stroke: currentColor; stroke-width: 2;
+            width: 35px; height: 35px;
+        }
+
+        /* Navigation Dots */
+        .dots {
+            display: flex; gap: 15px; pointer-events: auto; justify-content: center; margin-bottom: 20px;
+        }
+        .dot {
+            width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2);
+            cursor: pointer; transition: 0.3s;
+        }
+        .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
 
         /* The Main Origami Object */
         .origami-container {
@@ -89,38 +138,41 @@
         }
 
         /* Foldable Flaps */
-        .flap {
-            position: absolute;
-            width: 100%;
-            height: 50%;
-            background: #f8f8f8;
-            left: 0;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Syncopate', sans-serif;
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            font-weight: 700;
-            color: #222;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-
-        .flap-top {
-            top: 0;
-            transform-origin: top;
-            border-bottom: 1px solid #ddd;
-            border-radius: 4px 4px 0 0;
-        }
-
-        .flap-bottom {
-            bottom: 0;
-            transform-origin: bottom;
-            border-top: 1px solid #ddd;
-            border-radius: 0 0 4px 4px;
-        }
+                .flap {
+                    position: absolute; width: 100%; height: 50%;
+                    background: #f8f8f8;
+                    left: 0;
+                    z-index: 10;
+                    display: flex;
+                    flex-direction: column; /* Stack icon and text */
+                    align-items: center;
+                    justify-content: center;
+                    font-family: 'Syncopate', sans-serif;
+                    letter-spacing: 2px;
+                    font-weight: 700;
+                    color: #222;
+                    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
+                    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                    text-align: center;
+                    padding: 10px;
+                    box-sizing: border-box;
+                }
+        
+                        .flap-top {
+                            top: 0;
+                            transform-origin: top;
+                            border-bottom: 1px solid #ddd;
+                            border-radius: 4px 4px 0 0;
+                            font-size: 1.1rem; /* Increased from 0.85rem */
+                            line-height: 1.2;
+                        }        
+                .flap-bottom {
+                    bottom: 0;
+                    transform-origin: bottom;
+                    border-top: 1px solid #ddd;
+                    border-radius: 0 0 4px 4px;
+                    font-size: 2rem; /* Larger for icon */
+                }
 
         /* Unfolded Interaction */
         .unfolded .flap-top { transform: rotateX(165deg); }
@@ -198,10 +250,19 @@
 </head>
 <body>
 
+    <div id="bg-container">
+        <div class="bg-layer active" id="bg-0"></div>
+        <div class="bg-layer" id="bg-1"></div>
+        <div class="bg-layer" id="bg-2"></div>
+        <div class="bg-layer" id="bg-3"></div>
+        <div class="bg-layer" id="bg-4"></div>
+        <div class="bg-layer" id="bg-5"></div>
+    </div>
+
     <div id="ui-layer">
         <div id="header-branding" style="position: absolute; top: 40px; left: 40px; pointer-events: auto;">
             <h1>
-                <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                <a href="https://www.innovatecomms.co.uk/" id="company-link" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
                     <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
                         <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
@@ -214,6 +275,14 @@
             </h1>
         </div>
         <div class="controls">
+            <div class="dots" id="dots">
+                <div class="dot active" onclick="jumpTo(-1)"></div>
+                <div class="dot" onclick="jumpTo(0)"></div>
+                <div class="dot" onclick="jumpTo(1)"></div>
+                <div class="dot" onclick="jumpTo(2)"></div>
+                <div class="dot" onclick="jumpTo(3)"></div>
+                <div class="dot" onclick="jumpTo(4)"></div>
+            </div>
             <button class="btn-action" onclick="nextTrend()">NEXT_TREND</button>
             <div style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px;">TAP CENTER TO UNFOLD DATA</div>
         </div>
@@ -222,9 +291,7 @@
     <div class="origami-container" id="origami" onclick="toggleFold()">
         <div class="flap flap-top" id="flap-top">INFRASTRUCTURE</div>
         <div class="face">
-            <div class="icon" id="trend-icon"><i class="fas fa-tower-broadcast"></i></div>
-            <h2 id="trend-title">Hyper-Scale 5G</h2>
-            <p id="trend-desc">The transition from utility to essential fabric. Terahertz air interface pilots achieving sub-1ms latency.</p>
+            <p id="trend-desc"></p>
         </div>
         <div class="flap flap-bottom" id="flap-bottom">DATA_VERIFIED</div>
     </div>
@@ -232,12 +299,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
         const origami = document.getElementById('origami');
-        const title = document.getElementById('trend-title');
         const desc = document.getElementById('trend-desc');
-        const icon = document.getElementById('trend-icon');
         const fTop = document.getElementById('flap-top');
         const fBot = document.getElementById('flap-bottom');
         const btnNext = document.querySelector('.btn-action');
+        const dots = document.querySelectorAll('.dot');
+        const bgLayers = Array.from({length: 6}, (_, i) => document.getElementById(`bg-${i}`));
 
         let currentIndex = -1; 
         const config = TELECOMS_CONFIG;
@@ -246,21 +313,21 @@
         function loadContent(index) {
             if (index === -1) {
                 // Load Intro
-                title.innerText = config.intro.title.toUpperCase();
                 desc.innerText = config.intro.p1;
-                icon.innerHTML = `<i class="fas fa-cube"></i>`;
-                icon.style.color = "var(--agate)";
-                fTop.innerText = "START_SESSION";
-                fBot.innerText = "UNFOLD_STRATEGY";
+                fTop.innerHTML = `<span>${config.intro.title.toUpperCase()}</span>`;
+                fBot.innerHTML = `<i class="fas fa-cube"></i>`;
+                fTop.style.color = "var(--agate)";
+                fBot.style.color = "var(--agate)";
+                fTop.style.background = "#f8f8f8";
+                fBot.style.background = "#f8f8f8";
                 btnNext.innerText = "NEXT_TREND";
             } else {
                 const trend = trends[index];
-                title.innerText = trend.title.toUpperCase();
                 desc.innerHTML = `<strong>${trend.desc}</strong><br><br>${trend.implication || trend.statDesc}`;
-                icon.innerHTML = `<i class="fas ${trend.icon}"></i>`;
-                icon.style.color = trend.color;
-                fTop.innerText = trend.tag.toUpperCase();
-                fBot.innerText = "DATA_VERIFIED";
+                
+                // Set external flaps
+                fTop.innerHTML = `<span>${trend.title.toUpperCase()}</span>`;
+                fBot.innerHTML = `<i class="fas ${trend.icon}"></i>`;
 
                 if (index === trends.length - 1) {
                     btnNext.innerText = "REPLAY";
@@ -276,15 +343,29 @@
                     fBot.style.color = "#fff";
                 } else {
                     fTop.style.background = "#f8f8f8";
-                    fTop.style.color = "#222";
+                    fTop.style.color = trend.color;
+                    fBot.style.color = trend.color;
                     fBot.style.background = "#f8f8f8";
-                    fBot.style.color = "#222";
                 }
             }
+
+            // Update Atmosphere
+            bgLayers.forEach((l, i) => l.classList.toggle('active', i === (index + 1)));
+            // Update Dots
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === (index + 1)));
         }
 
         function toggleFold() {
             origami.classList.toggle('unfolded');
+        }
+
+        function jumpTo(index) {
+            origami.classList.remove('unfolded');
+            setTimeout(() => {
+                currentIndex = index;
+                loadContent(currentIndex);
+                gsap.fromTo(origami, { scale: 0.8 }, { scale: 1, duration: 0.5, ease: "back.out(2)" });
+            }, 400);
         }
 
         function nextTrend() {
