@@ -31,6 +31,41 @@
             perspective: 1200px;
         }
 
+        /* Atmosphere Layers */
+        #bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            transition: background 1s ease;
+        }
+
+        .bg-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: opacity 1s ease;
+        }
+        .bg-layer.active { opacity: 1; }
+
+        /* Default Atmosphere (A) */
+        #bg-default {
+            background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--bg-dark) 100%);
+        }
+
+        #bg-agate {
+            background: radial-gradient(circle at center, var(--agate) 0%, var(--bg-dark) 100%);
+        }
+
+        #bg-azurite {
+            background: radial-gradient(circle at center, var(--azurite) 0%, var(--bg-dark) 100%);
+        }
+
+        #bg-aventurine {
+            background: radial-gradient(circle at center, var(--aventurine) 0%, var(--bg-dark) 100%);
+        }
+
+        /* LEO Atmosphere (Stars) */
+        #bg-stars { background: #000; overflow: hidden; }
+
+        /* Quantum Atmosphere (B) */
+        #bg-quantum { background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%); }
+
         /* UI Overlays */
         #ui {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
@@ -78,8 +113,8 @@
         .right  { transform: rotateY(90deg) translateZ(150px); }
         .back   { transform: rotateY(180deg) translateZ(150px); }
         .left   { transform: rotateY(-90deg) translateZ(150px); }
-        .top    { transform: rotateX(90deg) translateZ(150px); }
-        .bottom { transform: rotateX(-90deg) translateZ(150px); }
+        .top    { transform: rotateX(90deg) translateZ(150px); background: #000; border-color: var(--bloodstone); }
+        .bottom { transform: rotateX(-90deg) translateZ(150px); background: #000; border-color: var(--alexandrite); }
 
         /* Navigation Dots */
         .dots {
@@ -108,6 +143,15 @@
     </style>
 </head>
 <body>
+
+    <div id="bg-container">
+        <div class="bg-layer active" id="bg-default"></div>
+        <div class="bg-layer" id="bg-agate"></div>
+        <div class="bg-layer" id="bg-azurite"></div>
+        <div class="bg-layer" id="bg-aventurine"></div>
+        <div class="bg-layer" id="bg-stars"></div>
+        <div class="bg-layer" id="bg-quantum"></div>
+    </div>
 
     <div id="ui">
         <h1>STRATEGY_CUBE</h1>
@@ -168,18 +212,114 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
+        // --- BACKGROUND ENGINES ---
+        const initStars = () => {
+            const container = document.getElementById('bg-stars');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            const starGeo = new THREE.BufferGeometry();
+            const starPos = [];
+            for(let i=0; i<2000; i++) {
+                starPos.push((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
+            }
+            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+            const starMesh = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.1}));
+            scene.add(starMesh);
+            camera.position.z = 5;
+
+            const anim = () => {
+                requestAnimationFrame(anim);
+                starMesh.rotation.y += 0.0005;
+                renderer.render(scene, camera);
+            };
+            anim();
+        };
+
+        const initQuantum = () => {
+            const container = document.getElementById('bg-quantum');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            const particleCount = 1000;
+            const qGeo = new THREE.BufferGeometry();
+            const qPos = new Float32Array(particleCount * 3);
+            const qColors = new Float32Array(particleCount * 3);
+
+            const colorPalette = [
+                new THREE.Color('#D6883A'), // Agate
+                new THREE.Color('#3E9B9B'), // Aventurine
+                new THREE.Color('#842366')  // Azurite
+            ];
+
+            for(let i=0; i<particleCount; i++) {
+                qPos[i * 3] = (Math.random() - 0.5) * 40;
+                qPos[i * 3 + 1] = (Math.random() - 0.5) * 40;
+                qPos[i * 3 + 2] = (Math.random() - 0.5) * 40;
+
+                const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                qColors[i * 3] = color.r;
+                qColors[i * 3 + 1] = color.g;
+                qColors[i * 3 + 2] = color.b;
+            }
+
+            qGeo.setAttribute('position', new THREE.BufferAttribute(qPos, 3));
+            qGeo.setAttribute('color', new THREE.BufferAttribute(qColors, 3));
+
+            const qMat = new THREE.PointsMaterial({
+                size: 0.15,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+
+            const qMesh = new THREE.Points(qGeo, qMat);
+            scene.add(qMesh);
+            camera.position.z = 10;
+
+            const anim = () => {
+                requestAnimationFrame(anim);
+                qMesh.rotation.z += 0.001;
+                qMesh.rotation.y += 0.0005;
+                renderer.render(scene, camera);
+            };
+            anim();
+        };
+
+        initStars();
+        initQuantum();
+
+        // --- CUBE LOGIC ---
         const cube = document.getElementById('cube');
         const dots = document.querySelectorAll('.dot');
+        const bgLayers = {
+            default: document.getElementById('bg-default'),
+            agate: document.getElementById('bg-agate'),
+            azurite: document.getElementById('bg-azurite'),
+            aventurine: document.getElementById('bg-aventurine'),
+            stars: document.getElementById('bg-stars'),
+            quantum: document.getElementById('bg-quantum')
+        };
+
         let currentFace = 0;
 
         const rotations = [
-            { x: 0, y: 0 },      // Front (Intro)
-            { x: 0, y: -90 },    // Right (5G)
-            { x: 0, y: -180 },   // Back (AI)
-            { x: 0, y: -270 },   // Left (Edge)
-            { x: -90, y: 0 },    // Top (Sat)
-            { x: 90, y: 0 }      // Bottom (Security)
+            { x: 0, y: 0 },      // Front (Intro) -> DEFAULT (BLOODSTONE)
+            { x: 0, y: -90 },    // Right (5G) -> AGATE
+            { x: 0, y: -180 },   // Back (AI) -> AZURITE
+            { x: 0, y: -270 },   // Left (Edge) -> AVENTURINE
+            { x: -90, y: 0 },    // Top (Sat) -> STARS
+            { x: 90, y: 0 }      // Bottom (Security) -> QUANTUM
         ];
 
         function rotateNext() {
@@ -196,6 +336,16 @@
             const rot = rotations[currentFace];
             cube.style.transform = `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`;
             
+            // Update Atmosphere
+            Object.values(bgLayers).forEach(l => l.classList.remove('active'));
+            
+            if(currentFace === 0) bgLayers.default.classList.add('active');
+            else if(currentFace === 1) bgLayers.agate.classList.add('active');
+            else if(currentFace === 2) bgLayers.azurite.classList.add('active');
+            else if(currentFace === 3) bgLayers.aventurine.classList.add('active');
+            else if(currentFace === 4) bgLayers.stars.classList.add('active');
+            else if(currentFace === 5) bgLayers.quantum.classList.add('active');
+
             // Update Dots
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === currentFace);
