@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Code Waterfall</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Roboto Mono', monospace; }
+        
+        #canvas { display: block; }
+        
+        #overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .message-box {
+            background: rgba(0, 20, 0, 0.9); border: 1px solid #0f0; padding: 2rem;
+            color: #0f0; max-width: 500px; text-align: center;
+            opacity: 0; transition: opacity 0.3s; pointer-events: auto;
+            box-shadow: 0 0 20px #0f0;
+        }
+        
+        .message-box.active { opacity: 1; }
+        
+        .btn-exit {
+            position: absolute; bottom: 20px; right: 20px;
+            color: #0f0; text-decoration: none; border: 1px solid #0f0;
+            padding: 5px 10px; pointer-events: auto; font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+    
+    <div id="overlay">
+        <div class="message-box" id="msg-box">
+            <h2 id="msg-title">ENCRYPTED DATA FOUND</h2>
+            <p id="msg-body">Decoding...</p>
+            <button onclick="closeMsg()" style="background:transparent; border:1px solid #0f0; color:#0f0; margin-top:1rem; padding:5px 10px; cursor:pointer;">ACKNOWLEDGE</button>
+        </div>
+        <a href="index.html" class="btn-exit">DISCONNECT</a>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const msgBox = document.getElementById('msg-box');
+        
+        let width, height;
+        let columns;
+        const fontSize = 16;
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
+        let drops = [];
+        let paused = false;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            columns = width / fontSize;
+            drops = [];
+            for(let x = 0; x < columns; x++) drops[x] = 1;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function draw() {
+            if(paused) return;
+            
+            // Translucent black background for trail effect
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.fillStyle = "#0f0";
+            ctx.font = fontSize + "px 'Roboto Mono'";
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if(drops[i] * fontSize > height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+            
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // Interaction
+        canvas.addEventListener('click', (e) => {
+            paused = true;
+            
+            // Random Trend Data
+            const trends = [
+                { t: "QUANTUM KEY DISTRIBUTION", d: "Secure channel established. QKD integration at 100%." },
+                { t: "6G TERAHERTZ BEAM", d: "Bandwidth: 1 Tbps. Signal integrity optimal." },
+                { t: "AI TRAFFIC SHAPING", d: "Zero-touch provisioning active. Latency < 1ms." }
+            ];
+            const data = trends[Math.floor(Math.random() * trends.length)];
+            
+            document.getElementById('msg-title').innerText = data.t;
+            document.getElementById('msg-body').innerText = data.d;
+            msgBox.classList.add('active');
+        });
+
+        window.closeMsg = () => {
+            msgBox.classList.remove('active');
+            paused = false;
+            draw();
+        };
+
+    </script>
+</body>
+</html>

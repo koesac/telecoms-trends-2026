@@ -21,8 +21,9 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
-            overflow-x: hidden; /* Hide default scrollbar */
+            /* Remove height: 100% to allow scrolling */
+            overflow-x: hidden; 
+            overflow-y: auto;
             background-color: var(--bg-color);
             font-family: 'Manrope', sans-serif;
             color: var(--text-color);

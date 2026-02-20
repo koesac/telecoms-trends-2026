@@ -21,6 +21,7 @@
         #canvas-container {
             width: 100vw;
             height: 100vh;
+            touch-action: none;
         }
 
         /* UI Overlay */
@@ -84,6 +85,9 @@
             pointer-events: auto;
             display: flex;
             gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding-bottom: 2rem; /* Safety for mobile URL bars */
         }
 
         .btn-view {
@@ -94,6 +98,29 @@
             border-radius: 30px;
             font-family: 'Space Mono', monospace;
             transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            #ui {
+                padding: 1.5rem;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .specs {
+                top: auto;
+                bottom: 150px; /* Above controls */
+                right: 1.5rem;
+                transform: none;
+            }
+            .spec-val {
+                font-size: 1.2rem;
+            }
+            .spec-item {
+                margin-bottom: 1rem;
+            }
         }
 
         .btn-view:hover {
@@ -280,11 +307,19 @@
 
         // Mouse Rotation
         let mouseX = 0;
-        document.addEventListener('mousemove', (e) => {
-             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        const updateInput = (x) => {
+             mouseX = (x / window.innerWidth) * 2 - 1;
              // Subtle parallax
              camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
              camera.lookAt(0, 0, 0);
+        };
+
+        document.addEventListener('mousemove', (e) => updateInput(e.clientX));
+        
+        document.addEventListener('touchmove', (e) => {
+            if(e.touches.length > 0) {
+                updateInput(e.touches[0].clientX);
+            }
         });
 
     </script>
