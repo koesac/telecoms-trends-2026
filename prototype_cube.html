@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Future of Telecoms: Strategy Cube</title>
+    <title>Innovate Comms: Strategy Cube</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Content -->
+    <script src="master_content.js"></script>
     
     <style>
         :root {
@@ -218,7 +220,7 @@
     </div>
 
     <div id="ui">
-        <h1><a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; pointer-events: auto;">Innovate Comms</a></h1>
+        <h1><a href="#" id="company-link" style="color: inherit; text-decoration: none; pointer-events: auto;">Innovate Comms</a></h1>
         <div class="dots" id="dots">
             <div class="dot active" onclick="rotateTo(0)"></div>
             <div class="dot" onclick="rotateTo(1)"></div>
@@ -232,9 +234,9 @@
 
     <div id="conclusion-overlay">
         <div class="conclusion-content">
-            <h2>THE ROAD AHEAD</h2>
-            <p>The telecommunications landscape is undergoing a metamorphosis. By integrating intelligence, edge capability, and global reach, providers are evolving into the essential architects of our digital existence.</p>
-            <p>The next decade will be defined not just by how fast we connect, but how intelligently we communicate.</p>
+            <h2 id="outro-title">THE ROAD AHEAD</h2>
+            <p id="outro-p1"></p>
+            <p id="outro-p2"></p>
             <button class="btn-action" onclick="hideConclusion()">RETURN TO CORE</button>
         </div>
     </div>
@@ -245,67 +247,19 @@
         <!-- Face 0: Intro -->
         <div class="face front">
             <div class="icon"><i class="fas fa-cube"></i></div>
-            <h2>THE FUTURE OF TELECOMS</h2>
-            <p>Exploring the groundbreaking shifts redefining global connectivity in 2026 and beyond.</p>
+            <h2 id="intro-title"></h2>
+            <p id="intro-p1"></p>
             <div class="impact-box">
-                <div class="stat-desc">From hyper-speed networks to intelligent automation, witness the evolution of the digital backbone.</div>
+                <div class="stat-desc" id="intro-p2"></div>
             </div>
         </div>
         
-        <!-- Face 1: 5G -->
-        <div class="face right">
-            <div class="icon" style="color:var(--agate)"><i class="fas fa-tower-broadcast"></i></div>
-            <h2 style="color:var(--agate)">HYPER-SCALE 5G</h2>
-            <p>Standalone 5G has reached critical mass. 6G pilot testing targeting terahertz frequencies enables remote robotic surgery.</p>
-            <div class="impact-box">
-                <span class="stat-highlight" style="color:var(--agate)">&lt;10ms Latency</span>
-                <div class="stat-desc">Enabling massive machine-type communications (mMTC) at scale.</div>
-            </div>
-        </div>
-
-        <!-- Face 2: AI -->
-        <div class="face back">
-            <div class="icon" style="color:var(--azurite)"><i class="fas fa-brain"></i></div>
-            <h2 style="color:var(--azurite)">AUTONOMOUS AI</h2>
-            <p>Networks are now self-healing. AI algorithms manage traffic routing, peak load balancing, and energy consumption in real-time.</p>
-            <div class="impact-box">
-                <span class="stat-highlight" style="color:var(--azurite)">30% OPEX Reduction</span>
-                <div class="stat-desc">Predictive maintenance and automated fault resolution for near-zero downtime.</div>
-            </div>
-        </div>
-
-        <!-- Face 3: Edge -->
-        <div class="face left">
-            <div class="icon" style="color:var(--aventurine)"><i class="fas fa-microchip"></i></div>
-            <h2 style="color:var(--aventurine)">EDGE CORE</h2>
-            <p>Processing power moved to the network edge, colocated with base stations to minimize data travel distance.</p>
-            <div class="impact-box">
-                <span class="stat-highlight" style="color:var(--aventurine)">90% Latency Gain</span>
-                <div class="stat-desc">Powering the next generation of AR/VR and autonomous vehicles locally.</div>
-            </div>
-        </div>
-
-        <!-- Face 4: Sat -->
-        <div class="face top">
-            <div class="icon" style="color:#00d2ff"><i class="fas fa-satellite"></i></div>
-            <h2 style="color:#00d2ff">ORBITAL LINK</h2>
-            <p>The convergence of terrestrial networks and LEO satellite constellations has eliminated "dead zones" across the globe.</p>
-            <div class="impact-box">
-                <span class="stat-highlight" style="color:#00d2ff">Zero Connectivity Gaps</span>
-                <div class="stat-desc">High-speed internet for the most remote corners of the planet.</div>
-            </div>
-        </div>
-
-        <!-- Face 5: Security -->
-        <div class="face bottom">
-            <div class="icon" style="color:#ff00ff"><i class="fas fa-shield-halved"></i></div>
-            <h2 style="color:#ff00ff">QUANTUM SHIELD</h2>
-            <p>Providers are deploying Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
-            <div class="impact-box">
-                <span class="stat-highlight" style="color:#ff00ff">Quantum-Safe</span>
-                <div class="stat-desc">Ensuring long-term data privacy against next-decade decryption threats.</div>
-            </div>
-        </div>
+        <!-- Faces 1-5 will be populated by JS -->
+        <div class="face right" id="face-1"></div>
+        <div class="face back" id="face-2"></div>
+        <div class="face left" id="face-3"></div>
+        <div class="face top" id="face-4"></div>
+        <div class="face bottom" id="face-5"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -397,6 +351,46 @@
 
         initStars();
         initQuantum();
+
+        // --- MASTER CONTENT LOADER ---
+        function loadMasterContent() {
+            const config = TELECOMS_CONFIG;
+            
+            // Branding
+            document.getElementById('company-link').innerText = config.branding.companyName;
+            document.getElementById('company-link').href = config.branding.website;
+
+            // Intro
+            document.getElementById('intro-title').innerText = config.intro.title.toUpperCase();
+            document.getElementById('intro-p1').innerText = config.intro.subtitle || config.intro.p1;
+            document.getElementById('intro-p2').innerText = config.intro.p2;
+
+            // Outro
+            document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
+            document.getElementById('outro-p1').innerText = config.outro.p1;
+            
+            // Convert email to link in outro p2
+            const email = config.branding.email;
+            let p2 = config.outro.p2;
+            p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
+            document.getElementById('outro-p2').innerHTML = p2;
+
+            // Faces 1-5
+            config.trends.forEach((trend, i) => {
+                const face = document.getElementById(`face-${i+1}`);
+                if (face) {
+                    face.innerHTML = `
+                        <div class="icon" style="color:${trend.color}"><i class="fas ${trend.icon}"></i></div>
+                        <h2 style="color:${trend.color}">${trend.title.toUpperCase()}</h2>
+                        <p>${trend.desc}</p>
+                        <div class="impact-box">
+                            <span class="stat-highlight" style="color:${trend.color}">${trend.stat.toUpperCase()}</span>
+                            <div class="stat-desc">${trend.implication || trend.statDesc}</div>
+                        </div>
+                    `;
+                }
+            });
+        }
 
         // --- CUBE LOGIC ---
         const cube = document.getElementById('cube');
@@ -507,6 +501,12 @@
                 }
             }
         };
+
+        // Initialize
+        window.addEventListener('load', () => {
+            loadMasterContent();
+            // Rest of your init logic...
+        });
 
         // Interaction
         cube.addEventListener('mousedown', stopIdle);
