@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telecoms 2026: Data Origami v2</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Innovate Comms: Data Origami</title>
+    <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Content -->
+    <script src="master_content.js"></script>
     
     <style>
         :root {
@@ -23,7 +24,7 @@
         body {
             margin: 0;
             background-color: var(--bg-dark);
-            font-family: 'Inter', sans-serif;
+            font-family: "Avenir Next LT", "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #fff;
             height: 100vh;
             overflow: hidden;
@@ -35,8 +36,8 @@
 
         /* The Main Origami Object */
         .origami-container {
-            width: 340px;
-            height: 340px;
+            width: 400px;
+            height: 400px;
             position: relative;
             transform-style: preserve-3d;
             cursor: pointer;
@@ -53,7 +54,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 30px;
             box-sizing: border-box;
             border-radius: 4px;
             box-shadow: inset 0 0 60px rgba(0,0,0,0.1);
@@ -64,18 +65,20 @@
 
         .face h2 {
             font-family: 'Syncopate', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin: 0;
             text-align: center;
             letter-spacing: 2px;
+            font-weight: 700;
         }
 
         .face p {
-            font-size: 0.9rem;
-            line-height: 1.6;
+            font-size: 0.85rem;
+            line-height: 1.5;
             text-align: center;
-            margin-top: 20px;
-            color: #666;
+            margin-top: 15px;
+            color: #444;
+            font-weight: 400;
         }
 
         .face .icon {
@@ -167,15 +170,28 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
+        h1 {
+            font-family: inherit; font-size: 1.5rem; letter-spacing: 2px; margin: 0;
+            text-transform: uppercase; color: #fff; display: flex; align-items: center; gap: 15px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            fill: none; stroke: var(--agate); stroke-width: 2; width: 35px; height: 35px;
+        }
+
         /* Mobile specific adjustments */
         @media (max-width: 480px) {
+            #header-branding { top: 20px !important; left: 20px !important; }
+            h1 { font-size: 1rem !important; }
+            .logo-icon { width: 25px !important; height: 25px !important; }
             .origami-container {
-                width: 280px;
-                height: 280px;
+                width: 320px;
+                height: 320px;
             }
             .face h2 { font-size: 1rem; }
-            .face p { font-size: 0.8rem; }
-            .face .icon { font-size: 2.5rem; }
+            .face p { font-size: 0.75rem; }
+            .face .icon { font-size: 2.2rem; margin-bottom: 10px; }
         }
 
     </style>
@@ -183,11 +199,24 @@
 <body>
 
     <div id="ui-layer">
+        <div id="header-branding" style="position: absolute; top: 40px; left: 40px; pointer-events: auto;">
+            <h1>
+                <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                    <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                        <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                        <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                        <path d="M31.3047 2.34497V42.9916"></path>
+                        <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                    </svg>
+                    Innovate Comms
+                </a>
+            </h1>
+        </div>
         <div class="controls">
             <button class="btn-action" onclick="nextTrend()">NEXT_TREND</button>
             <div style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px;">TAP CENTER TO UNFOLD DATA</div>
         </div>
-        <a href="index.html" class="btn-exit">TERMINATE_SESSION</a>
     </div>
 
     <div class="origami-container" id="origami" onclick="toggleFold()">
@@ -208,67 +237,39 @@
         const icon = document.getElementById('trend-icon');
         const fTop = document.getElementById('flap-top');
         const fBot = document.getElementById('flap-bottom');
+        const btnNext = document.querySelector('.btn-action');
 
-        let currentIndex = 0;
-        const trends = [
-            { 
-                t: "Hyper-Scale 5G", 
-                d: "The transition from utility to essential fabric. Terahertz air interface pilots achieving sub-1ms latency.",
-                i: "fa-tower-broadcast",
-                tag: "INFRASTRUCTURE",
-                c: "#D6883A" // Agate
-            },
-            { 
-                t: "Autonomous AI", 
-                d: "Zero-touch provisioning models. Networks that repair themselves and optimize energy without human intervention.",
-                i: "fa-brain",
-                tag: "INTELLIGENCE",
-                c: "#842366" // Azurite
-            },
-            { 
-                t: "Edge Core", 
-                d: "Decentralized compute clusters processing 90% of data locally to support autonomous mobility.",
-                i: "fa-microchip",
-                tag: "ARCHITECTURE",
-                c: "#3E9B9B" // Aventurine
-            },
-            { 
-                t: "Orbital Link", 
-                d: "Seamless handover between terrestrial nodes and LEO satellite constellations for 100% global reach.",
-                i: "fa-satellite",
-                tag: "COVERAGE",
-                c: "#15404F" // Bloodstone
-            },
-            { 
-                t: "Quantum Shield", 
-                d: "Deployment of Post-Quantum Cryptography (PQC) to secure backbones against next-gen decryption.",
-                i: "fa-shield-halved",
-                tag: "SECURITY",
-                c: "#4C194C" // Alexandrite
-            }
-        ];
+        let currentIndex = -1; 
+        const config = TELECOMS_CONFIG;
+        const trends = config.trends;
 
-        function toggleFold() {
-            origami.classList.toggle('unfolded');
-        }
+        function loadContent(index) {
+            if (index === -1) {
+                // Load Intro
+                title.innerText = config.intro.title.toUpperCase();
+                desc.innerText = config.intro.p1;
+                icon.innerHTML = `<i class="fas fa-cube"></i>`;
+                icon.style.color = "var(--agate)";
+                fTop.innerText = "START_SESSION";
+                fBot.innerText = "UNFOLD_STRATEGY";
+                btnNext.innerText = "NEXT_TREND";
+            } else {
+                const trend = trends[index];
+                title.innerText = trend.title.toUpperCase();
+                desc.innerHTML = `<strong>${trend.desc}</strong><br><br>${trend.implication || trend.statDesc}`;
+                icon.innerHTML = `<i class="fas ${trend.icon}"></i>`;
+                icon.style.color = trend.color;
+                fTop.innerText = trend.tag.toUpperCase();
+                fBot.innerText = "DATA_VERIFIED";
 
-        function nextTrend() {
-            // Fold back first
-            origami.classList.remove('unfolded');
-            
-            setTimeout(() => {
-                currentIndex = (currentIndex + 1) % trends.length;
-                const trend = trends[currentIndex];
+                if (index === trends.length - 1) {
+                    btnNext.innerText = "REPLAY";
+                } else {
+                    btnNext.innerText = "NEXT_TREND";
+                }
 
-                // Update content
-                title.innerText = trend.t;
-                desc.innerText = trend.d;
-                icon.innerHTML = `<i class="fas ${trend.i}"></i>`;
-                icon.style.color = trend.c;
-                fTop.innerText = trend.tag;
-
-                // Adjust flap colors for dark branding colors
-                if (trend.c === "#15404F" || trend.c === "#4C194C") {
+                // Adjust flap colors
+                if (trend.color === "#15404F" || trend.color === "#4C194C" || trend.color === "var(--bloodstone)" || trend.color === "var(--alexandrite)") {
                     fTop.style.background = "#222";
                     fTop.style.color = "#fff";
                     fBot.style.background = "#222";
@@ -279,11 +280,34 @@
                     fBot.style.background = "#f8f8f8";
                     fBot.style.color = "#222";
                 }
+            }
+        }
+
+        function toggleFold() {
+            origami.classList.toggle('unfolded');
+        }
+
+        function nextTrend() {
+            // Fold back first
+            origami.classList.remove('unfolded');
+            
+            setTimeout(() => {
+                if (currentIndex === trends.length - 1) {
+                    currentIndex = -1; // Reset to Intro
+                } else {
+                    currentIndex++;
+                }
+                loadContent(currentIndex);
 
                 // Add physical bounce effect
                 gsap.fromTo(origami, { scale: 0.8 }, { scale: 1, duration: 0.5, ease: "back.out(2)" });
             }, 400);
         }
+
+        // Initialize with Intro
+        window.addEventListener('load', () => {
+            loadContent(-1);
+        });
 
         // Parallax effect on mouse/touch
         document.addEventListener('mousemove', (e) => {
