@@ -2,326 +2,416 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Future of Telecoms: Strategy Deck</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Innovate Comms: Strategy Deck (Concept AA)</title>
+    <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- GSAP & Draggable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+    <script src="https://assets.codepen.io/16327/InertiaPlugin.min.js"></script>
+    <!-- Master Content -->
+    <script src="master_content.js"></script>
     
     <style>
         :root {
+            --alexandrite: #4C194C;
             --agate: #D6883A;
-            --aventurine: #3E9B9B;
-            --azurite: #842366;
             --bloodstone: #15404F;
-            --dark-bg: #0a0c10;
-            --card-width: 280px;
-            --card-height: 400px;
+            --azurite: #842366;
+            --aventurine: #3E9B9B;
+            --bg-dark: #050a10;
+            --paper: #f4f1ea;
         }
 
         body {
             margin: 0;
-            background-color: var(--dark-bg);
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            font-family: "Avenir Next LT", "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #fff;
             height: 100vh;
-            overflow: hidden;
+            height: 100dvh;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 2000px;
             background-image: 
-                radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+                radial-gradient(circle at 2px 2px, rgba(132, 35, 102, 0.15) 1px, transparent 0);
             background-size: 40px 40px;
         }
 
-        header {
-            padding: 20px 40px;
-            z-index: 100;
-            pointer-events: none;
+        /* Header Branding */
+        #header-branding {
+            position: fixed; 
+            top: calc(20px + env(safe-area-inset-top)); 
+            left: calc(20px + env(safe-area-inset-left)); 
+            pointer-events: auto;
+            z-index: 6000; /* Above overlays if needed */
         }
 
         h1 {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 3rem;
-            letter-spacing: 2px;
-            margin: 0;
-            color: var(--agate);
+            font-family: inherit; font-size: 1.5rem; letter-spacing: 2px; margin: 0;
+            text-transform: uppercase; color: #fff; display: flex; align-items: center; gap: 15px;
+            font-weight: 700;
         }
 
-        .hint {
-            font-size: 0.8rem;
-            opacity: 0.6;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .logo-icon {
+            fill: none !important; 
+            stroke: var(--agate) !important; 
+            stroke-width: 2; 
+            width: 35px; height: 35px;
         }
 
-        /* Card Container */
+        /* Overlays */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: 100vh; height: 100dvh;
+            background: rgba(5, 10, 16, 0.95);
+            z-index: 5000;
+            opacity: 0; pointer-events: none; transition: 1s ease;
+            backdrop-filter: blur(20px);
+            overflow-y: auto; /* Required for iOS safe area scrolling */
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        .overlay-content { 
+            max-width: 700px; text-align: center; 
+            padding: calc(60px + env(safe-area-inset-top)) 40px calc(80px + env(safe-area-inset-bottom));
+            margin: auto 0; /* Vertical centering that respects overflow */
+            flex-shrink: 0; /* Prevent content from squishing */
+        }
+        .overlay-content h2 { font-family: inherit; letter-spacing: 5px; color: var(--agate); margin-bottom: 30px; font-weight: 700; font-size: 2rem; }
+        .overlay-content p { font-size: 1.1rem; line-height: 1.8; color: #ccc; margin-bottom: 20px; }
+
+        .btn-action {
+            background: transparent; border: 1px solid var(--agate); color: var(--agate);
+            padding: 15px 40px; border-radius: 50px; cursor: pointer; font-family: inherit;
+            font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; margin-top: 20px;
+            font-weight: 700; pointer-events: auto;
+        }
+        .btn-action:hover { background: var(--agate); color: #fff; }
+
+        /* Deck Stage */
         #deck-container {
-            flex-grow: 1;
+            width: 100%; height: 100%;
             position: relative;
-            perspective: 1500px;
-            padding: 50px;
+            z-index: 100;
+            overflow: hidden;
         }
 
-        /* 3D Card Structure */
+        /* Card Structure */
         .card-wrapper {
             position: absolute;
-            width: var(--card-width);
-            height: var(--card-height);
+            width: 300px; height: 440px;
             cursor: grab;
-            z-index: 1;
+            transform-style: preserve-3d;
         }
-
-        .card-wrapper:active {
-            cursor: grabbing;
-        }
+        .card-wrapper:active { cursor: grabbing; }
 
         .card-inner {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .card-wrapper.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+        .card-wrapper.flipped .card-inner { transform: rotateY(180deg); }
 
         .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+            position: absolute; width: 100%; height: 100%;
             backface-visibility: hidden;
             border-radius: 20px;
-            border: 2px solid rgba(255,255,255,0.1);
-            display: flex;
-            flex-direction: column;
-            padding: 30px;
-            box-sizing: border-box;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; box-sizing: border-box;
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
-        /* Front Face */
-        .card-front {
+        .card-front { 
+            z-index: 2; 
             background: linear-gradient(135deg, #1a1d24 0%, #0a0c10 100%);
             justify-content: space-between;
         }
-
-        .card-front .icon {
-            font-size: 3rem;
-            color: var(--agate);
-        }
-
-        .card-front h2 {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 2.5rem;
+        
+        .card-front .icon { font-size: 3rem; margin-top: 20px; }
+        
+        .card-front h2 { 
+            font-family: 'Bebas Neue', cursive; 
+            font-size: 2.5rem; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            text-align: center; 
+            margin: 20px 0; 
+            font-weight: 400; 
             line-height: 1;
-            margin: 20px 0;
+            color: #fff;
         }
-
-        .flip-hint {
-            font-size: 0.7rem;
-            color: #666;
-            text-align: center;
+        
+        .card-front .hint-text { 
+            font-size: 0.7rem; 
+            letter-spacing: 2px; 
+            opacity: 0.4; 
+            margin-bottom: 10px;
             border-top: 1px solid rgba(255,255,255,0.05);
+            width: 100%;
+            text-align: center;
             padding-top: 15px;
         }
 
-        /* Back Face */
-        .card-back {
-            background: var(--bloodstone);
-            transform: rotateY(180deg);
-            justify-content: flex-start;
-            border-color: var(--agate);
-        }
+                .card-back { 
+                    transform: rotateY(180deg); 
+                    color: #fff; /* High contrast white text */
+                    border-color: rgba(255,255,255,0.2);
+                }
+        
+                .card-back p { font-size: 0.95rem; line-height: 1.5; text-align: center; margin: 0; font-weight: 400; color: #fff; }
+                .card-back p strong { font-size: 0.95rem; color: #fff; font-weight: 700; }
+                .card-back hr { width: 40px; border: none; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px auto; }
 
-        .card-back h3 {
-            color: var(--agate);
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-
-        .card-back p {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #e0e0e0;
-        }
-
-        .stat-highlight {
-            margin-top: auto;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: 700;
-            color: var(--agate);
-        }
-
-        /* UI Buttons */
+        /* UI Controls */
         .controls {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 100;
+            position: fixed; 
+            bottom: calc(40px + env(safe-area-inset-bottom)); 
+            left: 50%; transform: translateX(-50%);
+            display: flex; gap: 15px; 
+            z-index: 1000;
+            pointer-events: auto;
         }
 
         .btn-ui {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            font-family: inherit;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff; padding: 12px 25px; border-radius: 50px; cursor: pointer;
+            backdrop-filter: blur(10px); font-family: inherit; font-size: 0.7rem; letter-spacing: 1px;
             transition: 0.3s;
         }
+        .btn-ui:hover { background: var(--agate); border-color: var(--agate); }
 
-        .btn-ui:hover {
-            background: var(--agate);
-            border-color: var(--agate);
+        .btn-highlight {
+            background: var(--agate) !important;
+            border-color: var(--agate) !important;
+            box-shadow: 0 0 20px rgba(214, 136, 58, 0.6);
+            animation: pulse-gold 2s infinite;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(214, 136, 58, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(214, 136, 58, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(214, 136, 58, 0); }
         }
 
         .btn-exit {
-            position: fixed;
-            top: 30px;
-            right: 40px;
-            text-decoration: none;
-            color: #666;
-            font-size: 0.8rem;
-            z-index: 100;
+            position: fixed; top: calc(40px + env(safe-area-inset-top)); 
+            right: calc(40px + env(safe-area-inset-right));
+            text-decoration: none; color: rgba(255,255,255,0.4); font-size: 0.7rem; 
+            letter-spacing: 2px; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Mobile specific adjustments */
         @media (max-width: 768px) {
-            :root {
-                --card-width: 240px;
-                --card-height: 340px;
-            }
-            header { padding: 20px; }
-            h1 { font-size: 2rem; }
-            .controls { bottom: 20px; width: 90%; justify-content: center; }
+            #header-branding { top: calc(20px + env(safe-area-inset-top)) !important; left: calc(20px + env(safe-area-inset-left)) !important; }
+            h1 { font-size: 1rem !important; }
+            .logo-icon { width: 25px !important; height: 25px !important; }
+            .card-wrapper { width: 260px; height: 380px; }
+            .card-face { padding: 25px; }
+            .card-front h2 { font-size: 1.8rem; }
+            .card-front .icon { font-size: 3rem; }
+            .card-back p { font-size: 0.85rem; line-height: 1.4; }
+            .card-back p strong { font-size: 0.85rem; }
+            .card-back hr { margin: 10px auto; }
+            .controls { bottom: calc(20px + env(safe-area-inset-bottom)); width: 95%; justify-content: center; transform: translateX(-50%) scale(0.9); }
+            .btn-ui { padding: 10px 15px; font-size: 0.6rem; }
         }
 
+        @media (max-width: 400px) {
+            .card-wrapper { width: 230px; height: 340px; }
+            .card-face { padding: 20px; }
+            .card-front h2 { font-size: 1.5rem; }
+            .card-back p { font-size: 0.75rem; line-height: 1.3; }
+            .card-back p strong { font-size: 0.75rem; }
+            .overlay-content h2 { font-size: 1.3rem; margin-bottom: 15px; }
+            .overlay-content p { font-size: 0.85rem; line-height: 1.5; margin-bottom: 10px; }
+            .overlay-content div[style*="margin-bottom: 2rem"] { margin-bottom: 1rem !important; }
+            .overlay-content svg { width: 50px !important; height: 50px !important; }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Strategy Deck</h1>
-        <div class="hint">Drag to organize • Double-tap to flip</div>
-    </header>
+    <div id="bg-default"></div>
 
-    <div id="deck-container">
-        <!-- Cards will be generated here -->
+    <div id="header-branding">
+        <h1>
+            <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                Innovate Comms
+            </a>
+        </h1>
     </div>
+
+    <div id="intro-overlay" class="overlay active">
+        <div class="overlay-content">
+            <h2 id="intro-title"></h2>
+            <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
+            <p id="intro-p2"></p>
+            <button class="btn-action" onclick="startExperience()">EXPLORE DECK</button>
+        </div>
+    </div>
+
+    <div id="conclusion-overlay" class="overlay">
+        <div class="overlay-content">
+            <h2 id="outro-title"></h2>
+            <p id="outro-p1"></p>
+            <p id="outro-p2"></p>
+            <button class="btn-action" onclick="resetExperience()">REPLAY</button>
+        </div>
+    </div>
+
+    <div id="deck-container"></div>
 
     <div class="controls">
-        <button class="btn-ui" onclick="shuffleDeck()">RESHUFFLE</button>
+        <button class="btn-ui" onclick="shuffleDeck()">SHUFFLE</button>
         <button class="btn-ui" onclick="fanDeck()">FAN OUT</button>
+        <button class="btn-ui" id="btn-flip-all" onclick="flipAll()">FLIP ALL</button>
+        <button class="btn-ui" id="btn-finish" onclick="showConclusion()">FINISH</button>
     </div>
 
-    <a href="index.html" class="btn-exit">EXIT DECK</a>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
-
     <script>
-        gsap.registerPlugin(Draggable);
+        gsap.registerPlugin(Draggable, InertiaPlugin);
 
         const container = document.getElementById('deck-container');
-        const trendData = [
-            { id: 1, title: "Hyper-Scale 5G", icon: "fa-tower-broadcast", desc: "The transition from utility to essential fabric. Terahertz frequencies enable holographic presence and real-time sensory data transfer.", stat: "<1ms Network Latency" },
-            { id: 2, title: "Autonomous AI", icon: "fa-brain", desc: "Zero-touch provisioning models. Networks that repair themselves, predict outages, and optimize energy consumption without human intervention.", stat: "30% OPEX Reduction" },
-            { id: 3, title: "Edge Core", icon: "fa-microchip", desc: "Decentralized compute clusters embedded in the RAN. Processing 90% of data locally to support autonomous vehicles and industrial robotics.", stat: "10x Response Speed" },
-            { id: 4, title: "Orbital Link", icon: "fa-satellite", desc: "The death of dead-zones. Seamless handover between terrestrial towers and LEO satellite constellations for 100% global connectivity.", stat: "Ubiquitous Coverage" },
-            { id: 5, title: "Quantum Shield", icon: "fa-shield-halved", desc: "Infrastructure-wide deployment of Post-Quantum Cryptography (PQC). Securing national backbones against next-gen decryption threats.", stat: "Q-Day Ready" }
-        ];
+        const introOverlay = document.getElementById('intro-overlay');
+        const conclusionOverlay = document.getElementById('conclusion-overlay');
+        const btnFinish = document.getElementById('btn-finish');
+        const config = TELECOMS_CONFIG;
+        const trends = config.trends;
+        let zIndexBase = 100;
+        let flippedCards = new Set();
 
-        let zIndexBase = 10;
+        function loadMasterContent() {
+            document.getElementById('intro-title').innerText = config.intro.title.toUpperCase();
+            document.getElementById('intro-p1').innerText = config.intro.subtitle;
+            document.getElementById('intro-p2').innerText = config.intro.p1 + " " + config.intro.p2;
+            document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
+            document.getElementById('outro-p1').innerText = config.outro.p1;
+            const email = config.branding.email;
+            let p2 = config.outro.p2;
+            p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
+            document.getElementById('outro-p2').innerHTML = p2;
+        }
 
-        function createCard(data, index) {
+        function createCard(trend, index) {
             const wrapper = document.createElement('div');
             wrapper.className = 'card-wrapper';
             
-            // Random initial placement
-            const randX = Math.random() * (container.offsetWidth - 300);
-            const randY = Math.random() * (container.offsetHeight - 400);
-            const randRot = (Math.random() - 0.5) * 10;
+            // Centralized stack
+            const centerX = (container.offsetWidth / 2) - 150;
+            const centerY = (container.offsetHeight / 2) - 220;
+            const randRot = (Math.random() - 0.5) * 15;
             
-            gsap.set(wrapper, { x: randX, y: randY, rotation: randRot });
+            gsap.set(wrapper, { x: centerX, y: centerY, rotation: randRot, opacity: 0 });
 
             wrapper.innerHTML = `
                 <div class="card-inner">
                     <div class="card-face card-front">
-                        <div class="icon"><i class="fas ${data.icon}"></i></div>
-                        <h2>${data.title}</h2>
-                        <div class="flip-hint">DOUBLE TAP TO FLIP</div>
+                        <div class="icon" style="color:${trend.color}"><i class="fas ${trend.icon}"></i></div>
+                        <h2 style="color:${trend.color}">${trend.title.toUpperCase()}</h2>
+                        <div class="hint-text">TAP TO FLIP</div>
                     </div>
-                    <div class="card-face card-back">
-                        <h3>Strategy Details</h3>
-                        <p>${data.desc}</p>
-                        <div class="stat-highlight">KEY METRIC: ${data.stat}</div>
-                        <div class="flip-hint" style="color: rgba(255,255,255,0.3)">DOUBLE TAP TO FLIP BACK</div>
+                    <div class="card-face card-back" style="background-color: ${trend.color}">
+                        <p>${trend.desc}</p>
+                        <hr>
+                        <p><strong>${trend.implication || trend.statDesc}</strong></p>
                     </div>
                 </div>
             `;
 
             container.appendChild(wrapper);
 
-            // Make Draggable
             Draggable.create(wrapper, {
                 type: "x,y",
-                bounds: container,
+                inertia: true,
+                throwResistance: 2500, // Increased friction
+                edgeResistance: 0.65,
+                // Allow dragging 50% off screen
+                bounds: {
+                    minX: -150, 
+                    maxX: container.offsetWidth - 150,
+                    minY: -100,
+                    maxY: container.offsetHeight - 100
+                },
                 onPress: function() {
                     zIndexBase++;
                     this.target.style.zIndex = zIndexBase;
                 },
                 onClick: function() {
-                    // Check for double click/tap
-                    if (this.lastClickTime && (Date.now() - this.lastClickTime < 300)) {
-                        this.target.classList.toggle('flipped');
+                    this.target.classList.toggle('flipped');
+                    
+                    // Track flips for Finish button highlight
+                    if (this.target.classList.contains('flipped')) {
+                        flippedCards.add(index);
+                        if (flippedCards.size >= 2) {
+                            btnFinish.classList.add('btn-highlight');
+                        }
                     }
-                    this.lastClickTime = Date.now();
                 }
+            });
+
+            return wrapper;
+        }
+
+        function startExperience() {
+            introOverlay.classList.remove('active');
+            const cards = document.querySelectorAll('.card-wrapper');
+            gsap.to(cards, {
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power2.out"
             });
         }
 
-        function initDeck() {
-            trendData.forEach((data, i) => createCard(data, i));
+        function showConclusion() {
+            conclusionOverlay.classList.add('active');
+        }
+
+        function resetExperience() {
+            conclusionOverlay.classList.remove('active');
+            shuffleDeck();
         }
 
         function shuffleDeck() {
             const cards = document.querySelectorAll('.card-wrapper');
             cards.forEach(card => {
-                const randX = Math.random() * (container.offsetWidth - 280);
-                const randY = Math.random() * (container.offsetHeight - 400);
-                const randRot = (Math.random() - 0.5) * 30;
-                
-                gsap.to(card, {
-                    x: randX,
-                    y: randY,
-                    rotation: randRot,
-                    duration: 0.8,
-                    ease: "back.out(1.7)"
-                });
+                // Expanded range for shuffle
+                const randX = (Math.random() * (container.offsetWidth)) - 150;
+                const randY = (Math.random() * (container.offsetHeight)) - 150;
+                const randRot = (Math.random() - 0.5) * 40;
+                gsap.to(card, { x: randX, y: randY, rotation: randRot, duration: 0.8, ease: "back.out(1.7)" });
             });
         }
 
         function fanDeck() {
             const cards = document.querySelectorAll('.card-wrapper');
             const total = cards.length;
-            const step = (container.offsetWidth - 200) / total;
+            const padding = 50;
+            const availableWidth = container.offsetWidth - (padding * 2) - 300;
+            const step = availableWidth / (total - 1);
             
             cards.forEach((card, i) => {
                 gsap.to(card, {
-                    x: 50 + (i * step),
-                    y: container.offsetHeight / 2 - 200,
+                    x: padding + (i * step),
+                    y: container.offsetHeight / 2 - 220,
                     rotation: 0,
                     duration: 0.8,
                     ease: "power2.inOut"
@@ -329,14 +419,34 @@
             });
         }
 
-        // Initialize
+        function flipAll() {
+            const cards = document.querySelectorAll('.card-wrapper');
+            const btnFlipAll = document.getElementById('btn-flip-all');
+            const shouldFlip = !cards[0].classList.contains('flipped');
+            
+            cards.forEach((card, i) => {
+                if (shouldFlip) {
+                    card.classList.add('flipped');
+                    flippedCards.add(i);
+                } else {
+                    card.classList.remove('flipped');
+                }
+            });
+
+            btnFlipAll.innerText = shouldFlip ? "UNFLIP ALL" : "FLIP ALL";
+            
+            if (flippedCards.size >= 2) {
+                btnFinish.classList.add('btn-highlight');
+            }
+        }
+
         window.addEventListener('load', () => {
-            initDeck();
+            loadMasterContent();
+            trends.forEach((t, i) => createCard(t, i));
         });
 
-        // Handle window resize
         window.addEventListener('resize', () => {
-            // Re-bounds if needed
+            // Re-center logic if needed
         });
 
     </script>
