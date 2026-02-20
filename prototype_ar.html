@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future of Telecoms: AR Portal</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #000;
+            color: #0f0;
+        }
+
+        /* Camera Feed Simulation */
+        #camera-feed {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.5;
+            z-index: 0;
+            filter: grayscale(100%) contrast(1.2);
+        }
+
+        /* HUD Overlay */
+        #hud {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+        }
+
+        .reticle {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px; height: 200px;
+            border: 2px solid rgba(0, 255, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .reticle::before, .reticle::after {
+            content: '';
+            position: absolute;
+            background: #0f0;
+        }
+        .reticle::before { width: 20px; height: 2px; }
+        .reticle::after { width: 2px; height: 20px; }
+
+        .scanning-text {
+            position: absolute;
+            bottom: -30px;
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* AR Markers */
+        .ar-marker {
+            position: absolute;
+            width: 60px; height: 60px;
+            border: 2px dashed #0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            animation: spin 10s linear infinite;
+            background: rgba(0, 50, 0, 0.3);
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .ar-marker i {
+            font-size: 1.5rem;
+            animation: counter-spin 10s linear infinite;
+        }
+
+        @keyframes counter-spin { 100% { transform: rotate(-360deg); } }
+
+        /* Info Card */
+        #ar-card {
+            position: absolute;
+            bottom: 10%;
+            left: 5%;
+            width: 90%;
+            background: rgba(0, 20, 0, 0.9);
+            border: 1px solid #0f0;
+            padding: 1.5rem;
+            transform: translateY(150%);
+            transition: transform 0.3s ease;
+            pointer-events: auto;
+        }
+
+        #ar-card.active {
+            transform: translateY(0);
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #0f0;
+            animation: scan 3s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        
+        /* Grid Overlay */
+        .grid-overlay {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Simulated Camera Feed (Static Image for Prototype) -->
+    <img id="camera-feed" src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" alt="AR Background">
+    
+    <div class="grid-overlay"></div>
+    <div class="scan-line"></div>
+
+    <div id="hud">
+        <div class="reticle">
+            <div class="scanning-text">SCANNING ENVIRONMENT...</div>
+        </div>
+        
+        <div style="position: absolute; top: 20px; left: 20px;">
+            SYSTEM: ONLINE<br>
+            GPS: 34.0522° N, 118.2437° W<br>
+            NET: 6G STANDALONE
+        </div>
+        
+        <a href="index.html" style="position: absolute; top: 20px; right: 20px; color: #0f0; text-decoration: none; border: 1px solid #0f0; padding: 5px 10px;">EXIT AR</a>
+    </div>
+
+    <!-- Interactive Markers -->
+    <div id="markers-container">
+        <!-- JS will populate -->
+    </div>
+
+    <!-- Info Card -->
+    <div id="ar-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 id="card-title" style="margin: 0; font-size: 1.2rem;">DATA POINT</h2>
+            <button onclick="closeCard()" style="background: transparent; border: 1px solid #0f0; color: #0f0; cursor: pointer;">[X]</button>
+        </div>
+        <p id="card-desc" style="font-size: 0.9rem; line-height: 1.4; color: #ccc;">Analyzing signal data...</p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: #0f0;">
+            SIGNAL STRENGTH: <span id="card-stat">100%</span>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('markers-container');
+        const card = document.getElementById('ar-card');
+        
+        const points = [
+            { top: '20%', left: '20%', icon: 'tower-broadcast', title: '5G TOWER DETECTED', desc: 'Local latency: 0.8ms. Massive MIMO array active. Serving 10,000 devices.', stat: '-45dBm' },
+            { top: '60%', left: '70%', icon: 'brain', title: 'AI NODE ACTIVE', desc: 'Predictive maintenance protocol running. Traffic optimization at 98% efficiency.', stat: 'OPTIMAL' },
+            { top: '30%', left: '80%', icon: 'satellite', title: 'SATELLITE LINK', desc: 'LEO constellation handover in progress. 500Mbps downlink established.', stat: 'LOCKED' },
+            { top: '70%', left: '30%', icon: 'shield-halved', title: 'SECURE ZONE', desc: 'Quantum Key Distribution (QKD) channel verified. Encryption: Post-Quantum.', stat: 'SECURE' }
+        ];
+
+        points.forEach((p, i) => {
+            const el = document.createElement('div');
+            el.className = 'ar-marker';
+            el.style.top = p.top;
+            el.style.left = p.left;
+            el.innerHTML = `<i class="fas fa-${p.icon}"></i>`;
+            
+            // Add slight drift animation
+            const driftDuration = 3 + Math.random() * 2;
+            el.style.animation = `float ${driftDuration}s ease-in-out infinite alternate`;
+            
+            el.onclick = () => showData(p);
+            container.appendChild(el);
+        });
+
+        function showData(data) {
+            document.getElementById('card-title').innerText = data.title;
+            document.getElementById('card-desc').innerText = data.desc;
+            document.getElementById('card-stat').innerText = data.stat;
+            card.classList.add('active');
+        }
+
+        window.closeCard = function() {
+            card.classList.remove('active');
+        }
+
+        // Add float animation keyframes dynamically
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes float {
+                from { transform: translateY(0px); }
+                to { transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Simulated Gyroscope Effect (Parallax)
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            
+            document.getElementById('camera-feed').style.transform = `scale(1.1) translate(${x}px, ${y}px)`;
+            
+            // Move markers opposite for depth
+            const markers = document.querySelectorAll('.ar-marker');
+            markers.forEach(m => {
+                m.style.transform = `translate(${-x*2}px, ${-y*2}px)`;
+            });
+        });
+
+    </script>
+</body>
+</html>

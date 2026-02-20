@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Holo-Deck</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f0f5;
+            color: #333;
+            font-family: 'Space Mono', monospace;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* UI Overlay */
+        #ui {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin: 0;
+            letter-spacing: -2px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Spec List */
+        .specs {
+            position: absolute;
+            top: 50%;
+            right: 3rem;
+            transform: translateY(-50%);
+            text-align: right;
+        }
+
+        .spec-item {
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.5s ease;
+        }
+
+        .spec-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .spec-label {
+            font-size: 0.8rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .spec-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Controls */
+        .controls {
+            pointer-events: auto;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-view {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 30px;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.2s;
+        }
+
+        .btn-view:hover {
+            background: #333;
+            color: white;
+        }
+
+        .hotspot {
+            position: absolute;
+            width: 20px; height: 20px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto;
+            border: 2px solid white;
+            display: none; /* Managed by JS */
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div id="ui">
+        <div class="header">
+            <h1>TeraLink X1</h1>
+            <p>The 6G Hardware Revolution</p>
+        </div>
+
+        <div class="specs">
+            <div class="spec-item visible" id="spec-1">
+                <div class="spec-label">Throughput</div>
+                <div class="spec-val">10 Tbps</div>
+            </div>
+            <div class="spec-item visible" id="spec-2">
+                <div class="spec-label">Frequency</div>
+                <div class="spec-val">300 GHz</div>
+            </div>
+            <div class="spec-item visible" id="spec-3">
+                <div class="spec-label">Efficiency</div>
+                <div class="spec-val">95%</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-view" onclick="rotateView('front')">FRONT</button>
+            <button class="btn-view" onclick="rotateView('side')">SIDE</button>
+            <button class="btn-view" onclick="rotateView('explode')">EXPLODE</button>
+            <a href="index.html" class="btn-view" style="text-decoration:none; color:inherit;">EXIT</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f0f5); // Light grey
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 2, 5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // Lighting (Studio Setup)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const spotLight = new THREE.SpotLight(0xffffff, 1);
+        spotLight.position.set(5, 10, 5);
+        spotLight.castShadow = true;
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
+        scene.add(spotLight);
+
+        const fillLight = new THREE.PointLight(0xccccff, 0.5);
+        fillLight.position.set(-5, 2, 5);
+        scene.add(fillLight);
+
+        // Product Model (Procedural)
+        const productGroup = new THREE.Group();
+        scene.add(productGroup);
+
+        // Base
+        const baseGeo = new THREE.CylinderGeometry(1, 1, 0.2, 32);
+        const baseMat = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.5, metalness: 0.8 });
+        const base = new THREE.Mesh(baseGeo, baseMat);
+        base.position.y = -1;
+        base.castShadow = true;
+        base.receiveShadow = true;
+        productGroup.add(base);
+
+        // Core (Quantum Chip)
+        const coreGeo = new THREE.BoxGeometry(0.8, 0.1, 0.8);
+        const coreMat = new THREE.MeshStandardMaterial({ color: 0x00ffcc, emissive: 0x003322, roughness: 0.2, metalness: 1 });
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        core.position.y = -0.8;
+        core.castShadow = true;
+        productGroup.add(core);
+
+        // Fins (Heatsink)
+        const finsGroup = new THREE.Group();
+        for(let i=0; i<10; i++) {
+            const finGeo = new THREE.BoxGeometry(1.5, 0.05, 1.5);
+            const finMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, roughness: 0.3, metalness: 0.9 });
+            const fin = new THREE.Mesh(finGeo, finMat);
+            fin.position.y = -0.6 + (i * 0.15);
+            fin.castShadow = true;
+            finsGroup.add(fin);
+        }
+        productGroup.add(finsGroup);
+
+        // Antenna Spire
+        const spireGeo = new THREE.ConeGeometry(0.1, 2, 16);
+        const spireMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, roughness: 0 });
+        const spire = new THREE.Mesh(spireGeo, spireMat);
+        spire.position.y = 1.5;
+        productGroup.add(spire);
+
+
+        // Interaction
+        let targetRotation = 0;
+        let isExploded = false;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Smooth Rotation
+            productGroup.rotation.y += (targetRotation - productGroup.rotation.y) * 0.05;
+            
+            // Bobbing animation
+            if(!isExploded) {
+                productGroup.position.y = Math.sin(Date.now() * 0.001) * 0.1;
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Control Functions
+        window.rotateView = function(view) {
+            if(view === 'front') {
+                targetRotation = 0;
+                resetExplode();
+            } else if (view === 'side') {
+                targetRotation = Math.PI / 2;
+                resetExplode();
+            } else if (view === 'explode') {
+                explodeView();
+            }
+        };
+
+        function explodeView() {
+            isExploded = true;
+            // Animate fins apart
+            finsGroup.children.forEach((fin, i) => {
+                gsap.to(fin.position, { y: -0.6 + (i * 0.4), duration: 1, ease: "power2.out" });
+            });
+            gsap.to(spire.position, { y: 4, duration: 1 });
+            gsap.to(core.position, { y: -2, duration: 1 });
+        }
+
+        function resetExplode() {
+            isExploded = false;
+            finsGroup.children.forEach((fin, i) => {
+                gsap.to(fin.position, { y: -0.6 + (i * 0.15), duration: 1, ease: "power2.inOut" });
+            });
+            gsap.to(spire.position, { y: 1.5, duration: 1 });
+            gsap.to(core.position, { y: -0.8, duration: 1 });
+        }
+
+        // Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Mouse Rotation
+        let mouseX = 0;
+        document.addEventListener('mousemove', (e) => {
+             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+             // Subtle parallax
+             camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+             camera.lookAt(0, 0, 0);
+        });
+
+    </script>
+</body>
+</html>
