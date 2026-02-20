@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Innovate Comms: Strategic Deck (Concept AI)</title>
+    <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Master Content -->
+    <script src="master_content.js"></script>
+    
+    <style>
+        :root {
+            --alexandrite: #4C194C;
+            --agate: #D6883A;
+            --bloodstone: #15404F;
+            --azurite: #842366;
+            --aventurine: #3E9B9B;
+            --bg-dark: #050a10;
+            --paper: #f4f1ea;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            font-family: "Avenir Next LT", "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #fff;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 2000px;
+        }
+
+        /* Atmosphere Layers */
+        #bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+        }
+
+        .bg-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: opacity 1s ease;
+        }
+        .bg-layer.active { opacity: 1; }
+
+        /* UI Overlays */
+        #header-branding {
+            position: fixed; 
+            top: calc(40px + env(safe-area-inset-top)); 
+            left: calc(40px + env(safe-area-inset-left)); 
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: inherit; font-size: 1.5rem; letter-spacing: 2px; margin: 0;
+            text-transform: uppercase; color: #fff; display: flex; align-items: center; gap: 15px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            fill: none !important; 
+            stroke: var(--agate) !important; 
+            stroke-width: 2; 
+            width: 35px; height: 35px;
+        }
+
+        .nav-arrow {
+            position: fixed; top: 50%; transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff; width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; pointer-events: none; transition: all 0.3s ease;
+            font-size: 1.2rem; backdrop-filter: blur(5px); 
+            z-index: 10;
+            opacity: 0; 
+        }
+        
+        body.active-experience .nav-arrow {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .nav-arrow:hover { background: var(--agate); border-color: var(--agate); box-shadow: 0 0 20px rgba(214, 136, 58, 0.4); }
+        .nav-left { left: calc(40px + env(safe-area-inset-left)); }
+        .nav-right { right: calc(40px + env(safe-area-inset-right)); }
+
+        /* Overlays */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: 100vh;
+            height: 100dvh;
+            background: rgba(5, 10, 16, 0.95);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 5000;
+            opacity: 0; pointer-events: none; transition: 1s ease;
+            backdrop-filter: blur(20px);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        .overlay-content { 
+            max-width: 700px; text-align: center; padding: 40px; 
+            padding-bottom: calc(60px + env(safe-area-inset-bottom));
+        }
+        .overlay-content h2 { font-family: inherit; letter-spacing: 5px; color: var(--agate); margin-bottom: 30px; font-weight: 700; font-size: 2rem; }
+        .overlay-content p { font-size: 1.1rem; line-height: 1.8; color: #ccc; margin-bottom: 20px; }
+
+        .btn-action {
+            background: transparent; border: 1px solid var(--agate); color: var(--agate);
+            padding: 15px 40px; border-radius: 50px; cursor: pointer; font-family: inherit;
+            font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; margin-top: 20px;
+            font-weight: 700; pointer-events: auto;
+        }
+        .btn-action:hover { background: var(--agate); color: #fff; }
+
+        /* Card Stage */
+        #card-stage {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; transform-style: preserve-3d;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .card-container {
+            width: 320px; height: 460px;
+            position: absolute; transform-style: preserve-3d;
+            cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: auto;
+        }
+
+        .card-inner {
+            width: 100%; height: 100%;
+            position: relative; transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-container.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            background-color: var(--paper);
+            backface-visibility: hidden;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px; box-sizing: border-box;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Front Face */
+        .card-front {
+            z-index: 2;
+        }
+
+        .card-front .icon {
+            font-size: 4rem; margin-bottom: 30px;
+        }
+
+        .card-front h2 {
+            font-family: inherit; font-size: 1.8rem; letter-spacing: 2px;
+            text-transform: uppercase; text-align: center; margin: 0;
+            font-weight: 700;
+        }
+
+        .card-front .flip-hint {
+            position: absolute; bottom: 30px; font-size: 0.6rem; 
+            letter-spacing: 2px; opacity: 0.4; text-transform: uppercase;
+        }
+
+        /* Back Face */
+        .card-back {
+            transform: rotateY(180deg);
+            color: #333;
+        }
+
+        .card-back p { font-size: 1rem; line-height: 1.6; text-align: center; margin: 0; font-weight: 400; }
+        .card-back p strong { font-size: 1rem; color: #000; font-weight: 700; }
+        .card-back hr { width: 40px; border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px auto; }
+
+        .controls {
+            position: fixed; bottom: calc(60px + env(safe-area-inset-bottom)); 
+            left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 15px; 
+            z-index: 10; pointer-events: auto;
+        }
+
+        .dots { display: flex; gap: 15px; justify-content: center; margin-bottom: 10px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
+
+        @media (max-width: 768px) {
+            #header-branding { top: calc(20px + env(safe-area-inset-top)) !important; left: calc(20px + env(safe-area-inset-left)) !important; }
+            h1 { font-size: 1rem !important; }
+            .logo-icon { width: 25px !important; height: 25px !important; }
+            .card-container { width: 280px; height: 400px; margin-top: -20px; }
+            .card-face { padding: 30px; }
+            .card-back p { font-size: 0.85rem; line-height: 1.4; }
+            .card-front h2 { font-size: 1.4rem; }
+            .card-front .icon { font-size: 3rem; }
+            .nav-arrow { width: 50px; height: 50px; }
+            .nav-left { left: calc(15px + env(safe-area-inset-left)); } 
+            .nav-right { right: calc(15px + env(safe-area-inset-right)); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-container"></div>
+
+    <div id="header-branding">
+        <h1>
+            <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                Innovate Comms
+            </a>
+        </h1>
+    </div>
+
+    <div id="intro-overlay" class="overlay active">
+        <div class="overlay-content">
+            <div style="color:var(--agate); margin-bottom: 2rem;">
+                <svg class="logo-icon" viewBox="0 0 45 45" style="width: 80px; height: 80px; margin-bottom: 1rem;">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                <div style="font-size: 1.2rem; letter-spacing: 5px; font-weight: 700; color: #fff;">INNOVATE COMMS</div>
+            </div>
+            <h2 id="intro-title"></h2>
+            <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
+            <p id="intro-p2"></p>
+            <button class="btn-action" onclick="startExperience()">EXPLORE DECK</button>
+        </div>
+    </div>
+
+    <div id="conclusion-overlay" class="overlay">
+        <div class="overlay-content">
+            <div style="color:var(--agate); margin-bottom: 2rem;">
+                <svg class="logo-icon" viewBox="0 0 45 45" style="width: 80px; height: 80px; margin-bottom: 1rem;">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                <div style="font-size: 1.2rem; letter-spacing: 5px; font-weight: 700; color: #fff;">INNOVATE COMMS</div>
+            </div>
+            <h2 id="outro-title"></h2>
+            <p id="outro-p1"></p>
+            <p id="outro-p2"></p>
+            <button class="btn-action" onclick="resetExperience()">REPLAY</button>
+        </div>
+    </div>
+
+    <div class="nav-arrow nav-left" onclick="prevCard()"><i class="fas fa-chevron-left"></i></div>
+    <div class="nav-arrow nav-right" onclick="nextCard()"><i class="fas fa-chevron-right"></i></div>
+
+    <div class="controls">
+        <div class="dots" id="dots"></div>
+        <div style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px;">TAP TO FLIP CARD</div>
+    </div>
+
+    <div id="card-stage"></div>
+
+    <script>
+        const stage = document.getElementById('card-stage');
+        const dotsContainer = document.getElementById('dots');
+        const bgContainer = document.getElementById('bg-container');
+        const introOverlay = document.getElementById('intro-overlay');
+        const conclusionOverlay = document.getElementById('conclusion-overlay');
+        
+        const config = TELECOMS_CONFIG;
+        const trends = config.trends;
+        let cards = [];
+        let currentIndex = 0;
+        let isTransitioning = false;
+        let isExperienceActive = false;
+
+        function loadMasterContent() {
+            document.getElementById('intro-title').innerText = config.intro.title.toUpperCase();
+            document.getElementById('intro-p1').innerText = config.intro.subtitle;
+            document.getElementById('intro-p2').innerText = config.intro.p1 + " " + config.intro.p2;
+            document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
+            document.getElementById('outro-p1').innerText = config.outro.p1;
+            const email = config.branding.email;
+            let p2 = config.outro.p2;
+            p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
+            document.getElementById('outro-p2').innerHTML = p2;
+        }
+
+        function createCard(trend, index) {
+            const container = document.createElement('div');
+            container.className = 'card-container';
+            const bodyText = `<p>${trend.desc}</p><hr><p><strong>${trend.implication || trend.statDesc}</strong></p>`;
+            
+            container.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <div class="icon" style="color:${trend.color}"><i class="fas ${trend.icon}"></i></div>
+                        <h2 style="color:${trend.color}">${trend.title.toUpperCase()}</h2>
+                        <div class="flip-hint">TAP TO FLIP</div>
+                    </div>
+                    <div class="card-face card-back">${bodyText}</div>
+                </div>
+            `;
+
+            container.onclick = () => { 
+                if(index === currentIndex) {
+                    container.classList.toggle('flipped');
+                } 
+            };
+            stage.appendChild(container);
+            
+            const depth = index;
+            gsap.set(container, { z: -depth * 60, y: depth * 10, rotation: (index % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1 });
+
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.onclick = () => jumpTo(index);
+            dotsContainer.appendChild(dot);
+
+            const bg = document.createElement('div');
+            bg.className = 'bg-layer';
+            bg.id = `bg-${index}`;
+            bg.style.background = `radial-gradient(circle at center, ${trend.color} 0%, var(--bg-dark) 100%)`;
+            bgContainer.appendChild(bg);
+
+            return container;
+        }
+
+        function init() {
+            loadMasterContent();
+            cards = trends.map((t, i) => createCard(t, i));
+            updateStack();
+        }
+
+        function updateStack() {
+            cards.forEach((card, i) => {
+                if (i < currentIndex) {
+                    gsap.to(card, { x: -window.innerWidth, opacity: 1, rotation: -20, duration: 0.6, ease: "power2.inOut", onComplete: () => { card.style.visibility = 'hidden'; } });
+                } else {
+                    const depth = i - currentIndex;
+                    card.style.visibility = 'visible';
+                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out" });
+                }
+            });
+            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === currentIndex));
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+        }
+
+        function startExperience() {
+            isExperienceActive = true;
+            document.body.classList.add('active-experience');
+            introOverlay.classList.remove('active');
+            currentIndex = 0;
+            updateStack();
+        }
+
+        function resetExperience() {
+            conclusionOverlay.classList.remove('active');
+            document.body.classList.add('active-experience');
+            currentIndex = 0;
+            isExperienceActive = true;
+            updateStack();
+        }
+
+        function showConclusion() {
+            isExperienceActive = false;
+            document.body.classList.remove('active-experience');
+            conclusionOverlay.classList.add('active');
+        }
+
+        function nextCard() {
+            if (!isExperienceActive || isTransitioning) return;
+            if (currentIndex === cards.length - 1) {
+                showConclusion();
+            } else {
+                cards[currentIndex].classList.remove('flipped');
+                isTransitioning = true;
+                currentIndex++;
+                updateStack();
+                setTimeout(() => { isTransitioning = false; }, 600);
+            }
+        }
+
+        function prevCard() {
+            if (!isExperienceActive || isTransitioning) return;
+            if (currentIndex === 0) {
+                showIntro();
+            } else {
+                cards[currentIndex].classList.remove('flipped');
+                isTransitioning = true;
+                currentIndex--;
+                updateStack();
+                setTimeout(() => { isTransitioning = false; }, 600);
+            }
+        }
+
+        function showIntro() {
+            isExperienceActive = false;
+            document.body.classList.remove('active-experience');
+            introOverlay.classList.add('active');
+            cards.forEach((card, i) => {
+                const depth = i;
+                gsap.set(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, visibility: 'hidden' });
+            });
+        }
+
+        function jumpTo(index) {
+            if (!isExperienceActive || isTransitioning || index === currentIndex) return;
+            cards[currentIndex].classList.remove('flipped');
+            isTransitioning = true;
+            currentIndex = index;
+            updateStack();
+            setTimeout(() => { isTransitioning = false; }, 600);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768 && !isTransitioning && isExperienceActive) {
+                const card = cards[currentIndex];
+                const x = (e.clientX / window.innerWidth - 0.5) * 30;
+                const y = (e.clientY / window.innerHeight - 0.5) * -30;
+                gsap.to(card, { rotationY: x, rotationX: y, duration: 0.15, ease: "power1.out" });
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
