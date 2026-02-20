@@ -50,8 +50,8 @@
             position: absolute;
             width: 3000px;
             height: 3000px;
-            top: -1000px;
-            left: -1000px;
+            top: 0;
+            left: 0;
             will-change: transform;
         }
 
@@ -317,19 +317,25 @@
         const viewport = document.getElementById('viewport');
         const svg = document.getElementById('lines-svg');
 
-        // Initial Position (Center the map)
-        const centerX = (window.innerWidth / 2) - 1500;
-        const centerY = (window.innerHeight / 2) - 1500;
-        gsap.set(canvas, { x: centerX, y: centerY });
+        // Center the Strategic Core on load
+        function initPosition() {
+            const core = document.getElementById('node-core');
+            // Core is at left: 1325, top: 1400, width: 350, height: ~150
+            const targetX = (window.innerWidth / 2) - 1325 - 175;
+            const targetY = (window.innerHeight / 2) - 1400 - 80;
+            
+            gsap.set(canvas, { x: targetX, y: targetY });
+            updateLines();
+        }
 
         // Make Canvas Draggable
         Draggable.create(canvas, {
             type: "x,y",
             edgeResistance: 0.5,
-            bounds: { minX: -2500, maxX: 500, minY: -2500, maxY: 500 },
+            bounds: { minX: -2400, maxX: 600, minY: -2400, maxY: 600 },
             onDrag: updateLines,
-            dragClickables: true, // Allows dragging starting from nodes
-            allowNativeTouchScrolling: false, // Force GSAP to handle touch
+            dragClickables: true,
+            allowNativeTouchScrolling: false,
             onPress: function() {
                 viewport.style.cursor = 'grabbing';
             },
@@ -338,51 +344,15 @@
             }
         });
 
-        // Update SVG Lines
-        function updateLines() {
-            svg.innerHTML = '';
-            const core = document.getElementById('node-core');
-            const coreRect = core.getBoundingClientRect();
-            const canvasRect = canvas.getBoundingClientRect();
-
-            // Connect core to main trends
-            document.querySelectorAll('.node[data-id]').forEach(node => {
-                drawLine(core, node, 'core-line');
-                
-                // Connect main trends to their details
-                const id = node.getAttribute('data-id');
-                document.querySelectorAll(`.node-detail[data-parent="${id}"]`).forEach(detail => {
-                    drawLine(node, detail, 'detail-line');
-                });
-            });
-        }
-
-        function drawLine(el1, el2, className) {
-            const r1 = el1.getBoundingClientRect();
-            const r2 = el2.getBoundingClientRect();
-            const cR = canvas.getBoundingClientRect();
-
-            // Calculate points relative to the CANVAS, not the viewport
-            // (Point - canvasPosition) / scale
-            const x1 = (r1.left + r1.width / 2 - cR.left);
-            const y1 = (r1.top + r1.height / 2 - cR.top);
-            const x2 = (r2.left + r2.width / 2 - cR.left);
-            const y2 = (r2.top + r2.height / 2 - cR.top);
-
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            // Curved path
-            const midY = (y1 + y2) / 2;
-            const d = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
-            
-            path.setAttribute("d", d);
-            path.setAttribute("class", "connector " + className);
-            svg.appendChild(path);
-        }
+        // ... rest of updateLines ...
 
         function resetView() {
+            const targetX = (window.innerWidth / 2) - 1325 - 175;
+            const targetY = (window.innerHeight / 2) - 1400 - 80;
+            
             gsap.to(canvas, { 
-                x: (window.innerWidth / 2) - 1500, 
-                y: (window.innerHeight / 2) - 1500, 
+                x: targetX, 
+                y: targetY, 
                 duration: 1, 
                 ease: "power3.inOut",
                 onUpdate: updateLines 
@@ -412,9 +382,15 @@
             });
         });
 
-        // Initialize lines
-        window.addEventListener('load', updateLines);
-        window.addEventListener('resize', updateLines);
+        // Initialize
+        window.addEventListener('load', () => {
+            initPosition();
+            updateLines();
+        });
+        window.addEventListener('resize', () => {
+            // Optional: recenter or just update lines
+            updateLines();
+        });
 
     </script>
 </body>
