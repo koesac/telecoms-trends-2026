@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future of Telecoms: Strategy Deck</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --agate: #D6883A;
+            --aventurine: #3E9B9B;
+            --azurite: #842366;
+            --bloodstone: #15404F;
+            --dark-bg: #0a0c10;
+            --card-width: 280px;
+            --card-height: 400px;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--dark-bg);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        header {
+            padding: 20px 40px;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            letter-spacing: 2px;
+            margin: 0;
+            color: var(--agate);
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Card Container */
+        #deck-container {
+            flex-grow: 1;
+            position: relative;
+            perspective: 1500px;
+            padding: 50px;
+        }
+
+        /* 3D Card Structure */
+        .card-wrapper {
+            position: absolute;
+            width: var(--card-width);
+            height: var(--card-height);
+            cursor: grab;
+            z-index: 1;
+        }
+
+        .card-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-wrapper.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            box-sizing: border-box;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        /* Front Face */
+        .card-front {
+            background: linear-gradient(135deg, #1a1d24 0%, #0a0c10 100%);
+            justify-content: space-between;
+        }
+
+        .card-front .icon {
+            font-size: 3rem;
+            color: var(--agate);
+        }
+
+        .card-front h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            line-height: 1;
+            margin: 20px 0;
+        }
+
+        .flip-hint {
+            font-size: 0.7rem;
+            color: #666;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 15px;
+        }
+
+        /* Back Face */
+        .card-back {
+            background: var(--bloodstone);
+            transform: rotateY(180deg);
+            justify-content: flex-start;
+            border-color: var(--agate);
+        }
+
+        .card-back h3 {
+            color: var(--agate);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .card-back p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        .stat-highlight {
+            margin-top: auto;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 700;
+            color: var(--agate);
+        }
+
+        /* UI Buttons */
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .btn-ui {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        .btn-ui:hover {
+            background: var(--agate);
+            border-color: var(--agate);
+        }
+
+        .btn-exit {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.8rem;
+            z-index: 100;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 768px) {
+            :root {
+                --card-width: 240px;
+                --card-height: 340px;
+            }
+            header { padding: 20px; }
+            h1 { font-size: 2rem; }
+            .controls { bottom: 20px; width: 90%; justify-content: center; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Strategy Deck</h1>
+        <div class="hint">Drag to organize • Double-tap to flip</div>
+    </header>
+
+    <div id="deck-container">
+        <!-- Cards will be generated here -->
+    </div>
+
+    <div class="controls">
+        <button class="btn-ui" onclick="shuffleDeck()">RESHUFFLE</button>
+        <button class="btn-ui" onclick="fanDeck()">FAN OUT</button>
+    </div>
+
+    <a href="index.html" class="btn-exit">EXIT DECK</a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(Draggable);
+
+        const container = document.getElementById('deck-container');
+        const trendData = [
+            { id: 1, title: "Hyper-Scale 5G", icon: "fa-tower-broadcast", desc: "The transition from utility to essential fabric. Terahertz frequencies enable holographic presence and real-time sensory data transfer.", stat: "<1ms Network Latency" },
+            { id: 2, title: "Autonomous AI", icon: "fa-brain", desc: "Zero-touch provisioning models. Networks that repair themselves, predict outages, and optimize energy consumption without human intervention.", stat: "30% OPEX Reduction" },
+            { id: 3, title: "Edge Core", icon: "fa-microchip", desc: "Decentralized compute clusters embedded in the RAN. Processing 90% of data locally to support autonomous vehicles and industrial robotics.", stat: "10x Response Speed" },
+            { id: 4, title: "Orbital Link", icon: "fa-satellite", desc: "The death of dead-zones. Seamless handover between terrestrial towers and LEO satellite constellations for 100% global connectivity.", stat: "Ubiquitous Coverage" },
+            { id: 5, title: "Quantum Shield", icon: "fa-shield-halved", desc: "Infrastructure-wide deployment of Post-Quantum Cryptography (PQC). Securing national backbones against next-gen decryption threats.", stat: "Q-Day Ready" }
+        ];
+
+        let zIndexBase = 10;
+
+        function createCard(data, index) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'card-wrapper';
+            
+            // Random initial placement
+            const randX = Math.random() * (container.offsetWidth - 300);
+            const randY = Math.random() * (container.offsetHeight - 400);
+            const randRot = (Math.random() - 0.5) * 10;
+            
+            gsap.set(wrapper, { x: randX, y: randY, rotation: randRot });
+
+            wrapper.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <div class="icon"><i class="fas ${data.icon}"></i></div>
+                        <h2>${data.title}</h2>
+                        <div class="flip-hint">DOUBLE TAP TO FLIP</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <h3>Strategy Details</h3>
+                        <p>${data.desc}</p>
+                        <div class="stat-highlight">KEY METRIC: ${data.stat}</div>
+                        <div class="flip-hint" style="color: rgba(255,255,255,0.3)">DOUBLE TAP TO FLIP BACK</div>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(wrapper);
+
+            // Make Draggable
+            Draggable.create(wrapper, {
+                type: "x,y",
+                bounds: container,
+                onPress: function() {
+                    zIndexBase++;
+                    this.target.style.zIndex = zIndexBase;
+                },
+                onClick: function() {
+                    // Check for double click/tap
+                    if (this.lastClickTime && (Date.now() - this.lastClickTime < 300)) {
+                        this.target.classList.toggle('flipped');
+                    }
+                    this.lastClickTime = Date.now();
+                }
+            });
+        }
+
+        function initDeck() {
+            trendData.forEach((data, i) => createCard(data, i));
+        }
+
+        function shuffleDeck() {
+            const cards = document.querySelectorAll('.card-wrapper');
+            cards.forEach(card => {
+                const randX = Math.random() * (container.offsetWidth - 280);
+                const randY = Math.random() * (container.offsetHeight - 400);
+                const randRot = (Math.random() - 0.5) * 30;
+                
+                gsap.to(card, {
+                    x: randX,
+                    y: randY,
+                    rotation: randRot,
+                    duration: 0.8,
+                    ease: "back.out(1.7)"
+                });
+            });
+        }
+
+        function fanDeck() {
+            const cards = document.querySelectorAll('.card-wrapper');
+            const total = cards.length;
+            const step = (container.offsetWidth - 200) / total;
+            
+            cards.forEach((card, i) => {
+                gsap.to(card, {
+                    x: 50 + (i * step),
+                    y: container.offsetHeight / 2 - 200,
+                    rotation: 0,
+                    duration: 0.8,
+                    ease: "power2.inOut"
+                });
+            });
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            initDeck();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            // Re-bounds if needed
+        });
+
+    </script>
+</body>
+</html>
