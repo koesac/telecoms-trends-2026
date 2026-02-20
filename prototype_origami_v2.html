@@ -11,14 +11,13 @@
     
     <style>
         :root {
-            /* Branding Palette */
             --alexandrite: #4C194C;
             --agate: #D6883A;
             --bloodstone: #15404F;
             --azurite: #842366;
             --aventurine: #3E9B9B;
             --bg-dark: #050a10;
-            --paper: #ffffff;
+            --paper: #f9f7f2;
         }
 
         body {
@@ -31,7 +30,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            perspective: 1500px;
+            perspective: 2000px;
         }
 
         /* Atmosphere Layers */
@@ -46,7 +45,6 @@
         }
         .bg-layer.active { opacity: 1; }
 
-        /* Branded Gradients */
         #bg-0 { background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--bg-dark) 100%); }
         #bg-1 { background: radial-gradient(circle at center, var(--agate) 0%, var(--bg-dark) 100%); }
         #bg-2 { background: radial-gradient(circle at center, var(--azurite) 0%, var(--bg-dark) 100%); }
@@ -58,168 +56,7 @@
         #ui-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
             display: flex; flex-direction: column; justify-content: space-between; padding: 40px;
-            z-index: 100;
-        }
-
-        h1 {
-            font-family: inherit; font-size: 1.5rem; letter-spacing: 5px; margin: 0;
-            text-transform: uppercase; color: var(--agate);
-            display: flex; align-items: center; gap: 15px;
-            font-weight: 700;
-        }
-
-        .logo-icon {
-            fill: none; stroke: currentColor; stroke-width: 2;
-            width: 35px; height: 35px;
-        }
-
-        /* Navigation Dots */
-        .dots {
-            display: flex; gap: 15px; pointer-events: auto; justify-content: center; margin-bottom: 20px;
-        }
-        .dot {
-            width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2);
-            cursor: pointer; transition: 0.3s;
-        }
-        .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
-
-        /* The Main Origami Object */
-        .origami-container {
-            width: 400px;
-            height: 400px;
-            position: relative;
-            transform-style: preserve-3d;
-            cursor: pointer;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* The central face */
-        .face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: var(--paper);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            box-sizing: border-box;
-            border-radius: 4px;
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.1);
-            color: #333;
-            z-index: 1;
-            transition: all 0.8s ease;
-        }
-
-        .face h2 {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1.1rem;
-            margin: 0;
-            text-align: center;
-            letter-spacing: 2px;
-            font-weight: 700;
-        }
-
-        .face p {
-            font-size: 0.85rem;
-            line-height: 1.5;
-            text-align: center;
-            margin-top: 15px;
-            color: #444;
-            font-weight: 400;
-        }
-
-        .face .icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--agate);
-            transition: color 0.5s ease;
-        }
-
-        /* Foldable Flaps */
-                .flap {
-                    position: absolute; width: 100%; height: 50%;
-                    background: #f8f8f8;
-                    left: 0;
-                    z-index: 10;
-                    display: flex;
-                    flex-direction: column; /* Stack icon and text */
-                    align-items: center;
-                    justify-content: center;
-                    font-family: 'Syncopate', sans-serif;
-                    letter-spacing: 2px;
-                    font-weight: 700;
-                    color: #222;
-                    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
-                    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-                    text-align: center;
-                    padding: 10px;
-                    box-sizing: border-box;
-                }
-        
-                        .flap-top {
-                            top: 0;
-                            transform-origin: top;
-                            border-bottom: 1px solid #ddd;
-                            border-radius: 4px 4px 0 0;
-                            font-size: 1.1rem; /* Increased from 0.85rem */
-                            line-height: 1.2;
-                        }        
-                .flap-bottom {
-                    bottom: 0;
-                    transform-origin: bottom;
-                    border-top: 1px solid #ddd;
-                    border-radius: 0 0 4px 4px;
-                    font-size: 2rem; /* Larger for icon */
-                }
-
-        /* Unfolded Interaction */
-        .unfolded .flap-top { transform: rotateX(165deg); }
-        .unfolded .flap-bottom { transform: rotateX(-165deg); }
-        .unfolded .face { background: #fff; box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
-
-        /* UI Overlays */
-        .controls {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            z-index: 100;
-        }
-
-        .btn-action {
-            background: transparent;
-            border: 1px solid #fff;
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-family: 'Syncopate', sans-serif;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s;
-            pointer-events: auto;
-        }
-
-        .btn-action:hover {
-            background: #fff;
-            color: #000;
-        }
-
-        .btn-exit {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            color: rgba(255,255,255,0.4);
-            text-decoration: none;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
         }
 
         h1 {
@@ -232,18 +69,184 @@
             fill: none; stroke: var(--agate); stroke-width: 2; width: 35px; height: 35px;
         }
 
+        /* Side Navigation Arrows */
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+            z-index: 1100;
+        }
+
+        .nav-arrow:hover {
+            background: var(--agate);
+            border-color: var(--agate);
+            box-shadow: 0 0 20px rgba(214, 136, 58, 0.4);
+        }
+
+        .nav-left { left: 40px; }
+        .nav-right { right: 40px; }
+
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .dots {
+            display: flex; gap: 15px; pointer-events: auto; justify-content: center; margin-bottom: 10px;
+        }
+        .dot {
+            width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2);
+            cursor: pointer; transition: 0.3s;
+        }
+        .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
+
+        /* Overlays */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 10, 16, 0.95);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000; opacity: 0; pointer-events: none; transition: 1s ease;
+            backdrop-filter: blur(20px);
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .overlay-content {
+            max-width: 700px; text-align: center; padding: 40px;
+        }
+        .overlay-content h2 { font-family: inherit; letter-spacing: 5px; color: var(--agate); margin-bottom: 30px; font-weight: 700; font-size: 2rem; }
+        .overlay-content p { font-size: 1.1rem; line-height: 1.8; color: #ccc; margin-bottom: 20px; }
+
+        .btn-action {
+            background: transparent; border: 1px solid var(--agate); color: var(--agate);
+            padding: 15px 40px; border-radius: 50px; cursor: pointer; font-family: inherit;
+            font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; margin-top: 20px;
+            font-weight: 700; pointer-events: auto;
+        }
+        .btn-action:hover { background: var(--agate); color: #fff; }
+
+        /* Card System */
+        #card-stage {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .origami-container {
+            width: 400px;
+            height: 400px;
+            position: absolute;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .origami-container.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        .face {
+            position: absolute; width: 100%; height: 100%;
+            background-color: var(--paper);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; box-sizing: border-box;
+            border-radius: 4px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.05);
+            color: #333;
+            z-index: 1;
+            transition: all 0.8s ease;
+        }
+
+        .face p {
+            font-size: 1rem;
+            line-height: 1.6;
+            text-align: center;
+            margin-top: 0;
+            color: #333;
+            font-weight: 400;
+        }
+
+        .face p strong {
+            font-size: 1rem;
+            color: #000;
+            font-weight: 700;
+        }
+
+        .flap {
+            position: absolute; width: 100%; height: 50%;
+            background-color: #f4f1ea;
+            left: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            font-family: inherit;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: #222;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .flap-top {
+            top: 0; transform-origin: top; border-bottom: 1px solid #ddd; border-radius: 4px 4px 0 0;
+            font-size: 1.4rem; line-height: 1.2;
+        }
+
+        .flap-bottom {
+            bottom: 0; transform-origin: bottom; border-top: 1px solid #ddd; border-radius: 0 0 4px 4px;
+            font-size: 3rem;
+        }
+
+        .unfolded .flap-top { transform: rotateX(165deg); }
+        .unfolded .flap-bottom { transform: rotateX(-165deg); }
+        .unfolded .face { background-color: #fff; box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
+
         /* Mobile specific adjustments */
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             #header-branding { top: 20px !important; left: 20px !important; }
             h1 { font-size: 1rem !important; }
             .logo-icon { width: 25px !important; height: 25px !important; }
-            .origami-container {
-                width: 320px;
-                height: 320px;
-            }
-            .face h2 { font-size: 1rem; }
-            .face p { font-size: 0.75rem; }
-            .face .icon { font-size: 2.2rem; margin-bottom: 10px; }
+            .origami-container { width: 320px; height: 320px; }
+            .face p { font-size: 0.85rem; }
+            .nav-arrow { width: 50px; height: 50px; }
+            .nav-left { left: 15px; }
+            .nav-right { right: 15px; }
+            .flap-top { font-size: 1.1rem; }
+            .flap-bottom { font-size: 2.2rem; }
         }
 
     </style>
@@ -251,18 +254,16 @@
 <body>
 
     <div id="bg-container">
-        <div class="bg-layer active" id="bg-0"></div>
-        <div class="bg-layer" id="bg-1"></div>
-        <div class="bg-layer" id="bg-2"></div>
-        <div class="bg-layer" id="bg-3"></div>
-        <div class="bg-layer" id="bg-4"></div>
-        <div class="bg-layer" id="bg-5"></div>
+        <!-- Backgrounds added by JS -->
     </div>
+
+    <div class="nav-arrow nav-left" onclick="prevCard()"><i class="fas fa-chevron-left"></i></div>
+    <div class="nav-arrow nav-right" onclick="nextCard()"><i class="fas fa-chevron-right"></i></div>
 
     <div id="ui-layer">
         <div id="header-branding" style="position: absolute; top: 40px; left: 40px; pointer-events: auto;">
             <h1>
-                <a href="https://www.innovatecomms.co.uk/" id="company-link" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
                     <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
                         <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
@@ -274,130 +275,220 @@
                 </a>
             </h1>
         </div>
+
+        <div id="intro-overlay" class="overlay active">
+            <div class="overlay-content">
+                <h2 id="intro-title"></h2>
+                <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
+                <p id="intro-p2"></p>
+                <button class="btn-action" onclick="startExperience()">EXPLORE STRATEGY</button>
+            </div>
+        </div>
+
+        <div id="conclusion-overlay" class="overlay">
+            <div class="overlay-content">
+                <h2 id="outro-title"></h2>
+                <p id="outro-p1"></p>
+                <p id="outro-p2"></p>
+                <button class="btn-action" onclick="resetExperience()">REPLAY</button>
+            </div>
+        </div>
+
         <div class="controls">
             <div class="dots" id="dots">
-                <div class="dot active" onclick="jumpTo(-1)"></div>
-                <div class="dot" onclick="jumpTo(0)"></div>
-                <div class="dot" onclick="jumpTo(1)"></div>
-                <div class="dot" onclick="jumpTo(2)"></div>
-                <div class="dot" onclick="jumpTo(3)"></div>
-                <div class="dot" onclick="jumpTo(4)"></div>
+                <!-- Dots added by JS -->
             </div>
-            <button class="btn-action" onclick="nextTrend()">NEXT_TREND</button>
             <div style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px;">TAP CENTER TO UNFOLD DATA</div>
         </div>
     </div>
 
-    <div class="origami-container" id="origami" onclick="toggleFold()">
-        <div class="flap flap-top" id="flap-top">INFRASTRUCTURE</div>
-        <div class="face">
-            <p id="trend-desc"></p>
-        </div>
-        <div class="flap flap-bottom" id="flap-bottom">DATA_VERIFIED</div>
+    <div id="card-stage">
+        <!-- Cards generated by JS -->
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
-        const origami = document.getElementById('origami');
-        const desc = document.getElementById('trend-desc');
-        const fTop = document.getElementById('flap-top');
-        const fBot = document.getElementById('flap-bottom');
-        const btnNext = document.querySelector('.btn-action');
-        const dots = document.querySelectorAll('.dot');
-        const bgLayers = Array.from({length: 6}, (_, i) => document.getElementById(`bg-${i}`));
-
-        let currentIndex = -1; 
+        const stage = document.getElementById('card-stage');
+        const dotsContainer = document.getElementById('dots');
+        const bgContainer = document.getElementById('bg-container');
+        const introOverlay = document.getElementById('intro-overlay');
+        const conclusionOverlay = document.getElementById('conclusion-overlay');
+        
         const config = TELECOMS_CONFIG;
         const trends = config.trends;
+        const cards = [];
+        let currentIndex = 0;
+        let isTransitioning = false;
+        let isExperienceActive = false;
 
-        function loadContent(index) {
-            if (index === -1) {
-                // Load Intro
-                desc.innerText = config.intro.p1;
-                fTop.innerHTML = `<span>${config.intro.title.toUpperCase()}</span>`;
-                fBot.innerHTML = `<i class="fas fa-cube"></i>`;
-                fTop.style.color = "var(--agate)";
-                fBot.style.color = "var(--agate)";
-                fTop.style.background = "#f8f8f8";
-                fBot.style.background = "#f8f8f8";
-                btnNext.innerText = "NEXT_TREND";
-            } else {
-                const trend = trends[index];
-                desc.innerHTML = `<strong>${trend.desc}</strong><br><br>${trend.implication || trend.statDesc}`;
-                
-                // Set external flaps
-                fTop.innerHTML = `<span>${trend.title.toUpperCase()}</span>`;
-                fBot.innerHTML = `<i class="fas ${trend.icon}"></i>`;
+        const LOGO_SVG = `
+            <svg viewBox="0 0 45 45" style="width: 60px; height: 60px; fill: none; stroke: currentColor; stroke-width: 2;">
+                <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                <path d="M31.3047 2.34497V42.9916"></path>
+                <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+            </svg>
+        `;
 
-                if (index === trends.length - 1) {
-                    btnNext.innerText = "REPLAY";
-                } else {
-                    btnNext.innerText = "NEXT_TREND";
-                }
+        function loadMasterContent() {
+            // Intro
+            document.getElementById('intro-title').innerText = config.intro.title.toUpperCase();
+            document.getElementById('intro-p1').innerText = config.intro.subtitle;
+            document.getElementById('intro-p2').innerText = config.intro.p1 + " " + config.intro.p2;
 
-                // Adjust flap colors
-                if (trend.color === "#15404F" || trend.color === "#4C194C" || trend.color === "var(--bloodstone)" || trend.color === "var(--alexandrite)") {
-                    fTop.style.background = "#222";
-                    fTop.style.color = "#fff";
-                    fBot.style.background = "#222";
-                    fBot.style.color = "#fff";
-                } else {
-                    fTop.style.background = "#f8f8f8";
-                    fTop.style.color = trend.color;
-                    fBot.style.color = trend.color;
-                    fBot.style.background = "#f8f8f8";
-                }
-            }
-
-            // Update Atmosphere
-            bgLayers.forEach((l, i) => l.classList.toggle('active', i === (index + 1)));
-            // Update Dots
-            dots.forEach((dot, i) => dot.classList.toggle('active', i === (index + 1)));
+            // Outro
+            document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
+            document.getElementById('outro-p1').innerText = config.outro.p1;
+            
+            const email = config.branding.email;
+            let p2 = config.outro.p2;
+            p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
+            document.getElementById('outro-p2').innerHTML = p2;
         }
 
-        function toggleFold() {
-            origami.classList.toggle('unfolded');
+        function createCard(trend, index) {
+            const container = document.createElement('div');
+            container.className = 'origami-container';
+            
+            const title = trend.title;
+            const bodyText = `${trend.desc}<br><br><strong>${trend.implication || trend.statDesc}</strong>`;
+            const iconHtml = `<i class="fas ${trend.icon}"></i>`;
+            const color = trend.color;
+
+            container.innerHTML = `
+                <div class="flap flap-top" style="color:${color}">${title.toUpperCase()}</div>
+                <div class="face">
+                    <p>${bodyText}</p>
+                </div>
+                <div class="flap flap-bottom" style="color:${color}">${iconHtml}</div>
+            `;
+
+            container.onclick = () => container.classList.toggle('unfolded');
+            stage.appendChild(container);
+            cards.push(container);
+
+            // Create Dot
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.onclick = () => jumpTo(index);
+            dotsContainer.appendChild(dot);
+
+            // Create BG Layer
+            const bg = document.createElement('div');
+            bg.className = 'bg-layer';
+            bg.id = `bg-${index}`;
+            bg.style.background = `radial-gradient(circle at center, ${trend.color} 0%, var(--bg-dark) 100%)`;
+            bgContainer.appendChild(bg);
+        }
+
+        function init() {
+            loadMasterContent();
+            trends.forEach((t, i) => createCard(t, i));
+            // Set initial state
+            document.querySelectorAll('.bg-layer')[0].classList.add('active');
+            document.querySelectorAll('.dot')[0].classList.add('active');
+        }
+
+        function startExperience() {
+            isExperienceActive = true;
+            introOverlay.classList.remove('active');
+            cards[0].classList.add('active');
+            gsap.fromTo(cards[0], { x: 500, opacity: 0, visibility: 'visible' }, { x: 0, opacity: 1, duration: 1, ease: "power2.out" });
+        }
+
+        function resetExperience() {
+            conclusionOverlay.classList.remove('active');
+            jumpTo(0);
+        }
+
+        function showConclusion() {
+            isExperienceActive = false;
+            conclusionOverlay.classList.add('active');
+            cards.forEach(c => {
+                c.classList.remove('unfolded');
+                c.classList.remove('active');
+                c.style.visibility = 'hidden';
+            });
         }
 
         function jumpTo(index) {
-            origami.classList.remove('unfolded');
-            setTimeout(() => {
-                currentIndex = index;
-                loadContent(currentIndex);
-                gsap.fromTo(origami, { scale: 0.8 }, { scale: 1, duration: 0.5, ease: "back.out(2)" });
-            }, 400);
-        }
+            if (!isExperienceActive) {
+                // If in conclusion, return to deck
+                isExperienceActive = true;
+                conclusionOverlay.classList.remove('active');
+            }
 
-        function nextTrend() {
-            // Fold back first
-            origami.classList.remove('unfolded');
+            if (index === currentIndex || isTransitioning) return;
             
-            setTimeout(() => {
-                if (currentIndex === trends.length - 1) {
-                    currentIndex = -1; // Reset to Intro
-                } else {
-                    currentIndex++;
-                }
-                loadContent(currentIndex);
+            isTransitioning = true;
+            const direction = index > currentIndex ? 1 : -1;
+            const currentCard = cards[currentIndex];
+            const nextCard = cards[index];
 
-                // Add physical bounce effect
-                gsap.fromTo(origami, { scale: 0.8 }, { scale: 1, duration: 0.5, ease: "back.out(2)" });
-            }, 400);
+            currentCard.classList.remove('unfolded');
+
+            gsap.to(currentCard, {
+                x: -direction * window.innerWidth,
+                rotationY: -direction * 30,
+                duration: 0.7,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    currentCard.classList.remove('active');
+                    currentCard.style.visibility = 'hidden';
+                }
+            });
+
+            nextCard.style.visibility = 'visible';
+            nextCard.classList.add('active');
+            gsap.fromTo(nextCard, 
+                { x: direction * window.innerWidth, rotationY: direction * 30, opacity: 1 },
+                { 
+                    x: 0, rotationY: 0, opacity: 1, 
+                    duration: 0.7, 
+                    ease: "power2.inOut", 
+                    onComplete: () => {
+                        isTransitioning = false;
+                    }
+                }
+            );
+
+            currentIndex = index;
+            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === index));
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === index));
         }
 
-        // Initialize with Intro
-        window.addEventListener('load', () => {
-            loadContent(-1);
-        });
+        function nextCard() {
+            if (!isExperienceActive) return;
+            if (currentIndex === cards.length - 1) {
+                showConclusion();
+            } else {
+                jumpTo(currentIndex + 1);
+            }
+        }
 
-        // Parallax effect on mouse/touch
+        function prevCard() {
+            if (!isExperienceActive) return;
+            if (currentIndex > 0) {
+                jumpTo(currentIndex - 1);
+            }
+        }
+
+        // Global Mouse Move Parallax (Only for active card)
         document.addEventListener('mousemove', (e) => {
-            if (window.innerWidth > 768) {
-                const x = (e.clientX / window.innerWidth - 0.5) * 20;
-                const y = (e.clientY / window.innerHeight - 0.5) * -20;
-                gsap.to(origami, { rotationY: x, rotationX: y, duration: 0.5 });
+            if (window.innerWidth > 768 && !isTransitioning && isExperienceActive) {
+                const x = (e.clientX / window.innerWidth - 0.5) * 45;
+                const y = (e.clientY / window.innerHeight - 0.5) * -45;
+                gsap.to(cards[currentIndex], { rotationY: x, rotationX: y, duration: 0.1, ease: "power1.out" });
             }
         });
+
+        // Keyboard Support
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+        });
+
+        init();
 
     </script>
 </body>
