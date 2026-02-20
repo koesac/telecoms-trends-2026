@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future of Telecoms: X-Ray City</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; color: white; touch-action: none; }
+        
+        .layer {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-size: cover; background-position: center;
+        }
+
+        /* The "Visible" World */
+        #layer-visible {
+            background-image: url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=2044&auto=format&fit=crop');
+            z-index: 1;
+        }
+
+        /* The "Digital" World */
+        #layer-digital {
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=2044&auto=format&fit=crop');
+            filter: hue-rotate(180deg) brightness(1.5) contrast(1.2);
+            z-index: 2;
+            clip-path: inset(0 50% 0 0); /* Managed by JS */
+        }
+
+        /* Scanline Overlay for Digital Layer */
+        #layer-digital::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.1) 0px, rgba(0, 255, 255, 0.1) 1px, transparent 1px, transparent 3px);
+            pointer-events: none;
+        }
+
+        /* Handle / Lens */
+        #handle {
+            position: absolute; top: 0; left: 50%; width: 4px; height: 100%;
+            background: #00ffff; box-shadow: 0 0 20px #00ffff;
+            z-index: 10; cursor: ew-resize; transform: translateX(-50%);
+        }
+
+        #handle::after {
+            content: '\f06e'; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 50px; height: 50px; background: #00ffff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #000; font-size: 1.2rem; box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Labels Overlay */
+        .digital-label {
+            position: absolute; color: #00ffff; font-size: 0.8rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px; border-left: 2px solid #00ffff;
+            padding-left: 10px; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+            z-index: 5;
+        }
+
+        #ui {
+            position: absolute; top: 30px; left: 30px; z-index: 20; pointer-events: none;
+        }
+        
+        h1 { margin: 0; font-size: 1.5rem; letter-spacing: 5px; text-transform: uppercase; }
+        p { margin: 5px 0 0 0; font-size: 0.8rem; opacity: 0.7; }
+
+        .btn-exit {
+            position: absolute; bottom: 30px; right: 30px; z-index: 20;
+            color: white; text-decoration: none; border: 1px solid white; padding: 5px 15px; font-size: 0.8rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <h1>X-RAY VISION</h1>
+        <p>REVEALING THE INVISIBLE BACKBONE</p>
+    </div>
+
+    <div class="layer" id="layer-visible"></div>
+    
+    <div class="layer" id="layer-digital">
+        <!-- Infrastructure Callouts -->
+        <div class="digital-label" style="top: 40%; left: 25%;">5G SMALL CELL [ACTIVE]</div>
+        <div class="digital-label" style="top: 70%; left: 10%;">FIBER BACKHAUL Tier-1</div>
+        <div class="digital-label" style="top: 20%; left: 60%;">AI EDGE NODE [SCANNING]</div>
+        <div class="digital-label" style="top: 55%; left: 80%;">V2X DATA STREAM</div>
+    </div>
+
+    <div id="handle"></div>
+
+    <a href="index.html" class="btn-exit">ABORT_SCAN</a>
+
+    <script>
+        const handle = document.getElementById('handle');
+        const digital = document.getElementById('layer-digital');
+        const labels = document.querySelectorAll('.digital-label');
+        
+        let isDragging = false;
+
+        const updateLens = (x) => {
+            const percent = (x / window.innerWidth) * 100;
+            handle.style.left = percent + '%';
+            digital.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+            
+            // Show/Hide labels based on lens position
+            labels.forEach(label => {
+                const labelLeft = parseFloat(label.style.left);
+                if (labelLeft < percent) {
+                    label.style.opacity = 1;
+                } else {
+                    label.style.opacity = 0;
+                }
+            });
+        };
+
+        // Events
+        window.addEventListener('mousedown', () => isDragging = true);
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => {
+            if(isDragging) updateLens(e.clientX);
+        });
+
+        // Touch
+        window.addEventListener('touchstart', (e) => isDragging = true);
+        window.addEventListener('touchend', () => isDragging = false);
+        window.addEventListener('touchmove', (e) => {
+            if(isDragging) updateLens(e.touches[0].clientX);
+        });
+
+        // Initial position
+        updateLens(window.innerWidth / 2);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Network Breath</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@100;400&display=swap" rel="stylesheet">
+    
+    <style>
+        body { margin: 0; background: #000; font-family: 'Gothic A1', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; color: #fff; }
+        
+        .lung-container {
+            width: 400px; height: 400px;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* The Breathing Lung (Visualized as a soft glowing orb) */
+        .lung {
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: breathe 8s ease-in-out infinite;
+            transition: all 2s;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.5); opacity: 0.6; }
+        }
+
+        .ui {
+            position: absolute; text-align: center; pointer-events: none;
+        }
+
+        h1 { font-weight: 100; font-size: 2.5rem; letter-spacing: 15px; text-transform: uppercase; margin: 0; }
+        .status { font-size: 0.7rem; letter-spacing: 5px; opacity: 0.5; margin-top: 10px; }
+
+        .interaction-zone {
+            position: fixed; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer;
+        }
+
+        .info-panel {
+            position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%);
+            text-align: center; opacity: 0; transition: opacity 1s;
+        }
+        .info-panel.visible { opacity: 1; }
+
+        .btn-exit { position: fixed; top: 20px; right: 20px; color: #fff; text-decoration: none; opacity: 0.3; font-size: 0.8rem; }
+
+    </style>
+</head>
+<body>
+
+    <div class="interaction-zone" onclick="disturb()"></div>
+
+    <div class="lung-container">
+        <div class="lung" id="lung"></div>
+        <div class="ui">
+            <h1>NETWORK</h1>
+            <div class="status" id="status">BREATHING: STABLE</div>
+        </div>
+    </div>
+
+    <div class="info-panel" id="info">
+        <h2 id="title">Self-Healing Active</h2>
+        <p id="desc">The AI core is adjusting to your interaction, optimizing traffic flow.</p>
+    </div>
+
+    <a href="index.html" class="btn-exit">DISCONNECT</a>
+
+    <script>
+        const lung = document.getElementById('lung');
+        const status = document.getElementById('status');
+        const info = document.getElementById('info');
+        const title = document.getElementById('title');
+        const desc = document.getElementById('desc');
+        
+        let isStressed = false;
+
+        function disturb() {
+            if(isStressed) return;
+            isStressed = true;
+            
+            // Rapid breathing
+            lung.style.animationDuration = '1s';
+            lung.style.background = 'radial-gradient(circle, rgba(255, 50, 50, 0.8) 0%, transparent 70%)';
+            status.innerText = "STATUS: CONGESTED / ADAPTING";
+            
+            // Show info
+            title.innerText = "Network Autonomy Engaged";
+            desc.innerText = "Traffic spike detected. AI algorithms are rerouting data to edge nodes.";
+            info.classList.add('visible');
+            
+            // Recovery
+            setTimeout(() => {
+                lung.style.animationDuration = '8s';
+                lung.style.background = 'radial-gradient(circle, rgba(50, 255, 200, 0.8) 0%, transparent 70%)';
+                status.innerText = "STATUS: RECOVERED / OPTIMIZED";
+                
+                setTimeout(() => {
+                    lung.style.background = 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%)';
+                    status.innerText = "BREATHING: STABLE";
+                    info.classList.remove('visible');
+                    isStressed = false;
+                }, 3000);
+            }, 3000);
+        }
+
+    </script>
+</body>
+</html>

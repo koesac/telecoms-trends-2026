@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future of Telecoms: Data Origami</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Branding Palette */
+            --alexandrite: #4C194C;
+            --agate: #D6883A;
+            --bloodstone: #15404F;
+            --azurite: #842366;
+            --aventurine: #3E9B9B;
+            --paper: #f0f0f0;
+            --shadow: rgba(0,0,0,0.2);
+        }
+
+        body { margin: 0; background: #091a21; font-family: 'Montserrat', sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; perspective: 1000px; color: #fff; }
+        
+        .origami-container {
+            width: 350px; height: 350px;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
+
+        /* Face common styles */
+        .face {
+            position: absolute; width: 100%; height: 100%;
+            background: var(--paper);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; box-sizing: border-box;
+            backface-visibility: hidden;
+            box-shadow: inset 0 0 50px var(--shadow);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+        }
+
+        .face h2 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.8rem; color: #333; text-align: center; }
+        .face p { font-size: 0.9rem; text-align: center; color: #555; margin-top: 15px; line-height: 1.5; }
+
+        /* Flaps */
+        .flap {
+            position: absolute; width: 100%; height: 50%;
+            background: #e8e8e8;
+            left: 0;
+            transform-origin: top;
+            transition: transform 0.8s;
+            z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.75rem; letter-spacing: 2px;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .flap-top { top: 0; border-bottom: 1px solid #ccc; border-radius: 4px 4px 0 0; }
+        .flap-bottom { bottom: 0; transform-origin: bottom; border-top: 1px solid #ccc; border-radius: 0 0 4px 4px; }
+
+        /* Unfolded Class */
+        .unfolded .flap-top { transform: rotateX(160deg); }
+        .unfolded .flap-bottom { transform: rotateX(-160deg); }
+        .unfolded .face { background: #fff; box-shadow: 0 30px 60px rgba(0,0,0,0.3); }
+
+        .btn-next {
+            position: absolute; bottom: -80px; background: none; border: 1px solid var(--agate);
+            color: var(--agate); padding: 10px 25px; cursor: pointer; font-family: inherit; 
+            font-size: 0.8rem; letter-spacing: 2px; border-radius: 50px; transition: 0.3s;
+        }
+        .btn-next:hover { background: var(--agate); color: #fff; }
+
+        .btn-exit { position: fixed; top: 30px; right: 30px; color: #aaa; text-decoration: none; font-size: 0.8rem; border-bottom: 1px solid #444; }
+
+        /* Icon styling */
+        .icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--agate); }
+
+    </style>
+</head>
+<body>
+
+    <div class="origami-container" id="origami" onclick="toggleFold()">
+        <div class="flap flap-top" id="flap-label">5G_ARCH</div>
+        <div class="face f1">
+            <div class="icon" id="icon"><i class="fas fa-tower-broadcast"></i></div>
+            <h2 id="title">Hyper-Scale 5G</h2>
+            <p id="desc">Exploring the transition from utility to essential fabric. Click to unfold the details.</p>
+        </div>
+        <div class="flap flap-bottom">REVEAL_SPECS</div>
+    </div>
+
+    <button class="btn-next" onclick="nextTrend(event)">NEXT_TREND</button>
+    <a href="index.html" class="btn-exit">EXIT_ORIGAMI</a>
+
+    <script>
+        const origami = document.getElementById('origami');
+        const title = document.getElementById('title');
+        const desc = document.getElementById('desc');
+        const flapLabel = document.getElementById('flap-label');
+        const iconContainer = document.getElementById('icon');
+        
+        let current = 0;
+        const data = [
+            { 
+                t: "Hyper-Scale 5G", 
+                d: "Terahertz air interface pilot testing. Latency reaching <1ms, enabling real-time remote robotic surgery.", 
+                flap: "INFRASTRUCTURE", 
+                icon: "fa-tower-broadcast",
+                color: "var(--agate)"
+            },
+            { 
+                t: "Autonomous AI", 
+                d: "Zero-touch provisioning models. Networks that predict outages and optimize energy without human intervention.", 
+                flap: "INTELLIGENCE", 
+                icon: "fa-brain",
+                color: "var(--azurite)"
+            },
+            { 
+                t: "Edge Core", 
+                d: "Decentralized compute clusters processing 90% of data locally to support autonomous vehicles.", 
+                flap: "ARCHITECTURE", 
+                icon: "fa-microchip",
+                color: "var(--aventurine)"
+            },
+            { 
+                t: "Orbital Link", 
+                d: "Seamless handover between towers and LEO satellite constellations for 100% global connectivity.", 
+                flap: "COVERAGE", 
+                icon: "fa-satellite",
+                color: "var(--bloodstone)"
+            },
+            { 
+                t: "Quantum Shield", 
+                d: "Deployment of Post-Quantum Cryptography (PQC) to secure backbones against next-gen decryption.", 
+                flap: "SECURITY", 
+                icon: "fa-shield-halved",
+                color: "var(--alexandrite)"
+            }
+        ];
+
+        function toggleFold() {
+            origami.classList.toggle('unfolded');
+        }
+
+        function nextTrend(e) {
+            e.stopPropagation();
+            origami.classList.remove('unfolded');
+            
+            setTimeout(() => {
+                current = (current + 1) % data.length;
+                const trend = data[current];
+                
+                title.innerText = trend.t;
+                desc.innerText = trend.d;
+                flapLabel.innerText = trend.flap;
+                iconContainer.innerHTML = `<i class="fas ${trend.icon}"></i>`;
+                iconContainer.style.color = trend.color;
+                
+                // Set flap color based on trend
+                document.querySelectorAll('.flap').forEach(f => {
+                    f.style.backgroundColor = trend.color === 'var(--bloodstone)' || trend.color === 'var(--alexandrite)' ? '#333' : '#e8e8e8';
+                    f.style.color = trend.color === 'var(--bloodstone)' || trend.color === 'var(--alexandrite)' ? '#fff' : '#333';
+                });
+
+                // Add a little bounce
+                origami.style.transform = "scale(0.9)";
+                setTimeout(() => origami.style.transform = "scale(1)", 200);
+            }, 400);
+        }
+
+    </script>
+</body>
+</html>

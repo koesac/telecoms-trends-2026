@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future of Telecoms: Decision Engine</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --accent: #66fcf1;
+            --text: #c5c6c7;
+        }
+
+        body {
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+        }
+
+        #header {
+            padding: 40px; border-bottom: 1px solid rgba(102, 252, 241, 0.2);
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; letter-spacing: 5px; color: var(--accent); }
+
+        #main {
+            flex-grow: 1; display: flex; align-items: center; justify-content: center;
+            padding: 40px; gap: 40px;
+        }
+
+        .card {
+            width: 400px; padding: 40px; border: 1px solid var(--accent);
+            background: rgba(102, 252, 241, 0.05);
+            transition: all 0.3s; cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover { background: rgba(102, 252, 241, 0.15); box-shadow: 0 0 30px rgba(102, 252, 241, 0.2); }
+
+        .card h2 { margin: 0 0 20px 0; font-size: 1rem; color: #fff; }
+        .card p { font-size: 0.9rem; line-height: 1.6; opacity: 0.8; }
+
+        .stats-grid {
+            position: fixed; bottom: 40px; left: 40px; right: 40px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+        }
+
+        .stat-box { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+        .stat-val { display: block; font-size: 1.5rem; font-weight: 700; color: #fff; }
+        .stat-label { font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; }
+
+        .btn-exit { color: var(--accent); text-decoration: none; border: 1px solid var(--accent); padding: 5px 10px; font-size: 0.8rem; }
+
+        #flash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--accent); opacity: 0; pointer-events: none; z-index: 100;
+        }
+
+        @media (max-width: 900px) {
+            #main { flex-direction: column; overflow-y: auto; }
+            .card { width: 100%; padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; position: relative; bottom: 0; left: 0; right: 0; padding: 40px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="flash"></div>
+
+    <div id="header">
+        <div>
+            <h1>DECISION_ENGINE v1.0</h1>
+            <div style="font-size: 0.7rem; margin-top: 10px; opacity: 0.5;">ARCHITECTING THE 2026 TOPOLOGY</div>
+        </div>
+        <a href="index.html" class="btn-exit">TERMINATE</a>
+    </div>
+
+    <div id="main">
+        <div class="card" onclick="makeChoice('coverage')">
+            <h2>STRATEGY_A: UNIVERSAL_ACCESS</h2>
+            <p>Prioritize LEO satellite handover and rural 5G density. Eliminate all global dead-zones to ensure ubiquitous data fabric.</p>
+            <div style="margin-top: 20px; font-size: 0.7rem; color: var(--accent);">[ CLICK TO DEPLOY ]</div>
+        </div>
+
+        <div class="card" onclick="makeChoice('speed')">
+            <h2>STRATEGY_B: HYPER_SPEED_CORE</h2>
+            <p>Focus resources on urban 6G terahertz pilots and AI-driven autonomous routing. Achieve sub-1ms latency in major hub cities.</p>
+            <div style="margin-top: 20px; font-size: 0.7rem; color: var(--accent);">[ CLICK TO DEPLOY ]</div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-box"><span class="stat-val" id="val-uptime">99.99%</span><span class="stat-label">System Uptime</span></div>
+        <div class="stat-box"><span class="stat-val" id="val-latency">1.2ms</span><span class="stat-label">Avg. Latency</span></div>
+        <div class="stat-box"><span class="stat-val" id="val-coverage">82%</span><span class="stat-label">Global Coverage</span></div>
+        <div class="stat-box"><span class="stat-val" id="val-pqc">VERIFIED</span><span class="stat-label">Security Protocol</span></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        let stats = {
+            uptime: 99.99,
+            latency: 1.2,
+            coverage: 82
+        };
+
+        function makeChoice(type) {
+            // Visual Flash
+            gsap.fromTo("#flash", { opacity: 0.5 }, { opacity: 0, duration: 0.5 });
+            
+            if(type === 'coverage') {
+                stats.coverage = Math.min(100, stats.coverage + 5);
+                stats.latency += 0.1;
+            } else {
+                stats.latency = Math.max(0.1, stats.latency - 0.2);
+                stats.coverage -= 2;
+            }
+
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('val-latency').innerText = stats.latency.toFixed(2) + "ms";
+            document.getElementById('val-coverage').innerText = stats.coverage.toFixed(0) + "%";
+            
+            // Text Color Feedback
+            gsap.to(".stat-val", { color: "#fff", duration: 0.1, yoyo: true, repeat: 1 });
+        }
+
+        // Random jitter for "live" feel
+        setInterval(() => {
+            document.getElementById('val-uptime').innerText = (99.98 + Math.random() * 0.02).toFixed(2) + "%";
+        }, 2000);
+
+    </script>
+</body>
+</html>

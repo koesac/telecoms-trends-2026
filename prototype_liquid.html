@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future of Telecoms: Liquid Data</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Quicksand', sans-serif; color: #fff; }
+        #canvas { display: block; filter: blur(5px) contrast(10); background: #000; }
+        
+        #ui {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center;
+        }
+
+        h1 { font-size: 3rem; font-weight: 300; letter-spacing: 15px; text-transform: uppercase; margin: 0; }
+        p { font-size: 1rem; opacity: 0.5; letter-spacing: 5px; margin-top: 10px; }
+
+        .btn-exit {
+            position: absolute; bottom: 40px; color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 30px; border-radius: 50px; pointer-events: auto; font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="ui">
+        <h1>FLUID_FLOW</h1>
+        <p>THE HARMONY OF DATA</p>
+        <a href="index.html" class="btn-exit">DISCONNECT</a>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+        const particleCount = 150;
+        let mouse = { x: -100, y: -100 };
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.init();
+            }
+            
+            init() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.size = 15 + Math.random() * 25;
+                this.color = Math.random() > 0.5 ? '#00ffff' : '#ff00ff';
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Repel from mouse
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 150) {
+                    this.vx += dx / 100;
+                    this.vy += dy / 100;
+                }
+
+                // Attraction to center (simulating nodes)
+                const cx = width/2 - this.x;
+                const cy = height/2 - this.y;
+                this.vx += cx / 5000;
+                this.vy += cy / 5000;
+
+                // Friction
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for(let i=0; i<particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, width, height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+        }
+        animate();
+
+    </script>
+</body>
+</html>
