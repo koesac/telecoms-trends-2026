@@ -402,6 +402,7 @@
         }
 
         function applyRotation() {
+            if(isTransitioning) return;
             isTransitioning = true;
             stopIdle();
             
@@ -423,13 +424,14 @@
                 dot.classList.toggle('active', i === currentFace);
             });
 
-            setTimeout(() => { isTransitioning = false; }, 1000);
+            // Lock input for 1.2 seconds to allow animation to complete and prevent skipping
+            setTimeout(() => { isTransitioning = false; }, 1200);
         }
 
         // Initial subtle spin
         let initialRot = 0;
         const idle = setInterval(() => {
-            if (currentFace === 0) {
+            if (currentFace === 0 && !isTransitioning) {
                 initialRot += 0.2;
                 cube.style.transform = `rotateX(-10deg) rotateY(${initialRot}deg)`;
             } else {
@@ -447,9 +449,14 @@
         Observer.create({
             target: window,
             type: "wheel,touch",
-            onUp: () => rotatePrev(),
-            onDown: () => rotateNext(),
-            tolerance: 10,
+            onUp: () => {
+                if(!isTransitioning) rotatePrev();
+            },
+            onDown: () => {
+                if(!isTransitioning) rotateNext();
+            },
+            wheelSpeed: 1,
+            tolerance: 20, // Increased tolerance
             preventDefault: true
         });
 
