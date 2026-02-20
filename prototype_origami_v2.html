@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Telecoms 2026: Data Origami v2</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Branding Palette */
+            --alexandrite: #4C194C;
+            --agate: #D6883A;
+            --bloodstone: #15404F;
+            --azurite: #842366;
+            --aventurine: #3E9B9B;
+            --bg-dark: #050a10;
+            --paper: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1500px;
+        }
+
+        /* The Main Origami Object */
+        .origami-container {
+            width: 340px;
+            height: 340px;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* The central face */
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--paper);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.1);
+            color: #333;
+            z-index: 1;
+            transition: all 0.8s ease;
+        }
+
+        .face h2 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.2rem;
+            margin: 0;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .face p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .face .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--agate);
+            transition: color 0.5s ease;
+        }
+
+        /* Foldable Flaps */
+        .flap {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            background: #f8f8f8;
+            left: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+            color: #222;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .flap-top {
+            top: 0;
+            transform-origin: top;
+            border-bottom: 1px solid #ddd;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .flap-bottom {
+            bottom: 0;
+            transform-origin: bottom;
+            border-top: 1px solid #ddd;
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* Unfolded Interaction */
+        .unfolded .flap-top { transform: rotateX(165deg); }
+        .unfolded .flap-bottom { transform: rotateX(-165deg); }
+        .unfolded .face { background: #fff; box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
+
+        /* UI Overlays */
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .btn-action {
+            background: transparent;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            pointer-events: auto;
+        }
+
+        .btn-action:hover {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-exit {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            color: rgba(255,255,255,0.4);
+            text-decoration: none;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 480px) {
+            .origami-container {
+                width: 280px;
+                height: 280px;
+            }
+            .face h2 { font-size: 1rem; }
+            .face p { font-size: 0.8rem; }
+            .face .icon { font-size: 2.5rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <div class="controls">
+            <button class="btn-action" onclick="nextTrend()">NEXT_TREND</button>
+            <div style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px;">TAP CENTER TO UNFOLD DATA</div>
+        </div>
+        <a href="index.html" class="btn-exit">TERMINATE_SESSION</a>
+    </div>
+
+    <div class="origami-container" id="origami" onclick="toggleFold()">
+        <div class="flap flap-top" id="flap-top">INFRASTRUCTURE</div>
+        <div class="face">
+            <div class="icon" id="trend-icon"><i class="fas fa-tower-broadcast"></i></div>
+            <h2 id="trend-title">Hyper-Scale 5G</h2>
+            <p id="trend-desc">The transition from utility to essential fabric. Terahertz air interface pilots achieving sub-1ms latency.</p>
+        </div>
+        <div class="flap flap-bottom" id="flap-bottom">DATA_VERIFIED</div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        const origami = document.getElementById('origami');
+        const title = document.getElementById('trend-title');
+        const desc = document.getElementById('trend-desc');
+        const icon = document.getElementById('trend-icon');
+        const fTop = document.getElementById('flap-top');
+        const fBot = document.getElementById('flap-bottom');
+
+        let currentIndex = 0;
+        const trends = [
+            { 
+                t: "Hyper-Scale 5G", 
+                d: "The transition from utility to essential fabric. Terahertz air interface pilots achieving sub-1ms latency.",
+                i: "fa-tower-broadcast",
+                tag: "INFRASTRUCTURE",
+                c: "#D6883A" // Agate
+            },
+            { 
+                t: "Autonomous AI", 
+                d: "Zero-touch provisioning models. Networks that repair themselves and optimize energy without human intervention.",
+                i: "fa-brain",
+                tag: "INTELLIGENCE",
+                c: "#842366" // Azurite
+            },
+            { 
+                t: "Edge Core", 
+                d: "Decentralized compute clusters processing 90% of data locally to support autonomous mobility.",
+                i: "fa-microchip",
+                tag: "ARCHITECTURE",
+                c: "#3E9B9B" // Aventurine
+            },
+            { 
+                t: "Orbital Link", 
+                d: "Seamless handover between terrestrial nodes and LEO satellite constellations for 100% global reach.",
+                i: "fa-satellite",
+                tag: "COVERAGE",
+                c: "#15404F" // Bloodstone
+            },
+            { 
+                t: "Quantum Shield", 
+                d: "Deployment of Post-Quantum Cryptography (PQC) to secure backbones against next-gen decryption.",
+                i: "fa-shield-halved",
+                tag: "SECURITY",
+                c: "#4C194C" // Alexandrite
+            }
+        ];
+
+        function toggleFold() {
+            origami.classList.toggle('unfolded');
+        }
+
+        function nextTrend() {
+            // Fold back first
+            origami.classList.remove('unfolded');
+            
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % trends.length;
+                const trend = trends[currentIndex];
+
+                // Update content
+                title.innerText = trend.t;
+                desc.innerText = trend.d;
+                icon.innerHTML = `<i class="fas ${trend.i}"></i>`;
+                icon.style.color = trend.c;
+                fTop.innerText = trend.tag;
+
+                // Adjust flap colors for dark branding colors
+                if (trend.c === "#15404F" || trend.c === "#4C194C") {
+                    fTop.style.background = "#222";
+                    fTop.style.color = "#fff";
+                    fBot.style.background = "#222";
+                    fBot.style.color = "#fff";
+                } else {
+                    fTop.style.background = "#f8f8f8";
+                    fTop.style.color = "#222";
+                    fBot.style.background = "#f8f8f8";
+                    fBot.style.color = "#222";
+                }
+
+                // Add physical bounce effect
+                gsap.fromTo(origami, { scale: 0.8 }, { scale: 1, duration: 0.5, ease: "back.out(2)" });
+            }, 400);
+        }
+
+        // Parallax effect on mouse/touch
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768) {
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * -20;
+                gsap.to(origami, { rotationY: x, rotationX: y, duration: 0.5 });
+            }
+        });
+
+    </script>
+</body>
+</html>
