@@ -85,7 +85,7 @@
 
         /* The Cube */
         .scene {
-            width: 300px; height: 300px;
+            width: 400px; height: 400px;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1.2);
@@ -93,12 +93,12 @@
         }
 
         .face {
-            position: absolute; width: 300px; height: 300px;
+            position: absolute; width: 400px; height: 400px;
             background: rgba(0, 0, 0, 0.4); /* Darker background for higher contrast */
             backdrop-filter: blur(5px);
             border: 2px solid rgba(255, 255, 255, 0.2);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; box-sizing: border-box;
+            padding: 40px; box-sizing: border-box;
             backface-visibility: hidden;
             transition: all 0.5s ease;
         }
@@ -107,7 +107,7 @@
 
         .face h2 { 
             font-family: 'Syncopate', sans-serif; 
-            font-size: 0.9rem; 
+            font-size: 1.1rem; 
             letter-spacing: 2px; 
             margin: 15px 0 8px; 
             text-align: center;
@@ -115,15 +115,15 @@
             color: var(--agate);
         }
         .face p { 
-            font-size: 0.75rem; 
-            line-height: 1.4; 
+            font-size: 0.95rem; 
+            line-height: 1.5; 
             color: #eee; 
             text-align: center; 
             font-weight: 400;
             text-shadow: 0 1px 5px rgba(0,0,0,0.5);
             margin-bottom: 10px;
         }
-        .face .icon { font-size: 2.5rem; color: var(--agate); }
+        .face .icon { font-size: 3.5rem; color: var(--agate); }
 
         .impact-box {
             border-top: 1px solid rgba(255,255,255,0.1);
@@ -133,25 +133,25 @@
         }
         .stat-highlight {
             display: block;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--agate);
             margin-bottom: 4px;
         }
         .stat-desc {
-            font-size: 0.65rem;
+            font-size: 0.8rem;
             opacity: 0.7;
             color: #ccc;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
         /* Positioning Faces */
-        .front  { transform: rotateY(0deg) translateZ(150px); }
-        .right  { transform: rotateY(90deg) translateZ(150px); }
-        .back   { transform: rotateY(180deg) translateZ(150px); }
-        .left   { transform: rotateY(-90deg) translateZ(150px); }
-        .top    { transform: rotateX(90deg) translateZ(150px); background: #000; border-color: var(--bloodstone); }
-        .bottom { transform: rotateX(-90deg) translateZ(150px); background: #000; border-color: var(--alexandrite); }
+        .front  { transform: rotateY(0deg) translateZ(200px); }
+        .right  { transform: rotateY(90deg) translateZ(200px); }
+        .back   { transform: rotateY(180deg) translateZ(200px); }
+        .left   { transform: rotateY(-90deg) translateZ(200px); }
+        .top    { transform: rotateX(90deg) translateZ(200px); background: #000; border-color: var(--bloodstone); }
+        .bottom { transform: rotateX(-90deg) translateZ(200px); background: #000; border-color: var(--alexandrite); }
 
         /* Navigation Dots */
         .dots {
@@ -165,16 +165,43 @@
 
         .btn-exit { position: fixed; top: 40px; right: 40px; color: #666; text-decoration: none; font-size: 0.7rem; pointer-events: auto; }
 
+        /* Conclusion Overlay */
+        #conclusion-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 10, 16, 0.95);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 200; opacity: 0; pointer-events: none; transition: 1s ease;
+            backdrop-filter: blur(20px);
+        }
+        #conclusion-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .conclusion-content {
+            max-width: 600px; text-align: center; padding: 40px;
+        }
+        .conclusion-content h2 { font-family: 'Syncopate', sans-serif; letter-spacing: 10px; color: var(--agate); margin-bottom: 30px; }
+        .conclusion-content p { font-size: 1.1rem; line-height: 1.8; color: #ccc; margin-bottom: 20px; }
+
+        .btn-action {
+            background: transparent; border: 1px solid var(--agate); color: var(--agate);
+            padding: 15px 40px; border-radius: 50px; cursor: pointer; font-family: 'Syncopate', sans-serif;
+            font-size: 0.7rem; letter-spacing: 2px; transition: 0.3s; margin-top: 20px;
+        }
+        .btn-action:hover { background: var(--agate); color: #fff; }
+
         /* Mobile specific adjustments */
         @media (max-width: 480px) {
-            .scene { width: 250px; height: 250px; }
-            .face { width: 250px; height: 250px; padding: 20px; }
-            .front  { transform: rotateY(0deg) translateZ(125px); }
-            .right  { transform: rotateY(90deg) translateZ(125px); }
-            .back   { transform: rotateY(180deg) translateZ(125px); }
-            .left   { transform: rotateY(-90deg) translateZ(125px); }
-            .top    { transform: rotateX(90deg) translateZ(125px); }
-            .bottom { transform: rotateX(-90deg) translateZ(125px); }
+            .scene { width: 320px; height: 320px; }
+            .face { width: 320px; height: 320px; padding: 25px; }
+            .front  { transform: rotateY(0deg) translateZ(160px); }
+            .right  { transform: rotateY(90deg) translateZ(160px); }
+            .back   { transform: rotateY(180deg) translateZ(160px); }
+            .left   { transform: rotateY(-90deg) translateZ(160px); }
+            .top    { transform: rotateX(90deg) translateZ(160px); }
+            .bottom { transform: rotateX(-90deg) translateZ(160px); }
+            .face p { font-size: 0.8rem; }
+            .face h2 { font-size: 0.9rem; }
+            .stat-highlight { font-size: 0.9rem; }
+            .stat-desc { font-size: 0.7rem; }
         }
 
     </style>
@@ -191,7 +218,7 @@
     </div>
 
     <div id="ui">
-        <h1>STRATEGY_CUBE</h1>
+        <h1><a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; pointer-events: auto;">Innovate Comms</a></h1>
         <div class="dots" id="dots">
             <div class="dot active" onclick="rotateTo(0)"></div>
             <div class="dot" onclick="rotateTo(1)"></div>
@@ -199,8 +226,17 @@
             <div class="dot" onclick="rotateTo(3)"></div>
             <div class="dot" onclick="rotateTo(4)"></div>
             <div class="dot" onclick="rotateTo(5)"></div>
+            <div class="dot" onclick="showConclusion()" title="Conclusion"><i class="fas fa-flag-checkered" style="font-size: 0.6rem;"></i></div>
         </div>
-        <a href="index.html" class="btn-exit">TERMINATE_LINK</a>
+    </div>
+
+    <div id="conclusion-overlay">
+        <div class="conclusion-content">
+            <h2>THE ROAD AHEAD</h2>
+            <p>The telecommunications landscape is undergoing a metamorphosis. By integrating intelligence, edge capability, and global reach, providers are evolving into the essential architects of our digital existence.</p>
+            <p>The next decade will be defined not just by how fast we connect, but how intelligently we communicate.</p>
+            <button class="btn-action" onclick="hideConclusion()">RETURN TO CORE</button>
+        </div>
     </div>
 
     <div class="hint">SCROLL OR TAP TO ROTATE</div>
@@ -209,8 +245,11 @@
         <!-- Face 0: Intro -->
         <div class="face front">
             <div class="icon"><i class="fas fa-cube"></i></div>
-            <h2>TELECOMS 2026</h2>
-            <p>A multi-dimensional view of the future digital backbone.</p>
+            <h2>THE FUTURE OF TELECOMS</h2>
+            <p>Exploring the groundbreaking shifts redefining global connectivity in 2026 and beyond.</p>
+            <div class="impact-box">
+                <div class="stat-desc">From hyper-speed networks to intelligent automation, witness the evolution of the digital backbone.</div>
+            </div>
         </div>
         
         <!-- Face 1: 5G -->
@@ -238,7 +277,7 @@
         <!-- Face 3: Edge -->
         <div class="face left">
             <div class="icon" style="color:var(--aventurine)"><i class="fas fa-microchip"></i></div>
-            <h2 style="color:var(--aventurine)">EDGE_CORE</h2>
+            <h2 style="color:var(--aventurine)">EDGE CORE</h2>
             <p>Processing power moved to the network edge, colocated with base stations to minimize data travel distance.</p>
             <div class="impact-box">
                 <span class="stat-highlight" style="color:var(--aventurine)">90% Latency Gain</span>
@@ -248,22 +287,22 @@
 
         <!-- Face 4: Sat -->
         <div class="face top">
-            <div class="icon" style="color:var(--bloodstone)"><i class="fas fa-satellite"></i></div>
-            <h2 style="color:var(--bloodstone)">ORBITAL_LINK</h2>
+            <div class="icon" style="color:#00d2ff"><i class="fas fa-satellite"></i></div>
+            <h2 style="color:#00d2ff">ORBITAL LINK</h2>
             <p>The convergence of terrestrial networks and LEO satellite constellations has eliminated "dead zones" across the globe.</p>
             <div class="impact-box">
-                <span class="stat-highlight" style="color:var(--bloodstone)">Zero Connectivity Gaps</span>
+                <span class="stat-highlight" style="color:#00d2ff">Zero Connectivity Gaps</span>
                 <div class="stat-desc">High-speed internet for the most remote corners of the planet.</div>
             </div>
         </div>
 
         <!-- Face 5: Security -->
         <div class="face bottom">
-            <div class="icon" style="color:var(--alexandrite)"><i class="fas fa-shield-halved"></i></div>
-            <h2 style="color:var(--alexandrite)">QUANTUM_SHIELD</h2>
-            <p>Providers are deploying Post-Quantum Cryptography (PQC) to protect national communication backbones.</p>
+            <div class="icon" style="color:#ff00ff"><i class="fas fa-shield-halved"></i></div>
+            <h2 style="color:#ff00ff">QUANTUM SHIELD</h2>
+            <p>Providers are deploying Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
             <div class="impact-box">
-                <span class="stat-highlight" style="color:var(--alexandrite)">Quantum-Safe</span>
+                <span class="stat-highlight" style="color:#ff00ff">Quantum-Safe</span>
                 <div class="stat-desc">Ensuring long-term data privacy against next-decade decryption threats.</div>
             </div>
         </div>
@@ -385,6 +424,10 @@
 
         function rotateNext() {
             if(isTransitioning) return;
+            if(currentFace === 5) {
+                showConclusion();
+                return;
+            }
             currentFace = (currentFace + 1) % rotations.length;
             applyRotation();
         }
@@ -399,6 +442,22 @@
             if(isTransitioning) return;
             currentFace = idx;
             applyRotation();
+        }
+
+        const conclusionOverlay = document.getElementById('conclusion-overlay');
+
+        function showConclusion() {
+            stopIdle();
+            conclusionOverlay.classList.add('active');
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === 6);
+            });
+        }
+
+        function hideConclusion() {
+            conclusionOverlay.classList.remove('active');
+            rotateTo(0);
         }
 
         function applyRotation() {
@@ -432,14 +491,22 @@
         let initialRot = 0;
         const idle = setInterval(() => {
             if (currentFace === 0 && !isTransitioning) {
-                initialRot += 0.2;
+                initialRot -= 0.2;
                 cube.style.transform = `rotateX(-10deg) rotateY(${initialRot}deg)`;
             } else {
                 clearInterval(idle);
             }
         }, 20);
 
-        const stopIdle = () => clearInterval(idle);
+        const stopIdle = () => {
+            if (idle) {
+                clearInterval(idle);
+                // Instantly reset to neutral before first real rotation to avoid jitter
+                if (currentFace === 0) {
+                    cube.style.transform = `rotateX(0deg) rotateY(0deg)`;
+                }
+            }
+        };
 
         // Interaction
         cube.addEventListener('mousedown', stopIdle);
