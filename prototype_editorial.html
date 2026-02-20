@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Future of Telecoms: Editorial Report</title>
+    <title>Innovate Comms: Editorial Report (Concept C)</title>
+    <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Content -->
+    <script src="master_content.js"></script>
     
     <style>
         :root {
-            --alexandrite: #4C194C;
             --agate: #D6883A;
-            --bloodstone: #15404F;
-            --azurite: #842366;
             --aventurine: #3E9B9B;
+            --azurite: #842366;
+            --bloodstone: #15404F;
+            --alexandrite: #4C194C;
+            --bg-dark: #050a10;
             --text-dark: #0a0a0a;
             --text-light: #f4f4f4;
         }
@@ -27,16 +31,35 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: "Avenir Next LT", "Avenir Next", "Avenir", sans-serif;
             color: var(--text-dark);
             background-color: #ffffff;
             overflow-x: hidden;
         }
 
+        #header-branding {
+            position: fixed; 
+            top: calc(20px + env(safe-area-inset-top)); 
+            left: calc(20px + env(safe-area-inset-left)); 
+            pointer-events: auto;
+            z-index: 1000;
+        }
+
+        h1.brand-title {
+            font-family: inherit; font-size: 1.2rem; letter-spacing: 2px; margin: 0;
+            text-transform: uppercase; color: var(--text-dark); display: flex; align-items: center; gap: 15px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            fill: none !important; stroke: var(--agate) !important; stroke-width: 2; width: 30px; height: 30px;
+        }
+
         /* Typography */
         h1, h2, h3 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
+            font-family: 'Bebas Neue', cursive;
+            font-weight: 400;
+            letter-spacing: 2px;
         }
 
         /* Intro Section */
@@ -50,19 +73,21 @@
             background: #fff;
             position: relative;
             z-index: 2;
+            padding: 20px;
         }
 
         #intro h1 {
-            font-size: 6vw;
+            font-size: 8vw;
             line-height: 1;
             margin-bottom: 2rem;
             opacity: 0;
             transform: translateY(50px);
+            color: var(--agate);
         }
 
         #intro p {
             font-size: 1.5rem;
-            max-width: 600px;
+            max-width: 800px;
             color: #555;
             opacity: 0;
             transform: translateY(30px);
@@ -91,23 +116,24 @@
             justify-content: center;
             padding: 0 5%;
             z-index: 2;
-            background: rgba(255,255,255,0.9); /* Slight transparency */
+            background: rgba(255,255,255,0.9);
         }
 
-        .trend-number {
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
+        .trend-tag {
+            font-family: inherit;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             color: #888;
             margin-bottom: 1rem;
             display: block;
+            font-weight: 700;
         }
 
         .panel h2 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             margin-bottom: 1.5rem;
-            line-height: 1.1;
+            line-height: 1;
             color: var(--text-dark);
         }
 
@@ -118,31 +144,24 @@
             margin-bottom: 2rem;
         }
 
-        .stat-box {
+        .implication-box {
             border-left: 4px solid var(--agate);
             padding-left: 1.5rem;
+            margin-top: 1rem;
         }
 
-        .stat-value {
-            display: block;
-            font-size: 2.5rem;
+        .implication-box p {
+            font-size: 1rem;
             font-weight: 700;
-            font-family: 'Inter', sans-serif;
-            color: var(--agate);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: var(--text-dark);
+            margin-bottom: 0;
         }
 
         /* Right Side: Visuals */
         .visual-col {
             width: 60%;
             height: 100%;
-            position: absolute; /* Allows visuals to be full width underneath on mobile if needed */
+            position: absolute;
             right: 0;
             top: 0;
             z-index: 0;
@@ -166,41 +185,7 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* Trend 1 Visuals */
-        #visual-1 {
-            background: radial-gradient(circle at 70% 50%, var(--bloodstone), #000);
-        }
-        #visual-1 .pulse-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 50%;
-            width: 200px;
-            height: 200px;
-        }
-
-        /* Trend 2 Visuals */
-        #visual-2 {
-            background: linear-gradient(135deg, var(--alexandrite), #2a0e2a);
-        }
-        
-        /* Trend 3 Visuals */
-        #visual-3 {
-            background: linear-gradient(45deg, var(--aventurine), #1a4f4f);
-        }
-
-        /* Trend 4 Visuals */
-        #visual-4 {
-            background: radial-gradient(circle at 50% 100%, #222, #000);
-        }
-        
-        /* Trend 5 Visuals */
-        #visual-5 {
-            background: linear-gradient(to bottom, #111, var(--bloodstone));
-        }
-
+        /* Dynamic classes added by JS */
 
         /* Navigation / Progress */
         .progress-bar {
@@ -210,23 +195,28 @@
             height: 5px;
             background: var(--agate);
             width: 0%;
-            z-index: 100;
+            z-index: 2000;
         }
 
         /* Mobile Adjustments */
         @media (max-width: 768px) {
+            #header-branding { top: 20px; left: 20px; }
+            h1.brand-title { font-size: 1rem; }
+            #intro h1 { font-size: 15vw; }
+            #intro p { font-size: 1.1rem; }
             .content-col {
                 width: 100%;
                 background: rgba(255,255,255,0.95);
-                height: 60vh;
-                margin-top: 40vh;
+                height: 65vh;
+                margin-top: 35vh;
                 border-top-left-radius: 30px;
                 border-top-right-radius: 30px;
                 box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+                padding: 40px 30px;
             }
             .visual-col {
                 width: 100%;
-                height: 50vh; /* Shows partially behind content */
+                height: 40vh;
                 position: fixed;
                 top: 0;
             }
@@ -238,124 +228,46 @@
 </head>
 <body>
 
+    <div id="header-branding">
+        <h1 class="brand-title">
+            <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                Innovate Comms
+            </a>
+        </h1>
+    </div>
+
     <!-- Progress Bar -->
     <div class="progress-bar"></div>
 
     <!-- Intro -->
     <section id="intro">
-        <h1>The Digital<br>Horizon</h1>
-        <p>Report 2026: Five architectural shifts redefining global communication.</p>
+        <h1 id="intro-title"></h1>
+        <p id="intro-p1" style="font-weight: 700; color: var(--agate); margin-bottom: 1rem;"></p>
+        <p id="intro-p2"></p>
         <div style="margin-top: 50px; opacity: 0; animation: fadeInUp 1s 1s forwards;">
             <i class="fas fa-arrow-down" style="font-size: 2rem; color: var(--agate);"></i>
         </div>
     </section>
 
-    <!-- Scrollytelling Sections -->
-    <div class="scrolly-container">
-        
-        <!-- Trend 1 -->
-        <section class="panel" id="panel-1">
-            <div class="content-col">
-                <span class="trend-number">01 / Infrastructure</span>
-                <h2>Hyper-Scale 5G & 6G</h2>
-                <p>We have moved beyond simple connectivity. The new air interface is a programmable fabric, capable of sensing the physical world and transmitting holographic data streams in real-time.</p>
-                <div class="stat-box">
-                    <span class="stat-value">&lt;1ms</span>
-                    <span class="stat-label">End-to-End Latency</span>
-                </div>
-            </div>
-            <div class="visual-col">
-                <div class="visual-bg" id="visual-1">
-                    <div class="pulse-ring ring-1"></div>
-                    <div class="pulse-ring ring-2"></div>
-                    <div class="pulse-ring ring-3"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trend 2 -->
-        <section class="panel" id="panel-2">
-            <div class="content-col">
-                <span class="trend-number">02 / Intelligence</span>
-                <h2>Autonomous Networks</h2>
-                <p>The era of manual network configuration is over. Zero-touch provisioning driven by generative AI models ensures networks heal themselves before users even notice a degradation.</p>
-                <div class="stat-box">
-                    <span class="stat-value">-30%</span>
-                    <span class="stat-label">Operational Expenditure</span>
-                </div>
-            </div>
-            <div class="visual-col">
-                <div class="visual-bg" id="visual-2">
-                    <!-- Abstract 'Brain' Nodes -->
-                    <i class="fas fa-brain" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:15rem; color:rgba(255,255,255,0.05);"></i>
-                    <div class="overlay-shape" style="top:20%; left:20%; width:100px; height:100px; border-radius:50%;"></div>
-                    <div class="overlay-shape" style="bottom:30%; right:20%; width:150px; height:150px; border-radius:50%;"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trend 3 -->
-        <section class="panel" id="panel-3">
-            <div class="content-col">
-                <span class="trend-number">03 / Architecture</span>
-                <h2>Edge Integration</h2>
-                <p>Compute is no longer centralized. By embedding processing power directly into base stations, we enable a new class of latency-critical applications, from autonomous driving to industrial robotics.</p>
-                <div class="stat-box">
-                    <span class="stat-value">90%</span>
-                    <span class="stat-label">Faster Data Processing</span>
-                </div>
-            </div>
-            <div class="visual-col">
-                <div class="visual-bg" id="visual-3">
-                    <div class="overlay-shape" style="width: 100%; height: 2px; background: rgba(255,255,255,0.2); top: 50%;"></div>
-                    <div class="overlay-shape" style="height: 100%; width: 2px; background: rgba(255,255,255,0.2); left: 50%;"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trend 4 -->
-        <section class="panel" id="panel-4">
-            <div class="content-col">
-                <span class="trend-number">04 / Coverage</span>
-                <h2>Orbital Connectivity</h2>
-                <p>Terrestrial limits no longer apply. The seamless handover between ground towers and LEO satellite constellations guarantees ubiquitous coverage for every square inch of the planet.</p>
-                <div class="stat-box">
-                    <span class="stat-value">100%</span>
-                    <span class="stat-label">Global Surface Coverage</span>
-                </div>
-            </div>
-            <div class="visual-col">
-                <div class="visual-bg" id="visual-4">
-                     <i class="fas fa-globe" style="position:absolute; bottom:-10%; left:50%; transform:translate(-50%,0); font-size:40rem; color:rgba(255,255,255,0.1);"></i>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trend 5 -->
-        <section class="panel" id="panel-5">
-            <div class="content-col">
-                <span class="trend-number">05 / Security</span>
-                <h2>Quantum Defense</h2>
-                <p>As the quantum threat looms, the telecom industry is the first line of defense. Post-Quantum Cryptography (PQC) is now the standard for all core network signaling.</p>
-                <div class="stat-box">
-                    <span class="stat-value">∞</span>
-                    <span class="stat-label">Encryption Integrity</span>
-                </div>
-            </div>
-            <div class="visual-col">
-                <div class="visual-bg" id="visual-5">
-                    <div style="width:100%; height:100%; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 10px);"></div>
-                </div>
-            </div>
-        </section>
-
+    <!-- Scrollytelling Sections Container -->
+    <div class="scrolly-container" id="scrolly-container">
+        <!-- Panels generated by JS -->
     </div>
 
     <!-- Final CTA -->
-    <section style="height: 50vh; display:flex; align-items:center; justify-content:center; background:#000; color:#fff;">
-        <div style="text-align:center;">
-            <h2 style="font-family:'Playfair Display'; font-size: 3rem; margin-bottom: 2rem;">Ready for 2030?</h2>
-            <a href="#" style="padding: 1rem 3rem; background: var(--agate); color: #fff; text-decoration: none; border-radius: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Download Full Report</a>
+    <section id="outro" style="height: 100vh; display:flex; align-items:center; justify-content:center; background:#000; color:#fff;">
+        <div style="text-align:center; padding: 40px; max-width: 800px;">
+            <h2 id="outro-title" style="font-size: 4rem; margin-bottom: 2rem; color: var(--agate);"></h2>
+            <p id="outro-p1" style="font-size: 1.5rem; line-height: 1.6; margin-bottom: 2rem;"></p>
+            <p id="outro-p2" style="font-size: 1.2rem; margin-bottom: 3rem;"></p>
+            <a href="mailto:hello@innovatecomms.co.uk" style="padding: 1.2rem 3rem; background: var(--agate); color: #fff; text-decoration: none; border-radius: 50px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">Get in touch</a>
         </div>
     </section>
 
@@ -366,90 +278,109 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // Intro Animation
-        gsap.to("#intro h1", { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" });
-        gsap.to("#intro p", { opacity: 1, y: 0, duration: 1.5, delay: 0.3, ease: "power3.out" });
+        const config = TELECOMS_CONFIG;
+        const trends = config.trends;
+        const container = document.getElementById('scrolly-container');
 
-        // Scrollytelling Panels
-        const panels = document.querySelectorAll('.panel');
+        function loadContent() {
+            // Intro
+            document.getElementById('intro-title').innerHTML = config.intro.title.replace(' ', '<br>');
+            document.getElementById('intro-p1').innerText = config.intro.subtitle;
+            document.getElementById('intro-p2').innerText = config.intro.p1;
 
-        panels.forEach((panel, i) => {
-            
-            // 1. Pin the Visual Column
-            ScrollTrigger.create({
-                trigger: panel,
-                start: "top top",
-                pin: true, 
-                pinSpacing: true,
-                scrub: 1,
-                end: "+=100%" // Pin for a distance of 100% viewport height
+            // Outro
+            document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
+            document.getElementById('outro-p1').innerText = config.outro.p1;
+            document.getElementById('outro-p2').innerText = config.outro.p2;
+
+            // Panels
+            trends.forEach((trend, i) => {
+                const section = document.createElement('section');
+                section.className = 'panel';
+                section.id = `panel-${i+1}`;
+                
+                section.innerHTML = `
+                    <div class="content-col">
+                        <span class="trend-tag">${trend.tag} / TREND 0${i+1}</span>
+                        <h2>${trend.title.toUpperCase()}</h2>
+                        <p>${trend.desc}</p>
+                        <div class="implication-box">
+                            <p>${trend.implication || trend.statDesc}</p>
+                        </div>
+                    </div>
+                    <div class="visual-col">
+                        <div class="visual-bg" id="visual-${i+1}" style="background: radial-gradient(circle at 70% 50%, ${trend.color}, #000);">
+                            <!-- Abstract elements could be added here -->
+                        </div>
+                    </div>
+                `;
+                container.appendChild(section);
             });
+        }
 
-            // 2. Animate Visual Elements (Scale/Rotate)
-            const bg = panel.querySelector('.visual-bg');
-            gsap.fromTo(bg, 
-                { scale: 1.2, opacity: 0.5 },
-                { 
-                    scale: 1, 
-                    opacity: 1, 
+        function initAnimations() {
+            // Intro Animation
+            gsap.to("#intro h1", { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" });
+            gsap.to("#intro p", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2, delay: 0.3, ease: "power3.out" });
+
+            // Scrollytelling Panels
+            const panels = document.querySelectorAll('.panel');
+            panels.forEach((panel, i) => {
+                ScrollTrigger.create({
+                    trigger: panel,
+                    start: "top top",
+                    pin: true, 
+                    pinSpacing: true,
+                    scrub: 1,
+                    end: "+=100%"
+                });
+
+                const bg = panel.querySelector('.visual-bg');
+                gsap.fromTo(bg, 
+                    { scale: 1.2, opacity: 0.5 },
+                    { 
+                        scale: 1, 
+                        opacity: 1, 
+                        scrollTrigger: {
+                            trigger: panel,
+                            start: "top bottom",
+                            end: "top top",
+                            scrub: true
+                        }
+                    }
+                );
+
+                const text = panel.querySelector('.content-col');
+                gsap.from(text.children, {
+                    y: 50,
+                    opacity: 0,
+                    duration: 1,
+                    stagger: 0.2,
                     scrollTrigger: {
                         trigger: panel,
-                        start: "top bottom", // Start when top of panel hits bottom of viewport
-                        end: "top top",      // End when top of panel hits top of viewport
-                        scrub: true
+                        start: "top center",
+                        toggleActions: "play none none reverse"
                     }
-                }
-            );
+                });
+            });
 
-            // 3. Animate Text Elements (Slide Up)
-            const text = panel.querySelector('.content-col');
-            gsap.from(text.children, {
-                y: 50,
-                opacity: 0,
-                duration: 1,
-                stagger: 0.2,
+            // Progress Bar
+            gsap.to('.progress-bar', {
+                width: '100%',
                 scrollTrigger: {
-                    trigger: panel,
-                    start: "top center",
-                    toggleActions: "play none none reverse"
+                    trigger: 'body',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 0
                 }
             });
-        });
+        }
 
-        // Specific Visual Animations
-        
-        // Trend 1: Pulsing Rings
-        gsap.to('.ring-1', { scale: 2, opacity: 0, duration: 2, repeat: -1, ease: "power1.out" });
-        gsap.to('.ring-2', { scale: 2, opacity: 0, duration: 2, delay: 0.5, repeat: -1, ease: "power1.out" });
-        gsap.to('.ring-3', { scale: 2, opacity: 0, duration: 2, delay: 1, repeat: -1, ease: "power1.out" });
-
-        // Progress Bar
-        gsap.to('.progress-bar', {
-            width: '100%',
-            scrollTrigger: {
-                trigger: 'body',
-                start: 'top top',
-                end: 'bottom bottom',
-                scrub: 0
-            }
-        });
-
-        // Force recalculation to fix initial layout bugs
         window.addEventListener("load", () => {
+            loadContent();
+            initAnimations();
             ScrollTrigger.refresh();
         });
-
-        // Keyframes for animation
-        const styleSheet = document.createElement("style");
-        styleSheet.innerText = `
-            @keyframes fadeInUp {
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-        `;
-        document.head.appendChild(styleSheet);
 
     </script>
 </body>

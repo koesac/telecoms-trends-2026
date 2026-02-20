@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Future of Telecoms: Immersive Experience</title>
+    <title>Innovate Comms: Neural Network (Concept B)</title>
+    <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Content -->
+    <script src="master_content.js"></script>
     
     <style>
         :root {
@@ -16,6 +19,7 @@
             --bloodstone: #15404F;
             --azurite: #842366;
             --aventurine: #3E9B9B;
+            --bg-dark: #050a10;
             --text-main: #f0f6fc;
             --text-muted: #a4b1bc;
         }
@@ -27,10 +31,30 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: "Avenir Next LT", "Avenir Next", "Avenir", sans-serif;
             color: var(--text-main);
-            background-color: #050a10;
+            background-color: var(--bg-dark);
             overflow-x: hidden;
+        }
+
+        #header-branding {
+            position: fixed; 
+            top: calc(20px + env(safe-area-inset-top)); 
+            left: calc(20px + env(safe-area-inset-left)); 
+            pointer-events: auto;
+            z-index: 1000;
+        }
+
+        h1.brand-title {
+            font-family: inherit; font-size: 1.2rem; letter-spacing: 2px; margin: 0;
+            text-transform: uppercase; color: #fff; display: flex; align-items: center; gap: 15px;
+            font-weight: 700;
+            background: none;
+            -webkit-text-fill-color: initial;
+        }
+
+        .logo-icon {
+            fill: none !important; stroke: var(--agate) !important; stroke-width: 2; width: 30px; height: 30px;
         }
 
         /* 3D Background */
@@ -54,38 +78,21 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center; /* Centered by default */
+            justify-content: center;
             padding: 2rem;
             position: relative;
         }
 
-        /* Alternating layouts for visual interest */
-        section:nth-child(even) {
-            justify-content: flex-end;
-            padding-right: 10%;
-        }
-
-        section:nth-child(odd) {
-            justify-content: flex-start;
-            padding-left: 10%;
-        }
-
-        section:first-child, section:last-child {
-            justify-content: center;
-            text-align: center;
-            padding: 0;
-        }
-
         /* Content Cards with Glassmorphism */
         .content-card {
-            background: rgba(21, 64, 79, 0.25); /* Low opacity Bloodstone */
+            background: rgba(5, 10, 16, 0.6);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             padding: 3rem;
             max-width: 600px;
-            opacity: 0; /* Hidden initially for GSAP */
+            opacity: 0;
             transform: translateY(50px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transition: border-color 0.3s ease;
@@ -95,29 +102,34 @@
             border-color: var(--agate);
         }
 
-        h1 {
-            font-size: 5rem;
-            line-height: 1.1;
+        h1.hero-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 6rem;
+            line-height: 1;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #fff 0%, var(--agate) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
+            color: var(--agate);
+            font-weight: 400;
+            letter-spacing: 4px;
         }
 
         h2 {
-            font-size: 3rem;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
-            color: var(--agate);
+            color: #fff;
+            letter-spacing: 2px;
         }
 
         h3 {
-            font-size: 2rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
             margin-bottom: 1rem;
-            color: var(--aventurine);
+            color: var(--agate);
             display: flex;
             align-items: center;
             gap: 1rem;
+            font-weight: 700;
         }
 
         p {
@@ -127,9 +139,9 @@
             margin-bottom: 1.5rem;
         }
 
-        .stat-highlight {
+        .implication-text {
             display: block;
-            font-size: 1.5rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--text-main);
             margin-top: 1rem;
@@ -192,108 +204,32 @@
 </head>
 <body>
 
+    <div id="header-branding">
+        <h1 class="brand-title">
+            <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                Innovate Comms
+            </a>
+        </h1>
+    </div>
+
     <!-- 3D Canvas -->
     <div id="canvas-container"></div>
 
     <!-- Navigation Dots -->
-    <div class="nav-dots">
-        <div class="dot active" onclick="scrollToSection(0)"></div>
-        <div class="dot" onclick="scrollToSection(1)"></div>
-        <div class="dot" onclick="scrollToSection(2)"></div>
-        <div class="dot" onclick="scrollToSection(3)"></div>
-        <div class="dot" onclick="scrollToSection(4)"></div>
-        <div class="dot" onclick="scrollToSection(5)"></div>
-        <div class="dot" onclick="scrollToSection(6)"></div>
+    <div class="nav-dots" id="nav-dots">
+        <!-- Generated by JS -->
     </div>
 
     <!-- Content -->
-    <div class="scroll-container">
-        
-        <!-- Hero Section -->
-        <section id="hero">
-            <div class="content-card hero-card">
-                <h1>The Future of<br>Telecoms</h1>
-                <p style="font-size: 1.5rem; max-width: 700px; margin: 0 auto;">
-                    Exploring the groundbreaking shifts redefining global connectivity in 2026.
-                    <br><span style="font-size: 1rem; opacity: 0.7;">Scroll to explore the network</span>
-                </p>
-            </div>
-            <div class="scroll-indicator">
-                <i class="fas fa-chevron-down fa-2x"></i>
-            </div>
-        </section>
-
-        <!-- Trend 1 -->
-        <section id="trend1">
-            <div class="content-card">
-                <h3><i class="fas fa-tower-broadcast"></i> Trend 01</h3>
-                <h2>Hyper-Scale 5G & 6G</h2>
-                <p>Global coverage of Standalone 5G has reached critical mass. We are now piloting 6G technologies targeting terahertz frequencies for instantaneous data transfer.</p>
-                <div class="stat-highlight">
-                    &lt;1ms Latency <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">enabling remote surgery</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trend 2 -->
-        <section id="trend2">
-            <div class="content-card">
-                <h3><i class="fas fa-brain"></i> Trend 02</h3>
-                <h2>AI-Driven Autonomy</h2>
-                <p>Networks that heal themselves. AI algorithms now manage traffic routing, load balancing, and energy consumption in real-time, eliminating human error.</p>
-                <div class="stat-highlight">
-                    30% OPEX Reduction <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">via predictive maintenance</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trend 3 -->
-        <section id="trend3">
-            <div class="content-card">
-                <h3><i class="fas fa-microchip"></i> Trend 03</h3>
-                <h2>Edge Intelligence</h2>
-                <p>Processing power has moved from centralized data centers to the edge. Colocated with base stations, data travels shorter distances for faster insights.</p>
-                <div class="stat-highlight">
-                    90% Faster Response <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">for autonomous vehicles</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trend 4 -->
-        <section id="trend4">
-            <div class="content-card">
-                <h3><i class="fas fa-satellite"></i> Trend 04</h3>
-                <h2>Satellite Integration</h2>
-                <p>The convergence of terrestrial mobile networks and LEO satellite constellations has eliminated "dead zones" forever. Connectivity is now truly global.</p>
-                <div class="stat-highlight">
-                    100% Global Coverage <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">pole to pole</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trend 5 -->
-        <section id="trend5">
-            <div class="content-card">
-                <h3><i class="fas fa-shield-halved"></i> Trend 05</h3>
-                <h2>Quantum Security</h2>
-                <p>As quantum computing advances, we deploy Post-Quantum Cryptography (PQC) to protect the integrity of national communication backbones.</p>
-                <div class="stat-highlight">
-                    Unbreakable Encryption <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted)">future-proof security</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Conclusion -->
-        <section id="conclusion">
-            <div class="content-card hero-card">
-                <h2>The Road Ahead</h2>
-                <p>The next decade will be defined not just by how fast we connect, but how intelligently we communicate.</p>
-                <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 1rem 2rem; background: var(--agate); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 2rem;">
-                    Restart Experience
-                </button>
-            </div>
-        </section>
-
+    <div class="scroll-container" id="scroll-container">
+        <!-- Hero, Trends, and Outro generated by JS -->
     </div>
 
     <!-- Scripts -->
@@ -302,10 +238,74 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <script>
+        const config = TELECOMS_CONFIG;
+        const trends = config.trends;
+        const scrollContainer = document.getElementById('scroll-container');
+        const navDots = document.getElementById('nav-dots');
+
+        function loadContent() {
+            // 1. Hero
+            const hero = document.createElement('section');
+            hero.id = 'hero';
+            hero.innerHTML = `
+                <div class="content-card hero-card" style="opacity:1; transform:none;">
+                    <h1 class="hero-title">${config.intro.title.replace(' ', '<br>')}</h1>
+                    <p style="font-size: 1.5rem; max-width: 700px; margin: 0 auto; color: #fff;">
+                        ${config.intro.subtitle}
+                        <br><span style="font-size: 1rem; opacity: 0.7;">Scroll to explore the network</span>
+                    </p>
+                </div>
+                <div class="scroll-indicator"><i class="fas fa-chevron-down fa-2x"></i></div>
+            `;
+            scrollContainer.appendChild(hero);
+
+            // 2. Trends
+            trends.forEach((trend, i) => {
+                const section = document.createElement('section');
+                section.id = `trend${i+1}`;
+                section.innerHTML = `
+                    <div class="content-card">
+                        <h3 style="color:${trend.color}"><i class="fas ${trend.icon}"></i> TREND 0${i+1}</h3>
+                        <h2>${trend.title.toUpperCase()}</h2>
+                        <p>${trend.desc}</p>
+                        <div class="implication-text">
+                            ${trend.implication || trend.statDesc}
+                        </div>
+                    </div>
+                `;
+                scrollContainer.appendChild(section);
+            });
+
+            // 3. Outro
+            const outro = document.createElement('section');
+            outro.id = 'conclusion';
+            outro.innerHTML = `
+                <div class="content-card hero-card" style="opacity:1; transform:none;">
+                    <h2 style="color:var(--agate)">${config.outro.title.toUpperCase()}</h2>
+                    <p style="font-size: 1.3rem; color:#fff;">${config.outro.p1}</p>
+                    <p style="color:var(--text-muted)">${config.outro.p2}</p>
+                    <button onclick="window.scrollTo({top:0, behavior:'smooth'})" style="padding: 1rem 2rem; background: var(--agate); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 2rem; text-transform:uppercase; letter-spacing:2px;">
+                        Restart Experience
+                    </button>
+                </div>
+            `;
+            scrollContainer.appendChild(outro);
+
+            // 4. Dots
+            const totalSections = trends.length + 2;
+            for(let i=0; i<totalSections; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => scrollToSection(i);
+                navDots.appendChild(dot);
+            }
+        }
+
+        loadContent();
+
         // 1. Three.js Setup
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        // Fog for depth fading
         scene.fog = new THREE.FogExp2(0x050a10, 0.002);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -316,8 +316,8 @@
         renderer.setPixelRatio(window.devicePixelRatio);
         container.appendChild(renderer.domElement);
 
-        // 2. Create the Neural Network (Particles + Lines)
-        const particleCount = 700;
+        // 2. Create the Neural Network
+        const particleCount = 800;
         const geometry = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
         const colors = new Float32Array(particleCount * 3);
@@ -325,20 +325,18 @@
         const colorPalette = [
             new THREE.Color('#D6883A'), // Agate
             new THREE.Color('#3E9B9B'), // Aventurine
-            new THREE.Color('#842366')  // Azurite
+            new THREE.Color('#842366'), // Azurite
+            new THREE.Color('#15404F'), // Bloodstone
+            new THREE.Color('#4C194C')  // Alexandrite
         ];
 
         for (let i = 0; i < particleCount; i++) {
-            // Spread particles in a long tunnel along Z-axis
             const x = (Math.random() - 0.5) * 60;
             const y = (Math.random() - 0.5) * 60;
-            const z = (Math.random() - 0.5) * 200 - 50; // Deep Z range
-
+            const z = (Math.random() - 0.5) * 200 - 50;
             positions[i * 3] = x;
             positions[i * 3 + 1] = y;
             positions[i * 3 + 2] = z;
-
-            // Random color from palette
             const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
             colors[i * 3] = color.r;
             colors[i * 3 + 1] = color.g;
@@ -349,141 +347,75 @@
         geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
         const material = new THREE.PointsMaterial({
-            size: 0.3,
-            vertexColors: true,
-            transparent: true,
-            opacity: 0.8,
-            blending: THREE.AdditiveBlending
+            size: 0.3, vertexColors: true, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending
         });
 
         const particles = new THREE.Points(geometry, material);
         scene.add(particles);
 
-        // Add some "connecting lines" logic visually by adding a secondary wireframe object
-        // Or just a second particle system for "data flow"
-        const starGeo = new THREE.BufferGeometry();
-        const starPos = new Float32Array(200 * 3);
-        for(let i=0; i<200; i++){
-            starPos[i*3] = (Math.random() - 0.5) * 100;
-            starPos[i*3+1] = (Math.random() - 0.5) * 100;
-            starPos[i*3+2] = (Math.random() - 0.5) * 100;
-        }
-        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1, transparent: true, opacity: 0.4 });
-        const stars = new THREE.Points(starGeo, starMat);
-        scene.add(stars);
-
-
-        // 3. Animation Loop
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-
-        // Subtle camera movement on mouse move
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
-            mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
+        // Animation Loop
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
         });
-
-        const clock = new THREE.Clock();
 
         function animate() {
             requestAnimationFrame(animate);
-            const elapsedTime = clock.getElapsedTime();
-
-            targetX = mouseX * 2;
-            targetY = mouseY * 2;
-
-            // Smoothly interpolate camera rotation
             particles.rotation.y += 0.001;
             particles.rotation.z += 0.0005;
-            
-            // Add "breathing" effect to particles
-            const positions = particles.geometry.attributes.position.array;
-            // Simple wave effect (computationally cheap version)
-            // Ideally done in shader, but JS is fine for prototype
-            
-            camera.rotation.x += 0.05 * (targetY - camera.rotation.x);
-            camera.rotation.y += 0.05 * (targetX - camera.rotation.y);
-
+            camera.rotation.x += 0.05 * (mouseY * 2 - camera.rotation.x);
+            camera.rotation.y += 0.05 * (mouseX * 2 - camera.rotation.y);
             renderer.render(scene, camera);
         }
         animate();
 
-        // 4. Resize Handler
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // 5. Scroll Interaction (GSAP)
+        // 5. Scroll Interaction
         gsap.registerPlugin(ScrollTrigger);
 
-        // Animate Camera Z position based on total scroll
-        // The total document height maps to a travel distance in 3D space
         gsap.to(camera.position, {
-            z: -100, // Move forward deep into the tunnel
+            z: -120,
             ease: "none",
             scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1
+                trigger: "body", start: "top top", end: "bottom bottom", scrub: 1
             }
         });
 
-        // Animate Sections (Fade in/out + Slide)
         const sections = document.querySelectorAll('section');
         const dots = document.querySelectorAll('.dot');
 
         sections.forEach((section, index) => {
             const card = section.querySelector('.content-card');
-            
-            // Animate card entry
-            if(card) {
+            if(card && !card.classList.contains('hero-card')) {
                 gsap.to(card, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
+                    opacity: 1, y: 0, duration: 1,
                     scrollTrigger: {
-                        trigger: section,
-                        start: "top 70%",
-                        end: "bottom 70%",
-                        toggleActions: "play reverse play reverse",
-                        // onEnter: () => updateActiveDot(index), 
-                        // onEnterBack: () => updateActiveDot(index)
+                        trigger: section, start: "top 70%", end: "bottom 70%",
+                        toggleActions: "play reverse play reverse"
                     }
                 });
             }
 
-            // Update Navigation Dots
             ScrollTrigger.create({
-                trigger: section,
-                start: "top center",
-                end: "bottom center",
+                trigger: section, start: "top center", end: "bottom center",
                 onToggle: (self) => {
                     if (self.isActive) {
                         dots.forEach(d => d.classList.remove('active'));
                         if (dots[index]) dots[index].classList.add('active');
-                        
-                        // Optional: Change particle color based on section
-                        // gsap.to(material.color, {r: ..., g: ..., b: ...})
                     }
                 }
             });
         });
 
-        // Helper for dot navigation
         window.scrollToSection = (index) => {
             const target = sections[index];
-            if (target) {
-                window.scrollTo({
-                    top: target.offsetTop,
-                    behavior: 'smooth'
-                });
-            }
+            if (target) window.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
         };
 
     </script>

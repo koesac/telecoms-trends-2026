@@ -3,20 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Future of Telecoms: Signal Runner</title>
+    <title>Innovate Comms: Signal Runner (Concept F)</title>
+    <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Content -->
+    <script src="master_content.js"></script>
     
     <style>
+        :root {
+            --agate: #D6883A;
+            --aventurine: #3E9B9B;
+            --azurite: #842366;
+            --bloodstone: #15404F;
+            --alexandrite: #4C194C;
+            --bg-dark: #050a10;
+        }
+
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #050510;
-            font-family: 'Press Start 2P', cursive; /* 8-bit style font */
+            background-color: var(--bg-dark);
+            font-family: "Avenir Next LT", "Avenir Next", "Avenir", sans-serif;
             color: white;
-            touch-action: none; /* Prevent zoom/scroll on mobile */
+            touch-action: none;
+        }
+
+        #header-branding {
+            position: fixed; 
+            top: calc(20px + env(safe-area-inset-top)); 
+            left: calc(20px + env(safe-area-inset-left)); 
+            pointer-events: auto;
+            z-index: 100;
+        }
+
+        h1.brand-title {
+            font-family: inherit; font-size: 1.2rem; letter-spacing: 2px; margin: 0;
+            text-transform: uppercase; color: #fff; display: flex; align-items: center; gap: 15px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            fill: none !important; stroke: var(--agate) !important; stroke-width: 2; width: 30px; height: 30px;
         }
 
         #game-container {
@@ -177,39 +207,59 @@
 </head>
 <body>
 
+    <div id="header-branding">
+        <h1 class="brand-title">
+            <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                Innovate Comms
+            </a>
+        </h1>
+    </div>
+
     <div id="game-container">
         <canvas id="canvas"></canvas>
 
         <div id="ui-layer">
             <div class="hud-top">
-                <div class="score-box">DATA: <span id="score">0</span> TB</div>
-                <div class="score-box">TRENDS: <span id="trend-count">0</span>/5</div>
+                <div class="score-box" style="font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">DATA: <span id="score">0</span> TB</div>
+                <div class="score-box" style="font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">TRENDS: <span id="trend-count">0</span>/5</div>
             </div>
             <div class="controls-hint">PRESS SPACE OR TAP TO JUMP</div>
         </div>
 
         <div id="start-screen">
-            <h1>SIGNAL<br>RUNNER</h1>
-            <p style="font-family: 'Inter'; margin-bottom: 2rem; max-width: 400px; text-align: center; line-height: 1.5;">
-                You are a data packet in 2026. <br>
-                Jump over latency spikes and firewalls.<br>
-                Collect Trend Gates to upgrade the network.
-            </p>
+            <h1 style="font-family: 'Press Start 2P', cursive;">SIGNAL<br>RUNNER</h1>
+            <div id="intro-content" style="margin-bottom: 2rem; max-width: 500px; text-align: center; line-height: 1.6;">
+                <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
+                <p id="intro-p2" style="font-size: 0.9rem; opacity: 0.8;"></p>
+            </div>
             <button class="btn-continue blink" onclick="startGame()">START RUN</button>
-            <a href="index.html" style="margin-top: 2rem; color: #666; font-family: 'Inter'; text-decoration: none; font-size: 0.8rem;">Exit to Menu</a>
         </div>
 
         <div id="trend-modal" class="trend-modal">
-            <div style="font-size: 3rem; margin-bottom: 1rem;" id="modal-icon">🚀</div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;" id="modal-icon"><i class="fas fa-microchip"></i></div>
             <h2 id="modal-title">TREND UNLOCKED</h2>
             <p id="modal-desc">Description here...</p>
             <button class="btn-continue" onclick="resumeGame()">RESUME</button>
         </div>
         
         <div id="game-over-modal" class="trend-modal">
-             <h2 style="color: red;">CONNECTION LOST</h2>
-             <p>You hit a latency spike!</p>
+             <h2 style="color: #ff0055;">CONNECTION LOST</h2>
+             <p>A latency spike disrupted the stream.</p>
              <button class="btn-continue" onclick="resetGame()">RETRY</button>
+        </div>
+
+        <div id="victory-modal" class="trend-modal">
+             <h2 style="color: var(--agate);">NETWORK OPTIMIZED</h2>
+             <p id="outro-p1"></p>
+             <p id="outro-p2" style="font-weight: 700;"></p>
+             <button class="btn-continue" onclick="location.reload()">REPLAY</button>
         </div>
 
     </div>
@@ -221,7 +271,18 @@
         const trendCountEl = document.getElementById('trend-count');
         const modal = document.getElementById('trend-modal');
         const gameOverModal = document.getElementById('game-over-modal');
+        const victoryModal = document.getElementById('victory-modal');
         const startScreen = document.getElementById('start-screen');
+
+        const config = TELECOMS_CONFIG;
+        const trends = config.trends;
+
+        function loadMasterContent() {
+            document.getElementById('intro-p1').innerText = config.intro.title.toUpperCase();
+            document.getElementById('intro-p2').innerText = config.intro.p1;
+            document.getElementById('outro-p1').innerText = config.outro.p1;
+            document.getElementById('outro-p2').innerText = config.outro.p2;
+        }
 
         // Game State
         let gameRunning = false;
@@ -236,7 +297,6 @@
         let JUMP_FORCE = -12;
         let GROUND_HEIGHT = 100;
 
-        // Responsive sizing
         function resize() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -245,30 +305,14 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // Assets (Shapes for now)
         const player = {
-            x: 100,
-            y: 0,
-            width: 40,
-            height: 40,
-            dy: 0,
-            grounded: false,
-            color: '#00ffcc',
-            glow: 20
+            x: 100, y: 0, width: 40, height: 40, dy: 0,
+            grounded: false, color: '#00ffcc', glow: 20
         };
 
         let obstacles = [];
         let particles = [];
         let trendGates = [];
-
-        // Trend Data
-        const trends = [
-            { id: 1, title: "Hyper-Scale 5G", icon: "📡", desc: "Latency dropped below 1ms! Remote surgery is now possible." },
-            { id: 2, title: "AI Autonomy", icon: "🧠", desc: "Network is self-healing. OPEX reduced by 30%." },
-            { id: 3, title: "Edge Compute", icon: "⚡", desc: "Processing moved to the edge. Autonomous cars are live." },
-            { id: 4, title: "Orbital Link", icon: "🛰️", desc: "Satellite handover complete. 100% Global Coverage." },
-            { id: 5, title: "Quantum Shield", icon: "🛡️", desc: "Post-Quantum Cryptography enabled. Network is secure." }
-        ];
 
         function startGame() {
             startScreen.style.display = 'none';
@@ -288,6 +332,7 @@
             player.dy = 0;
             gameOverModal.classList.remove('active');
             modal.classList.remove('active');
+            victoryModal.classList.remove('active');
             scoreEl.innerText = '0';
             trendCountEl.innerText = '0';
             loop();
@@ -320,12 +365,10 @@
         function createParticles(x, y, color) {
             for(let i=0; i<10; i++) {
                 particles.push({
-                    x: x, 
-                    y: y,
+                    x: x, y: y,
                     dx: (Math.random() - 0.5) * 10,
                     dy: (Math.random() - 0.5) * 10,
-                    life: 30,
-                    color: color
+                    life: 30, color: color
                 });
             }
         }
@@ -333,11 +376,9 @@
         function update() {
             if (!gameRunning) return;
 
-            // Player Physics
             player.dy += GRAVITY;
             player.y += player.dy;
 
-            // Ground Collision
             const groundY = canvas.height - GROUND_HEIGHT - player.height;
             if (player.y > groundY) {
                 player.y = groundY;
@@ -347,80 +388,46 @@
                 player.grounded = false;
             }
 
-            // Move Obstacles
             for (let i = obstacles.length - 1; i >= 0; i--) {
                 let obs = obstacles[i];
                 obs.x -= gameSpeed;
-
-                // Collision Detection
-                if (
-                    player.x < obs.x + obs.width &&
-                    player.x + player.width > obs.x &&
-                    player.y < obs.y + obs.height &&
-                    player.y + player.height > obs.y
-                ) {
+                if (player.x < obs.x + obs.width && player.x + player.width > obs.x &&
+                    player.y < obs.y + obs.height && player.y + player.height > obs.y) {
                     gameOver();
                 }
-
                 if (obs.x + obs.width < 0) obstacles.splice(i, 1);
             }
 
-            // Move Trend Gates
             for (let i = trendGates.length - 1; i >= 0; i--) {
                 let gate = trendGates[i];
                 gate.x -= gameSpeed;
-
-                // Collision (Collection)
-                if (!gate.collected &&
-                    player.x < gate.x + gate.width &&
-                    player.x + player.width > gate.x &&
-                    player.y < gate.y + gate.height &&
-                    player.y + player.height > gate.y
-                ) {
+                if (!gate.collected && player.x < gate.x + gate.width && player.x + player.width > gate.x &&
+                    player.y < gate.y + gate.height && player.y + player.height > gate.y) {
                     gate.collected = true;
                     collectTrend(gate.trendIndex);
                 }
-
                 if (gate.x + gate.width < 0) trendGates.splice(i, 1);
             }
 
-            // Particles
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i];
-                p.x += p.dx;
-                p.y += p.dy;
-                p.life--;
+                p.x += p.dx; p.y += p.dy; p.life--;
                 if(p.life <= 0) particles.splice(i, 1);
             }
 
-            // Spawning Logic
             frames++;
             score++;
             scoreEl.innerText = Math.floor(score / 10);
 
-            // Spawn obstacles randomly, but less frequently if a trend gate is coming
-            if (frames % 100 === 0 && Math.random() > 0.3) {
-                 spawnObstacle();
-            }
-
-            // Spawn Trend Gate every ~1000 points
-            if (frames % 600 === 0 && trendsCollected < trends.length) {
-                spawnTrendGate();
-            }
-
-            // Increase speed slightly
+            if (frames % 100 === 0 && Math.random() > 0.3) spawnObstacle();
+            if (frames % 600 === 0 && trendsCollected < trends.length) spawnTrendGate();
             if (frames % 1000 === 0) gameSpeed += 0.5;
         }
 
         function draw() {
-            // Clear Screen
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Background Grid (Floor)
             ctx.fillStyle = '#0a0a2a'; 
             ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
-            
-            // Grid Lines
             ctx.strokeStyle = '#3333aa';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -428,48 +435,40 @@
             ctx.lineTo(canvas.width, canvas.height - GROUND_HEIGHT);
             ctx.stroke();
 
-            // Perspective Grid Lines moving
             const gridOffset = (frames * gameSpeed) % 100;
             for(let x = -gridOffset; x < canvas.width; x += 100) {
                  ctx.beginPath();
-                 ctx.moveTo(x + (canvas.width/2 - x)*0.5, canvas.height - GROUND_HEIGHT); // Mock perspective
+                 ctx.moveTo(x + (canvas.width/2 - x)*0.5, canvas.height - GROUND_HEIGHT);
                  ctx.lineTo(x - 200, canvas.height); 
                  ctx.stroke();
             }
 
-
-            // Draw Player
             ctx.fillStyle = player.color;
             ctx.shadowBlur = player.glow;
             ctx.shadowColor = player.color;
             ctx.fillRect(player.x, player.y, player.width, player.height);
             ctx.shadowBlur = 0;
 
-            // Draw Obstacles
             ctx.fillStyle = '#ff0055';
             ctx.shadowBlur = 10;
             ctx.shadowColor = '#ff0055';
-            obstacles.forEach(obs => {
-                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-            });
+            obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
             ctx.shadowBlur = 0;
 
-            // Draw Trend Gates
             trendGates.forEach(gate => {
                 if(gate.collected) return;
+                const trend = trends[gate.trendIndex];
                 ctx.fillStyle = 'rgba(0, 255, 204, 0.2)';
-                ctx.strokeStyle = '#00ffcc';
+                ctx.strokeStyle = trend.color;
                 ctx.lineWidth = 4;
                 ctx.fillRect(gate.x, gate.y, gate.width, gate.height);
                 ctx.strokeRect(gate.x, gate.y, gate.width, gate.height);
-                
-                // Text inside
                 ctx.fillStyle = '#fff';
-                ctx.font = '20px Arial';
+                ctx.font = '24px FontAwesome';
+                // Simplified icon drawing for canvas
                 ctx.fillText("?", gate.x + 20, gate.y + 80);
             });
 
-            // Draw Particles
             particles.forEach(p => {
                 ctx.fillStyle = p.color;
                 ctx.fillRect(p.x, p.y, 4, 4);
@@ -491,28 +490,28 @@
         }
 
         function collectTrend(index) {
-            gameRunning = false; // Pause
+            gameRunning = false; 
             trendsCollected++;
             trendCountEl.innerText = trendsCollected;
             
-            // Show Modal
             const t = trends[index];
-            document.getElementById('modal-icon').innerText = t.icon;
-            document.getElementById('modal-title').innerText = t.title;
-            document.getElementById('modal-desc').innerText = t.desc;
+            document.getElementById('modal-icon').innerHTML = `<i class="fas ${t.icon}" style="color:${t.color}"></i>`;
+            document.getElementById('modal-title').innerText = t.title.toUpperCase();
+            document.getElementById('modal-desc').innerHTML = t.desc + "<br><br><strong>" + (t.implication || t.statDesc) + "</strong>";
             
-            // Success sound/visuals here
-            createParticles(player.x, player.y, '#00ffcc');
-            
+            createParticles(player.x, player.y, t.color);
             modal.classList.add('active');
         }
 
         function resumeGame() {
             modal.classList.remove('active');
-            gameRunning = true;
-            // Clear nearby obstacles to prevent cheap deaths
-            obstacles = obstacles.filter(o => o.x > player.x + 300);
-            loop();
+            if (trendsCollected === trends.length) {
+                victoryModal.classList.add('active');
+            } else {
+                gameRunning = true;
+                obstacles = obstacles.filter(o => o.x > player.x + 300);
+                loop();
+            }
         }
 
         function gameOver() {
@@ -521,14 +520,9 @@
             gameOverModal.classList.add('active');
         }
 
-        // Input Handling
         window.addEventListener('keydown', (e) => {
             if (e.code === 'Space' || e.code === 'ArrowUp') {
-                if(!gameRunning && startScreen.style.display === 'none' && !modal.classList.contains('active') && !gameOverModal.classList.contains('active')) {
-                    // Maybe pause logic?
-                } else if (gameRunning) {
-                    jump();
-                }
+                if (gameRunning) jump();
             }
         });
 
@@ -536,6 +530,7 @@
              if (gameRunning) jump();
         });
 
+        loadMasterContent();
     </script>
 </body>
 </html>
