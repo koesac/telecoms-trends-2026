@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Innovate Comms: Strategy Cube</title>
+    <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,7 +24,7 @@
         body {
             margin: 0;
             background-color: var(--bg-dark);
-            font-family: 'Inter', sans-serif;
+            font-family: "Avenir Next LT", "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #fff;
             height: 100vh;
             display: flex;
@@ -76,16 +77,17 @@
         }
 
         h1 {
-            font-family: 'Syncopate', sans-serif; font-size: 1.5rem; letter-spacing: 10px; margin: 0;
+            font-family: inherit; font-size: 1.5rem; letter-spacing: 5px; margin: 0;
             text-transform: uppercase; color: var(--agate);
-            display: flex; align-items: center; gap: 15px; /* Added flex for logo alignment */
+            display: flex; align-items: center; gap: 15px;
+            font-weight: 700;
         }
 
         .logo-icon {
             fill: none;
             stroke: currentColor;
             stroke-width: 2;
-            width: 35px; height: 35px; /* Slightly shrunken for better fit */
+            width: 35px; height: 35px;
         }
 
         .hint {
@@ -104,11 +106,11 @@
 
         .face {
             position: absolute; width: 400px; height: 400px;
-            background: rgba(0, 0, 0, 0.4); /* Darker background for higher contrast */
+            background: rgba(0, 0, 0, 0.4); 
             backdrop-filter: blur(5px);
             border: 2px solid rgba(255, 255, 255, 0.2);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 25px; box-sizing: border-box; /* Reduced padding from 40px */
+            padding: 25px; box-sizing: border-box;
             backface-visibility: hidden;
             transition: all 0.5s ease;
         }
@@ -116,45 +118,46 @@
         .face.active { border-color: var(--agate); background: rgba(0, 0, 0, 0.6); }
 
         .face h2 { 
-            font-family: 'Syncopate', sans-serif; 
-            font-size: 1rem; /* Slightly smaller header */
+            font-family: inherit; 
+            font-size: 1.1rem; 
             letter-spacing: 2px; 
-            margin: 10px 0 5px; /* Reduced margins */
+            margin: 15px 0 8px; 
             text-align: center;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
             color: var(--agate);
+            font-weight: 700;
         }
         .face p { 
-            font-size: 0.85rem; 
-            line-height: 1.4; /* Tighter line height */
+            font-size: 0.95rem; 
+            line-height: 1.5; 
             color: #eee; 
             text-align: center; 
             font-weight: 400;
             text-shadow: 0 1px 5px rgba(0,0,0,0.5);
-            margin-bottom: 8px; /* Reduced margin */
+            margin-bottom: 10px;
         }
-        .face .icon { font-size: 2.5rem; color: var(--agate); margin-bottom: 5px; } /* Smaller icon */
+        .face .icon { font-size: 3.5rem; color: var(--agate); }
 
         .impact-box {
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 15px; /* Increased from 8px */
+            padding-top: 15px;
             width: 100%;
             text-align: center;
             margin-top: 5px;
         }
         .stat-highlight {
             display: block;
-            font-size: 0.95rem; 
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--agate);
-            margin-bottom: 8px; /* Increased from 2px */
+            margin-bottom: 8px;
             letter-spacing: 1px;
         }
         .stat-desc {
-            font-size: 0.75rem;
-            opacity: 0.9; /* Increased opacity */
-            color: #eee; /* Brighter color */
-            line-height: 1.4; /* Slightly looser */
+            font-size: 0.8rem;
+            opacity: 0.9;
+            color: #eee;
+            line-height: 1.4;
         }
 
         /* Positioning Faces */
@@ -175,8 +178,6 @@
         }
         .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
 
-        .btn-exit { position: fixed; top: 40px; right: 40px; color: #666; text-decoration: none; font-size: 0.7rem; pointer-events: auto; }
-
         /* Conclusion Overlay */
         #conclusion-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -190,13 +191,14 @@
         .conclusion-content {
             max-width: 600px; text-align: center; padding: 40px;
         }
-        .conclusion-content h2 { font-family: 'Syncopate', sans-serif; letter-spacing: 10px; color: var(--agate); margin-bottom: 30px; }
+        .conclusion-content h2 { font-family: inherit; letter-spacing: 5px; color: var(--agate); margin-bottom: 30px; font-weight: 700; }
         .conclusion-content p { font-size: 1.1rem; line-height: 1.8; color: #ccc; margin-bottom: 20px; }
 
         .btn-action {
             background: transparent; border: 1px solid var(--agate); color: var(--agate);
-            padding: 15px 40px; border-radius: 50px; cursor: pointer; font-family: 'Syncopate', sans-serif;
+            padding: 15px 40px; border-radius: 50px; cursor: pointer; font-family: inherit;
             font-size: 0.7rem; letter-spacing: 2px; transition: 0.3s; margin-top: 20px;
+            font-weight: 700;
         }
         .btn-action:hover { background: var(--agate); color: #fff; }
 
@@ -379,7 +381,6 @@
             
             // Branding
             const companyLink = document.getElementById('company-link');
-            // Update the text portion (the last child) without removing the SVG
             companyLink.lastChild.textContent = " " + config.branding.companyName;
             companyLink.href = config.branding.website;
 
@@ -392,7 +393,7 @@
             document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
             document.getElementById('outro-p1').innerText = config.outro.p1;
             
-            // Convert email to link in outro p2
+            // Convert email to link
             const email = config.branding.email;
             let p2 = config.outro.p2;
             p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
@@ -466,7 +467,6 @@
         function showConclusion() {
             stopIdle();
             conclusionOverlay.classList.add('active');
-            // Update dots
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === 6);
             });
@@ -485,7 +485,6 @@
             const rot = rotations[currentFace];
             cube.style.transform = `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`;
             
-            // Update Atmosphere
             Object.values(bgLayers).forEach(l => l.classList.remove('active'));
             
             if(currentFace === 0) bgLayers.default.classList.add('active');
@@ -495,16 +494,13 @@
             else if(currentFace === 4) bgLayers.stars.classList.add('active');
             else if(currentFace === 5) bgLayers.quantum.classList.add('active');
 
-            // Update Dots
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === currentFace);
             });
 
-            // Lock input for 1.2 seconds to allow animation to complete and prevent skipping
             setTimeout(() => { isTransitioning = false; }, 1200);
         }
 
-        // Initial subtle spin
         let initialRot = 0;
         const idle = setInterval(() => {
             if (currentFace === 0 && !isTransitioning) {
@@ -518,24 +514,19 @@
         const stopIdle = () => {
             if (idle) {
                 clearInterval(idle);
-                // Instantly reset to neutral before first real rotation to avoid jitter
                 if (currentFace === 0) {
                     cube.style.transform = `rotateX(0deg) rotateY(0deg)`;
                 }
             }
         };
 
-        // Initialize
         window.addEventListener('load', () => {
             loadMasterContent();
-            // Rest of your init logic...
         });
 
-        // Interaction
         cube.addEventListener('mousedown', stopIdle);
         cube.addEventListener('touchstart', stopIdle);
 
-        // Scroll Jacking with GSAP Observer
         Observer.create({
             target: window,
             type: "wheel,touch",
@@ -546,7 +537,7 @@
                 if(!isTransitioning) rotateNext();
             },
             wheelSpeed: 1,
-            tolerance: 20, // Increased tolerance
+            tolerance: 20,
             preventDefault: true
         });
 
