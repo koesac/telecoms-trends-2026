@@ -151,6 +151,7 @@
             color: #eee;
             line-height: 1.5;
             font-weight: 400;
+            margin: 0; /* Reset p margin */
         }
 
         /* Positioning Faces */
@@ -266,7 +267,7 @@
             <h2 id="intro-title"></h2>
             <p id="intro-p1"></p>
             <div class="impact-box">
-                <div class="stat-desc" id="intro-p2"></div>
+                <p class="stat-desc" id="intro-p2"></p>
             </div>
         </div>
         
@@ -401,7 +402,7 @@
                         <h2 style="color:${trend.color}">${trend.title.toUpperCase()}</h2>
                         <p>${trend.desc}</p>
                         <div class="impact-box">
-                            <div class="stat-desc">${trend.implication || trend.statDesc}</div>
+                            <p class="stat-desc">${trend.implication || trend.statDesc}</p>
                         </div>
                     `;
                 }
