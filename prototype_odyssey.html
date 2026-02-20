@@ -8,20 +8,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;600&display=swap" rel="stylesheet">
     
     <style>
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; color: white; }
-        #canvas-container { width: 100vw; height: 100vh; touch-action: none; }
+        body { margin: 0; background: #000; font-family: 'Inter', sans-serif; color: white; overflow-x: hidden; overflow-y: auto; }
+        #canvas-container { 
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh; 
+            z-index: -1;
+        }
         
         #ui {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
             display: flex; flex-direction: column; justify-content: space-between; padding: 40px;
             z-index: 10;
         }
 
-        .header h1 {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1.5rem; letter-spacing: 10px; text-transform: uppercase;
-            margin: 0; background: linear-gradient(90deg, #fff, #444);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        /* Mobile specific padding */
+        @media (max-width: 768px) {
+            #ui { padding: 20px; }
+            .header h1 { font-size: 1rem; letter-spacing: 5px; }
+            .progress-nav { left: 20px; }
         }
 
         .label-container {
@@ -210,20 +215,19 @@
         }
         animate();
 
-        // SCROLL TRIGGER
-        const totalScrollHeight = 4000;
-        document.body.style.height = (totalScrollHeight + window.innerHeight) + "px";
+        // Create a spacer to enable scrolling
+        const totalScrollHeight = 5000;
+        const spacer = document.createElement('div');
+        spacer.style.height = (totalScrollHeight + window.innerHeight) + "px";
+        spacer.style.width = "1px";
+        spacer.style.pointerEvents = "none";
+        document.body.appendChild(spacer);
 
         window.addEventListener('scroll', () => {
-            const scroll = window.scrollY;
-            const progress = scroll / totalScrollHeight;
+            const scroll = window.pageYOffset || document.documentElement.scrollTop;
+            const progress = Math.min(1, Math.max(0, scroll / totalScrollHeight));
 
             // Map scroll to Camera Z
-            // 0 -> 5 (Tower)
-            // 0.3 -> -50 (Data Center)
-            // 0.6 -> -150 (Space)
-            // 1.0 -> -310 (Quantum)
-            
             let targetZ;
             if (progress < 0.3) {
                 targetZ = gsap.utils.mapRange(0, 0.3, 5, -45, progress);
@@ -241,9 +245,9 @@
 
             camera.position.z = targetZ;
             
-            // Dynamic Fog based on proximity to next level
-            scene.fog.density = 0.05 + (Math.sin(progress * Math.PI * 4) * 0.02);
-        });
+            // Dynamic Fog
+            scene.fog.density = 0.05 + (Math.sin(progress * Math.PI * 4) * 0.03);
+        }, { passive: true });
 
         function updateUI(activeIdx) {
             document.querySelectorAll('.nav-step').forEach((el, i) => {
