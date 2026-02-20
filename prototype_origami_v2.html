@@ -6,6 +6,8 @@
     <title>Innovate Comms: Data Origami</title>
     <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- GSAP Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <!-- Master Content -->
     <script src="master_content.js"></script>
     
@@ -184,6 +186,11 @@
             color: #333;
             z-index: 1;
             transition: all 0.8s ease;
+            transform: translateZ(-1px); /* Sit behind flaps */
+        }
+
+        .unfolded .face {
+            transform: translateZ(0px); /* Bring to front when open */
         }
 
         .face p {
@@ -219,6 +226,7 @@
             text-align: center;
             padding: 10px;
             box-sizing: border-box;
+            /* Removed backface-visibility: hidden to prevent disappearing flaps */
         }
 
         .flap-top {
@@ -392,13 +400,45 @@
         function startExperience() {
             isExperienceActive = true;
             introOverlay.classList.remove('active');
-            cards[0].classList.add('active');
-            gsap.fromTo(cards[0], { x: 500, opacity: 0, visibility: 'visible' }, { x: 0, opacity: 1, duration: 1, ease: "power2.out" });
+            
+            // Ensure first card is visible and at center
+            cards.forEach((c, i) => {
+                if(i === 0) {
+                    c.style.visibility = 'visible';
+                    c.classList.add('active');
+                    gsap.fromTo(c, { x: window.innerWidth, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "power2.out" });
+                } else {
+                    c.style.visibility = 'hidden';
+                    c.classList.remove('active');
+                }
+            });
+            currentIndex = 0;
+            updateUI(0);
         }
 
         function resetExperience() {
             conclusionOverlay.classList.remove('active');
-            jumpTo(0);
+            currentIndex = 0;
+            isExperienceActive = true;
+            
+            // Reset all cards
+            cards.forEach((c, i) => {
+                c.classList.remove('unfolded');
+                if(i === 0) {
+                    c.style.visibility = 'visible';
+                    c.classList.add('active');
+                    gsap.fromTo(c, { x: -window.innerWidth, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "power2.out" });
+                } else {
+                    c.style.visibility = 'hidden';
+                    c.classList.remove('active');
+                }
+            });
+            updateUI(0);
+        }
+
+        function updateUI(index) {
+            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === index));
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === index));
         }
 
         function showConclusion() {
@@ -412,13 +452,7 @@
         }
 
         function jumpTo(index) {
-            if (!isExperienceActive) {
-                // If in conclusion, return to deck
-                isExperienceActive = true;
-                conclusionOverlay.classList.remove('active');
-            }
-
-            if (index === currentIndex || isTransitioning) return;
+            if (!isExperienceActive || index === currentIndex || isTransitioning) return;
             
             isTransitioning = true;
             const direction = index > currentIndex ? 1 : -1;
@@ -453,12 +487,11 @@
             );
 
             currentIndex = index;
-            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === index));
-            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === index));
+            updateUI(index);
         }
 
         function nextCard() {
-            if (!isExperienceActive) return;
+            if (!isExperienceActive || isTransitioning) return;
             if (currentIndex === cards.length - 1) {
                 showConclusion();
             } else {
@@ -467,7 +500,7 @@
         }
 
         function prevCard() {
-            if (!isExperienceActive) return;
+            if (!isExperienceActive || isTransitioning) return;
             if (currentIndex > 0) {
                 jumpTo(currentIndex - 1);
             }
