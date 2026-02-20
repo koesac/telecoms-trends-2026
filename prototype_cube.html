@@ -78,6 +78,14 @@
         h1 {
             font-family: 'Syncopate', sans-serif; font-size: 1.5rem; letter-spacing: 10px; margin: 0;
             text-transform: uppercase; color: var(--agate);
+            display: flex; align-items: center; gap: 15px; /* Added flex for logo alignment */
+        }
+
+        .logo-icon {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            width: 35px; height: 35px; /* Slightly shrunken for better fit */
         }
 
         .hint {
@@ -100,7 +108,7 @@
             backdrop-filter: blur(5px);
             border: 2px solid rgba(255, 255, 255, 0.2);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 40px; box-sizing: border-box;
+            padding: 25px; box-sizing: border-box; /* Reduced padding from 40px */
             backface-visibility: hidden;
             transition: all 0.5s ease;
         }
@@ -109,42 +117,44 @@
 
         .face h2 { 
             font-family: 'Syncopate', sans-serif; 
-            font-size: 1.1rem; 
+            font-size: 1rem; /* Slightly smaller header */
             letter-spacing: 2px; 
-            margin: 15px 0 8px; 
+            margin: 10px 0 5px; /* Reduced margins */
             text-align: center;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
             color: var(--agate);
         }
         .face p { 
-            font-size: 0.95rem; 
-            line-height: 1.5; 
+            font-size: 0.85rem; 
+            line-height: 1.4; /* Tighter line height */
             color: #eee; 
             text-align: center; 
             font-weight: 400;
             text-shadow: 0 1px 5px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
+            margin-bottom: 8px; /* Reduced margin */
         }
-        .face .icon { font-size: 3.5rem; color: var(--agate); }
+        .face .icon { font-size: 2.5rem; color: var(--agate); margin-bottom: 5px; } /* Smaller icon */
 
         .impact-box {
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 10px;
+            padding-top: 15px; /* Increased from 8px */
             width: 100%;
             text-align: center;
+            margin-top: 5px;
         }
         .stat-highlight {
             display: block;
-            font-size: 1.1rem;
+            font-size: 0.95rem; 
             font-weight: 700;
             color: var(--agate);
-            margin-bottom: 4px;
+            margin-bottom: 8px; /* Increased from 2px */
+            letter-spacing: 1px;
         }
         .stat-desc {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            color: #ccc;
-            line-height: 1.3;
+            font-size: 0.75rem;
+            opacity: 0.9; /* Increased opacity */
+            color: #eee; /* Brighter color */
+            line-height: 1.4; /* Slightly looser */
         }
 
         /* Positioning Faces */
@@ -220,7 +230,18 @@
     </div>
 
     <div id="ui">
-        <h1><a href="#" id="company-link" style="color: inherit; text-decoration: none; pointer-events: auto;">Innovate Comms</a></h1>
+        <h1>
+            <a href="https://www.innovatecomms.co.uk/" id="company-link" style="color: inherit; text-decoration: none; pointer-events: auto; display: flex; align-items: center; gap: 15px;">
+                <svg class="logo-icon" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                Innovate Comms
+            </a>
+        </h1>
         <div class="dots" id="dots">
             <div class="dot active" onclick="rotateTo(0)"></div>
             <div class="dot" onclick="rotateTo(1)"></div>
@@ -357,8 +378,10 @@
             const config = TELECOMS_CONFIG;
             
             // Branding
-            document.getElementById('company-link').innerText = config.branding.companyName;
-            document.getElementById('company-link').href = config.branding.website;
+            const companyLink = document.getElementById('company-link');
+            // Update the text portion (the last child) without removing the SVG
+            companyLink.lastChild.textContent = " " + config.branding.companyName;
+            companyLink.href = config.branding.website;
 
             // Intro
             document.getElementById('intro-title').innerText = config.intro.title.toUpperCase();
