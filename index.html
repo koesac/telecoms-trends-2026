@@ -29,17 +29,16 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
         }
 
         .hero-title {
             text-align: center;
-            margin-bottom: 3rem;
+            padding: 4rem 0 2rem;
         }
 
         .hero-title h1 {
             font-weight: 800;
-            font-size: 3rem;
+            font-size: 3.5rem;
             background: linear-gradient(90deg, var(--agate), var(--aventurine));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -52,11 +51,22 @@
             margin: 1rem auto 0;
         }
 
+        .section-header {
+            margin: 3rem 0 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            color: var(--agate);
+            font-weight: 700;
+        }
+
         .prototype-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 2rem;
+            border-radius: 12px; /* Slightly tighter corners */
+            padding: 1.5rem; /* Reduced from 2rem */
             height: 100%;
             transition: all 0.3s ease;
             position: relative;
@@ -66,15 +76,15 @@
         }
 
         .prototype-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             border-color: var(--agate);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .card-icon {
-            font-size: 3rem;
+            font-size: 2rem; /* Reduced from 2.5rem */
             color: var(--aventurine);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             transition: color 0.3s ease;
         }
 
@@ -83,28 +93,31 @@
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.1rem; /* Reduced from 1.3rem */
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.6rem;
         }
 
         .card-desc {
             color: #a4b1bc;
             flex-grow: 1;
-            margin-bottom: 2rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.85rem; /* Reduced from 0.9rem */
+            line-height: 1.4;
         }
 
         .btn-launch {
             background: transparent;
-            border: 2px solid var(--agate);
+            border: 1.5px solid var(--agate);
             color: var(--agate);
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             border-radius: 50px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
             align-self: flex-start;
             display: inline-block;
+            font-size: 0.75rem; /* Reduced from 0.85rem */
         }
 
         .btn-launch:hover {
@@ -115,12 +128,12 @@
 
         .badge-style {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: rgba(255,255,255,0.1);
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -129,528 +142,340 @@
 </head>
 <body>
 
-    <div class="container py-5">
+    <div class="container-fluid px-5 pb-5">
         <div class="hero-title">
             <h1>Concept Review</h1>
-            <p>Select a prototype to preview different creative directions for the "Future of Telecoms" campaign.</p>
+            <p>Select a prototype to preview creative directions for the "Future of Telecoms" campaign.</p>
         </div>
 
-        <div class="row g-4 justify-content-center">
+        <!-- SELECTED FAVORITES -->
+        <div class="section-header">Featured Concepts</div>
+        <div class="row g-4">
             
-            <!-- Option 1: Carousel -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Original</span>
-                    <div class="card-icon">
-                        <i class="fas fa-layer-group"></i>
-                    </div>
-                    <div class="card-title">Concept A: The Carousel</div>
-                    <p class="card-desc">
-                        A clean, horizontal scrolling experience. Features reactive icon animations and a sticky sidebar for navigation. Best for quick skimming.
-                    </p>
-                    <a href="prototype_carousel.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 2: 3D Immersive -->
-            <div class="col-md-4">
+            <!-- AH: Strategy Cube -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
                 <div class="prototype-card">
                     <span class="badge-style">Recommended</span>
-                    <div class="card-icon">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="card-title">Concept B: Neural Network</div>
-                    <p class="card-desc">
-                        An immersive 3D WebGL experience. Users fly through a generative data tunnel. High-impact visuals designed to impress stakeholders.
-                    </p>
-                    <a href="prototype.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 3: Editorial -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Alternative</span>
-                    <div class="card-icon">
-                        <i class="fas fa-newspaper"></i>
-                    </div>
-                    <div class="card-title">Concept C: Editorial Report</div>
-                    <p class="card-desc">
-                        A "scrollytelling" approach inspired by high-end digital journalism. Split-screen layout with pinned visuals and scroll-triggered animations.
-                    </p>
-                    <a href="prototype_editorial.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 4: Dashboard -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">New</span>
-                    <div class="card-icon">
-                        <i class="fas fa-chart-simple"></i>
-                    </div>
-                    <div class="card-title">Concept D: Interactive Grid</div>
-                    <p class="card-desc">
-                        A non-linear, bento-box style dashboard. Features expandable tiles, micro-interactions, and a data-first layout for exploring trends.
-                    </p>
-                    <a href="prototype_grid.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 5: Terminal -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Experimental</span>
-                    <div class="card-icon">
-                        <i class="fas fa-terminal"></i>
-                    </div>
-                    <div class="card-title">Concept E: Secure Terminal</div>
-                    <p class="card-desc">
-                        A retro-futurist command-line interface. Users type commands to "hack" the network and uncover secure trend data. Highly immersive.
-                    </p>
-                    <a href="prototype_terminal.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 6: Game -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Fun</span>
-                    <div class="card-icon">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <div class="card-title">Concept F: Signal Runner</div>
-                    <p class="card-desc">
-                        An 8-bit endless runner game. Play as a data packet racing through the network, dodging latency spikes to unlock trend gates.
-                    </p>
-                    <a href="prototype_game.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 7: Globe -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Premium</span>
-                    <div class="card-icon">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <div class="card-title">Concept G: Global Pulse</div>
-                    <p class="card-desc">
-                        An interactive 3D WebGL globe. Rotate the world to discover regional tech shifts and local pilot programs across the 2026 landscape.
-                    </p>
-                    <a href="prototype_globe.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 8: Mind Map -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Strategy</span>
-                    <div class="card-icon">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="card-title">Concept H: Strategic Mind-Map</div>
-                    <p class="card-desc">
-                        An infinite, draggable canvas showing the ecosystem of connectivity. Explore how trends branch into real-world strategic impacts.
-                    </p>
-                    <a href="prototype_map.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 9: Data Stream -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Audio-Visual</span>
-                    <div class="card-icon">
-                        <i class="fas fa-wave-square"></i>
-                    </div>
-                    <div class="card-title">Concept I: The Data Stream</div>
-                    <p class="card-desc">
-                        A generative audio-visualizer. Listen to the "sound of the network" as you layer data streams to create a custom sonic landscape.
-                    </p>
-                    <a href="prototype_stream.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 10: AR Portal -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Mobile AR</span>
-                    <div class="card-icon">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <div class="card-title">Concept J: AR Portal</div>
-                    <p class="card-desc">
-                        A simulated Augmented Reality experience. Scan your environment to discover hidden data points overlaying the physical world.
-                    </p>
-                    <a href="prototype_ar.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 11: Holo-Deck -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Product 3D</span>
-                    <div class="card-icon">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="card-title">Concept K: The Holo-Deck</div>
-                    <p class="card-desc">
-                        A clean, interactive 3D product showcase. Rotate and explode a futuristic 6G antenna to inspect its internal components.
-                    </p>
-                    <a href="prototype_holo.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 12: Timeline -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Editorial</span>
-                    <div class="card-icon">
-                        <i class="fas fa-history"></i>
-                    </div>
-                    <div class="card-title">Concept L: The Timeline</div>
-                    <p class="card-desc">
-                        A smooth horizontal scrolling history of connectivity. Trace the evolution from 1G voice calls to the 6G intelligent era.
-                    </p>
-                    <a href="prototype_timeline.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 13: Holo-Table -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">3D City</span>
-                    <div class="card-icon">
-                        <i class="fas fa-city"></i>
-                    </div>
-                    <div class="card-title">Concept M: Holo-Table</div>
-                    <p class="card-desc">
-                        A digital twin of a smart city. Toggle infrastructure layers like traffic, energy, and data to see the pulse of the metropolis.
-                    </p>
-                    <a href="prototype_city.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 14: Matrix Rain -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Effect</span>
-                    <div class="card-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="card-title">Concept N: Code Waterfall</div>
-                    <p class="card-desc">
-                        A cinematic 'Matrix' rain simulation. Pause the flow of encrypted data to reveal hidden strategic insights.
-                    </p>
-                    <a href="prototype_matrix.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 15: Quantum Core -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Game</span>
-                    <div class="card-icon">
-                        <i class="fas fa-atom"></i>
-                    </div>
-                    <div class="card-title">Concept O: Quantum Core</div>
-                    <p class="card-desc">
-                        An interactive particle simulation. Stabilize the quantum core by managing energy levels in this physics-based mini-game.
-                    </p>
-                    <a href="prototype_quantum.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 16: Sequencer -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Music</span>
-                    <div class="card-icon">
-                        <i class="fas fa-sliders-h"></i>
-                    </div>
-                    <div class="card-title">Concept P: Sonic Sequencer</div>
-                    <p class="card-desc">
-                        A rhythmic roadmap. Compose the future by activating steps on a sequencer, where each trend layer adds a new sonic texture.
-                    </p>
-                    <a href="prototype_sequencer.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 17: Harmonic Web -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">3D Audio</span>
-                    <div class="card-icon">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="card-title">Concept Q: Harmonic Web</div>
-                    <p class="card-desc">
-                        A 3D interactive string instrument. Pluck the connection lines between network nodes to hear the harmonies of the infrastructure.
-                    </p>
-                    <a href="prototype_sphere.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 18: Tuner -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Analog</span>
-                    <div class="card-icon">
-                        <i class="fas fa-broadcast-tower"></i>
-                    </div>
-                    <div class="card-title">Concept R: Future Tuner</div>
-                    <p class="card-desc">
-                        An analog radio interface. Drag the dial through static to tune into clear broadcasts from the 2026 network.
-                    </p>
-                    <a href="prototype_tuner.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 19: Constellation -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Space</span>
-                    <div class="card-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="card-title">Concept S: The Constellation</div>
-                    <p class="card-desc">
-                        A 3D star chart where trends form mythology in the sky. Hover over celestial connections to reveal the "story" of the network.
-                    </p>
-                    <a href="prototype_constellation.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 20: Elevator -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Vertical</span>
-                    <div class="card-icon">
-                        <i class="fas fa-arrow-up"></i>
-                    </div>
-                    <div class="card-title">Concept T: Space Elevator</div>
-                    <p class="card-desc">
-                        Ascend from ground level to Geostationary Orbit. Scroll up to pass through the layered tiers of global connectivity.
-                    </p>
-                    <a href="prototype_elevator.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 21: Mission Control -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Data</span>
-                    <div class="card-icon">
-                        <i class="fas fa-desktop"></i>
-                    </div>
-                    <div class="card-title">Concept U: Mission Control</div>
-                    <p class="card-desc">
-                        A high-density data dashboard inspired by spacecraft telemetry. Monitor real-time network logs, graphs, and node status.
-                    </p>
-                    <a href="prototype_control.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 22: Net-Pet -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Virtual Pet</span>
-                    <div class="card-icon">
-                        <i class="fas fa-ghost"></i>
-                    </div>
-                    <div class="card-title">Concept V: Net-Pet</div>
-                    <p class="card-desc">
-                        A bio-digital organism that feeds on infrastructure data. Evolve your pet by balancing its intake of 5G, AI, and Security nodes.
-                    </p>
-                    <a href="prototype_pet.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 23: Kinetic Type -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Physics</span>
-                    <div class="card-icon">
-                        <i class="fas fa-font"></i>
-                    </div>
-                    <div class="card-title">Concept W: Kinetic Type</div>
-                    <p class="card-desc">
-                        A typographic physics engine. Words become physical architecture that you can toss and stack to build your own network.
-                    </p>
-                    <a href="prototype_text.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 24: Glitch Gallery -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Avant-Garde</span>
-                    <div class="card-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <div class="card-title">Concept X: Signal to Noise</div>
-                    <p class="card-desc">
-                        An interactive glitch art gallery. Discover strategic insights by cleaning corrupted data streams and resolving signals from the noise.
-                    </p>
-                    <a href="prototype_glitch.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 25: Odyssey -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Deep Zoom</span>
-                    <div class="card-icon">
-                        <i class="fas fa-expand"></i>
-                    </div>
-                    <div class="card-title">Concept Y: Network Odyssey</div>
-                    <p class="card-desc">
-                        A seamless 3D journey through scales of reality. Zoom from a single signal tower, through data centres, into space, and finally to the quantum realm.
-                    </p>
-                    <a href="prototype_odyssey.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 26: Carousel 3D -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Interactive 3D</span>
-                    <div class="card-icon">
-                        <i class="fas fa-sync"></i>
-                    </div>
-                    <div class="card-title">Concept Z: Data Carousel</div>
-                    <p class="card-desc">
-                        A literal 3D merry-go-round of network trends. Drag to spin the platform and click the bobbing nodes to explore deeper data layers.
-                    </p>
-                    <a href="prototype_merry.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 27: Strategy Deck -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Interactive</span>
-                    <div class="card-icon">
-                        <i class="fas fa-clone"></i>
-                    </div>
-                    <div class="card-title">Concept AA: Strategy Deck</div>
-                    <p class="card-desc">
-                        A deck of interactive trend cards. Drag them to organize your thoughts and double-tap to flip them over for technical strategic details.
-                    </p>
-                    <a href="prototype_deck.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 28: X-Ray City -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Prestige</span>
-                    <div class="card-icon">
-                        <i class="fas fa-magnifying-glass"></i>
-                    </div>
-                    <div class="card-title">Concept AB: X-Ray City</div>
-                    <p class="card-desc">
-                        Visualize the invisible backbone of the city. Use the scanning lens to reveal the 5G nodes and fiber backhaul hidden in plain sight.
-                    </p>
-                    <a href="prototype_xray.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 29: Decision Engine -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Simulation</span>
-                    <div class="card-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <div class="card-title">Concept AC: Decision Engine</div>
-                    <p class="card-desc">
-                        Step into the role of a 2026 Telecoms CEO. Make high-stakes strategic choices and watch the network topology evolve in real-time.
-                    </p>
-                    <a href="prototype_engine.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 30: Liquid Data -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Abstract</span>
-                    <div class="card-icon">
-                        <i class="fas fa-droplet"></i>
-                    </div>
-                    <div class="card-title">Concept AD: Liquid Data</div>
-                    <p class="card-desc">
-                        A mesmerizing fluid simulation. Interact with the data flow to understand how AI-driven autonomy stabilizes the network environment.
-                    </p>
-                    <a href="prototype_liquid.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 31: Data Origami -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">3D Fold</span>
-                    <div class="card-icon">
-                        <i class="fas fa-note-sticky"></i>
-                    </div>
-                    <div class="card-title">Concept AE: Data Origami</div>
-                    <p class="card-desc">
-                        A tactile, foldable interface. Unfold geometric patterns to reveal layered strategic data, simulating the unfolding of the 2026 network architecture.
-                    </p>
-                    <a href="prototype_origami_v2.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 32: Network Breath -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Ambient</span>
-                    <div class="card-icon">
-                        <i class="fas fa-lungs"></i>
-                    </div>
-                    <div class="card-title">Concept AF: Network Breath</div>
-                    <p class="card-desc">
-                        An organic bio-feedback simulation. Touch the interface to disturb the network flow and watch the AI autonomous core adapt the system's breathing.
-                    </p>
-                    <a href="prototype_breath.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 33: Morse Archive -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">Retro</span>
-                    <div class="card-icon">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
-                    <div class="card-title">Concept AG: Morse Archive</div>
-                    <p class="card-desc">
-                        A historical data interception simulation. Tap out the correct pulses on a vintage telegraph to decrypt secure files from the future archive.
-                    </p>
-                    <a href="prototype_morse.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
-                </div>
-            </div>
-
-            <!-- Option 34: Strategy Cube -->
-            <div class="col-md-4">
-                <div class="prototype-card">
-                    <span class="badge-style">3D Object</span>
-                    <div class="card-icon">
-                        <i class="fas fa-dice-d6"></i>
-                    </div>
+                    <div class="card-icon"><i class="fas fa-dice-d6"></i></div>
                     <div class="card-title">Concept AH: Strategy Cube</div>
-                    <p class="card-desc">
-                        A multi-dimensional view of the network. Rotate the 3D strategy cube to explore different facets of the 2026 infrastructure architecture.
-                    </p>
+                    <p class="card-desc">A multi-dimensional view of the network. Rotate the branded 3D cube to explore different facets of the 2026 infrastructure.</p>
                     <a href="prototype_cube.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
             </div>
 
+            <!-- AE: Data Origami -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Tactile</span>
+                    <div class="card-icon"><i class="fas fa-note-sticky"></i></div>
+                    <div class="card-title">Concept AE: Data Origami</div>
+                    <p class="card-desc">A foldable interface. Unfold geometric patterns to reveal layered strategic data, simulating the 2026 network architecture.</p>
+                    <a href="prototype_origami_v2.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- Y: Odyssey -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Deep Zoom</span>
+                    <div class="card-icon"><i class="fas fa-expand"></i></div>
+                    <div class="card-title">Concept Y: Network Odyssey</div>
+                    <p class="card-desc">A seamless 3D journey through scales of reality. Zoom from a single tower into data centres, space, and the quantum realm.</p>
+                    <a href="prototype_odyssey.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- AA: Strategy Deck -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Tactile</span>
+                    <div class="card-icon"><i class="fas fa-clone"></i></div>
+                    <div class="card-title">Concept AA: Strategy Deck</div>
+                    <p class="card-desc">A deck of interactive trend cards. Drag to organize your thoughts and double-tap to flip them over for strategic details.</p>
+                    <a href="prototype_deck.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- S: Constellation -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Celestial</span>
+                    <div class="card-icon"><i class="fas fa-star"></i></div>
+                    <div class="card-title">Concept S: The Constellation</div>
+                    <p class="card-desc">A 3D star chart where trends form mythology in the sky. Hover over celestial connections to reveal the network story.</p>
+                    <a href="prototype_constellation.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- T: Space Elevator -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Vertical</span>
+                    <div class="card-icon"><i class="fas fa-arrow-up"></i></div>
+                    <div class="card-title">Concept T: Space Elevator</div>
+                    <p class="card-desc">Ascend from ground level to Geostationary Orbit. Scroll up to pass through the layered tiers of global connectivity.</p>
+                    <a href="prototype_elevator.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- L: Timeline -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Editorial</span>
+                    <div class="card-icon"><i class="fas fa-history"></i></div>
+                    <div class="card-title">Concept L: The Timeline</div>
+                    <p class="card-desc">A smooth horizontal scrolling history of connectivity. Trace the evolution from 1G voice calls to the 6G intelligent era.</p>
+                    <a href="prototype_timeline.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- F: Game -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Fun</span>
+                    <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                    <div class="card-title">Concept F: Signal Runner</div>
+                    <p class="card-desc">An 8-bit endless runner game. Play as a data packet racing through the network, dodging latency spikes to unlock gates.</p>
+                    <a href="prototype_game.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- D: Interactive Grid -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Bento</span>
+                    <div class="card-icon"><i class="fas fa-chart-simple"></i></div>
+                    <div class="card-title">Concept D: Interactive Grid</div>
+                    <p class="card-desc">A non-linear, bento-box style dashboard. Features expandable tiles, micro-interactions, and a data-first layout.</p>
+                    <a href="prototype_grid.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- C: Editorial -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Narrative</span>
+                    <div class="card-icon"><i class="fas fa-newspaper"></i></div>
+                    <div class="card-title">Concept C: Editorial Report</div>
+                    <p class="card-desc">A "scrollytelling" approach inspired by high-end journalism. Split-screen layout with pinned visuals and animations.</p>
+                    <a href="prototype_editorial.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- B: Neural Network -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Immersive</span>
+                    <div class="card-icon"><i class="fas fa-cube"></i></div>
+                    <div class="card-title">Concept B: Neural Network</div>
+                    <p class="card-desc">An immersive 3D WebGL experience. Users fly through a generative data tunnel. High-impact visuals designed to impress.</p>
+                    <a href="prototype.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+            <!-- A: Carousel -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <span class="badge-style">Clean</span>
+                    <div class="card-icon"><i class="fas fa-layer-group"></i></div>
+                    <div class="card-title">Concept A: The Carousel</div>
+                    <p class="card-desc">A clean, horizontal scrolling experience. Features reactive icon animations and a sticky sidebar for navigation.</p>
+                    <a href="prototype_carousel.html" class="btn-launch">Launch Prototype <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- OTHER EXPLORATIONS -->
+        <div class="section-header">Experimental & Specialized</div>
+        <div class="row g-4">
+            <!-- Option 5: Terminal -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-terminal"></i></div>
+                    <div class="card-title">Concept E: Secure Terminal</div>
+                    <p class="card-desc">A retro-futurist command-line interface. Type commands to "hack" the network and uncover secure trend data.</p>
+                    <a href="prototype_terminal.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 7: Globe -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-globe"></i></div>
+                    <div class="card-title">Concept G: Global Pulse</div>
+                    <p class="card-desc">An interactive 3D globe. Rotate the world to discover regional tech shifts and local pilot programs.</p>
+                    <a href="prototype_globe.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 9: Data Stream -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-wave-square"></i></div>
+                    <div class="card-title">Concept I: The Data Stream</div>
+                    <p class="card-desc">A generative audio-visualizer. Listen to the "sound of the network" as you layer data streams.</p>
+                    <a href="prototype_stream.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 10: AR Portal -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-camera"></i></div>
+                    <div class="card-title">Concept J: AR Portal</div>
+                    <p class="card-desc">A simulated Augmented Reality experience. Scan your environment to discover hidden data points.</p>
+                    <a href="prototype_ar.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 11: Holo-Deck -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-cube"></i></div>
+                    <div class="card-title">Concept K: The Holo-Deck</div>
+                    <p class="card-desc">An interactive 3D product showcase. Rotate and explode a futuristic 6G antenna to inspect components.</p>
+                    <a href="prototype_holo.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 13: Holo-Table -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-city"></i></div>
+                    <div class="card-title">Concept M: Holo-Table</div>
+                    <p class="card-desc">A digital twin of a smart city. Toggle infrastructure layers like traffic, energy, and data.</p>
+                    <a href="prototype_city.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 14: Matrix Rain -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-code"></i></div>
+                    <div class="card-title">Concept N: Code Waterfall</div>
+                    <p class="card-desc">A cinematic 'Matrix' rain simulation. Pause the flow of encrypted data to reveal insights.</p>
+                    <a href="prototype_matrix.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 15: Quantum Core -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-atom"></i></div>
+                    <div class="card-title">Concept O: Quantum Core</div>
+                    <p class="card-desc">An interactive particle simulation. Stabilize the quantum core by managing energy levels.</p>
+                    <a href="prototype_quantum.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 16: Sequencer -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-sliders-h"></i></div>
+                    <div class="card-title">Concept P: Sonic Sequencer</div>
+                    <p class="card-desc">A rhythmic roadmap. Compose the future by activating steps on a sequencer.</p>
+                    <a href="prototype_sequencer.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 18: Tuner -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-broadcast-tower"></i></div>
+                    <div class="card-title">Concept R: Future Tuner</div>
+                    <p class="card-desc">An analog radio interface. Drag the dial through static to tune into 2026 broadcasts.</p>
+                    <a href="prototype_tuner.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 21: Mission Control -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-desktop"></i></div>
+                    <div class="card-title">Concept U: Mission Control</div>
+                    <p class="card-desc">A high-density data dashboard. Monitor real-time network logs, graphs, and node status.</p>
+                    <a href="prototype_control.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 22: Net-Pet -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-ghost"></i></div>
+                    <div class="card-title">Concept V: Net-Pet</div>
+                    <p class="card-desc">A bio-digital organism that feeds on data. Evolve your pet by balancing infrastructure nodes.</p>
+                    <a href="prototype_pet.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 23: Kinetic Type -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-font"></i></div>
+                    <div class="card-title">Concept W: Kinetic Type</div>
+                    <p class="card-desc">A typographic physics engine. Words become physical architecture that you can toss and stack.</p>
+                    <a href="prototype_text.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 24: Glitch Gallery -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="card-title">Concept X: Signal to Noise</div>
+                    <p class="card-desc">An interactive glitch art gallery. Discover insights by cleaning corrupted data streams.</p>
+                    <a href="prototype_glitch.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 26: Carousel 3D -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-sync"></i></div>
+                    <div class="card-title">Concept Z: Data Carousel</div>
+                    <p class="card-desc">A literal 3D merry-go-round of network trends. Drag to spin and click bobbing nodes.</p>
+                    <a href="prototype_merry.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 28: X-Ray City -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-magnifying-glass"></i></div>
+                    <div class="card-title">Concept AB: X-Ray City</div>
+                    <p class="card-desc">Visualize the invisible backbone. Use the scanning lens to reveal hidden infrastructure.</p>
+                    <a href="prototype_xray.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 29: Decision Engine -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-brain"></i></div>
+                    <div class="card-title">Concept AC: Decision Engine</div>
+                    <p class="card-desc">Step into the role of a CEO. Make strategic choices and watch the topology evolve.</p>
+                    <a href="prototype_engine.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 30: Liquid Data -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-droplet"></i></div>
+                    <div class="card-title">Concept AD: Liquid Data</div>
+                    <p class="card-desc">A mesmerizing fluid simulation. Interact with data flow to understand AI autonomy.</p>
+                    <a href="prototype_liquid.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 32: Network Breath -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-lungs"></i></div>
+                    <div class="card-title">Concept AF: Network Breath</div>
+                    <p class="card-desc">An organic bio-feedback simulation. Touch the interface to disturb the network flow.</p>
+                    <a href="prototype_breath.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+            <!-- Option 33: Morse Archive -->
+            <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6">
+                <div class="prototype-card">
+                    <div class="card-icon"><i class="fas fa-ellipsis-h"></i></div>
+                    <div class="card-title">Concept AG: Morse Archive</div>
+                    <p class="card-desc">A historical interception simulation. Tap pulses on a telegraph to decrypt secure files.</p>
+                    <a href="prototype_morse.html" class="btn-launch">Launch Prototype</a>
+                </div>
+            </div>
+
+        </div>
+
         </div>
 
         <div class="text-center mt-5">
-            <p style="color: #5d6d7e; font-size: 0.9rem;">&copy; 2026 Telecoms Marketing Team</p>
+            <p style="color: #5d6d7e; font-size: 0.9rem;">&copy; 2026 Innovate Comms Marketing Team</p>
         </div>
     </div>
 
