@@ -146,6 +146,12 @@
         }
 
         // --- LEVEL 1: DATA CENTRE ---
+        // Building Shell
+        const buildingGeo = new THREE.BoxGeometry(30, 10, 30);
+        const buildingMat = new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true, transparent: true, opacity: 0.2 });
+        const building = new THREE.Mesh(buildingGeo, buildingMat);
+        level1.add(building);
+
         const rackGeo = new THREE.BoxGeometry(2, 4, 2);
         const rackMat = new THREE.MeshBasicMaterial({ color: 0x111111, wireframe: true });
         for(let x=-10; x<=10; x+=4) {
