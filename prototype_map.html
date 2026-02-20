@@ -320,7 +320,6 @@
         // Center the Strategic Core on load
         function initPosition() {
             const core = document.getElementById('node-core');
-            // Core is at left: 1325, top: 1400, width: 350, height: ~150
             const targetX = (window.innerWidth / 2) - 1325 - 175;
             const targetY = (window.innerHeight / 2) - 1400 - 80;
             
@@ -344,7 +343,42 @@
             }
         });
 
-        // ... rest of updateLines ...
+        // Update SVG Lines
+        function updateLines() {
+            svg.innerHTML = '';
+            const core = document.getElementById('node-core');
+            
+            // Connect core to main trends
+            document.querySelectorAll('.node[data-id]').forEach(node => {
+                drawLine(core, node, 'core-line');
+                
+                // Connect main trends to their details
+                const id = node.getAttribute('data-id');
+                document.querySelectorAll(`.node-detail[data-parent="${id}"]`).forEach(detail => {
+                    drawLine(node, detail, 'detail-line');
+                });
+            });
+        }
+
+        function drawLine(el1, el2, className) {
+            const r1 = el1.getBoundingClientRect();
+            const r2 = el2.getBoundingClientRect();
+            const cR = canvas.getBoundingClientRect();
+
+            // Calculate points relative to the CANVAS
+            const x1 = (r1.left + r1.width / 2 - cR.left);
+            const y1 = (r1.top + r1.height / 2 - cR.top);
+            const x2 = (r2.left + r2.width / 2 - cR.left);
+            const y2 = (r2.top + r2.height / 2 - cR.top);
+
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const midY = (y1 + y2) / 2;
+            const d = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+            
+            path.setAttribute("d", d);
+            path.setAttribute("class", "connector " + className);
+            svg.appendChild(path);
+        }
 
         function resetView() {
             const targetX = (window.innerWidth / 2) - 1325 - 175;
@@ -362,7 +396,6 @@
         // Click to center a node
         document.querySelectorAll('.node').forEach(node => {
             node.addEventListener('click', (e) => {
-                // Ignore if we are dragging
                 if (Draggable.get(canvas).isDragging) return;
 
                 const r = node.getBoundingClientRect();
@@ -388,7 +421,6 @@
             updateLines();
         });
         window.addEventListener('resize', () => {
-            // Optional: recenter or just update lines
             updateLines();
         });
 
