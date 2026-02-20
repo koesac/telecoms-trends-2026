@@ -63,7 +63,7 @@ const TELECOMS_CONFIG = {
             stat: "Credibility",
             statDesc: "Data and transparency are the new net-zero standards.",
             icon: "fa-leaf",
-            color: "#00d2ff" // Brighter Blue
+            color: "#15404F" // Bloodstone
         },
         {
             id: 5,
@@ -74,7 +74,7 @@ const TELECOMS_CONFIG = {
             stat: "Outcome-Led",
             statDesc: "Maintain UK position through commercial impact, not hype.",
             icon: "fa-bolt",
-            color: "#ff00ff" // Brighter Magenta
+            color: "#4C194C" // Alexandrite
         }
     ]
 };

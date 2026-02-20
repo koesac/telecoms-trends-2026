@@ -2,24 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Innovate Comms: Data Origami</title>
     <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- GSAP Library -->
+    <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <!-- Master Content -->
     <script src="master_content.js"></script>
     
     <style>
         :root {
-            --alexandrite: #4C194C;
             --agate: #D6883A;
-            --bloodstone: #15404F;
-            --azurite: #842366;
             --aventurine: #3E9B9B;
+            --azurite: #842366;
+            --bloodstone: #15404F;
+            --alexandrite: #4C194C;
             --bg-dark: #050a10;
-            --paper: #f9f7f2;
+            --paper: #f4f1ea;
         }
 
         body {
@@ -28,6 +28,7 @@
             font-family: "Avenir Next LT", "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #fff;
             height: 100vh;
+            height: 100dvh; /* Accounts for dynamic toolbars */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -37,8 +38,7 @@
 
         /* Atmosphere Layers */
         #bg-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            transition: background 1s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
         }
 
         .bg-layer {
@@ -47,18 +47,13 @@
         }
         .bg-layer.active { opacity: 1; }
 
-        #bg-0 { background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--bg-dark) 100%); }
-        #bg-1 { background: radial-gradient(circle at center, var(--agate) 0%, var(--bg-dark) 100%); }
-        #bg-2 { background: radial-gradient(circle at center, var(--azurite) 0%, var(--bg-dark) 100%); }
-        #bg-3 { background: radial-gradient(circle at center, var(--aventurine) 0%, var(--bg-dark) 100%); }
-        #bg-4 { background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--bg-dark) 100%); }
-        #bg-5 { background: radial-gradient(circle at center, var(--alexandrite) 0%, var(--bg-dark) 100%); }
-
         /* UI Overlays */
-        #ui-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
-            display: flex; flex-direction: column; justify-content: space-between; padding: 40px;
-            z-index: 1000;
+        #header-branding {
+            position: fixed; 
+            top: calc(40px + env(safe-area-inset-top)); 
+            left: calc(40px + env(safe-area-inset-left)); 
+            pointer-events: auto;
+            z-index: 10;
         }
 
         h1 {
@@ -68,73 +63,50 @@
         }
 
         .logo-icon {
-            fill: none; stroke: var(--agate); stroke-width: 2; width: 35px; height: 35px;
+            fill: none !important; 
+            stroke: var(--agate) !important; 
+            stroke-width: 2; 
+            width: 35px; height: 35px;
         }
 
-        /* Side Navigation Arrows */
         .nav-arrow {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            position: fixed; top: 50%; transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff; width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; pointer-events: none; transition: all 0.3s ease;
+            font-size: 1.2rem; backdrop-filter: blur(5px); 
+            z-index: 10;
+            opacity: 0; 
+            margin-left: env(safe-area-inset-left);
+            margin-right: env(safe-area-inset-right);
+        }
+        
+        body.active-experience .nav-arrow {
+            opacity: 1;
             pointer-events: auto;
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-            backdrop-filter: blur(5px);
-            z-index: 1100;
         }
 
-        .nav-arrow:hover {
-            background: var(--agate);
-            border-color: var(--agate);
-            box-shadow: 0 0 20px rgba(214, 136, 58, 0.4);
-        }
-
+        .nav-arrow:hover { background: var(--agate); border-color: var(--agate); box-shadow: 0 0 20px rgba(214, 136, 58, 0.4); }
         .nav-left { left: 40px; }
         .nav-right { right: 40px; }
 
-        .controls {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            z-index: 1000;
-        }
-
-        .dots {
-            display: flex; gap: 15px; pointer-events: auto; justify-content: center; margin-bottom: 10px;
-        }
-        .dot {
-            width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2);
-            cursor: pointer; transition: 0.3s;
-        }
-        .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
-
-        /* Overlays */
+        /* Overlays - FIXED TO ROOT */
         .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: 100vh;
+            height: 100dvh;
             background: rgba(5, 10, 16, 0.95);
             display: flex; align-items: center; justify-content: center;
-            z-index: 2000; opacity: 0; pointer-events: none; transition: 1s ease;
+            z-index: 5000; /* Absolute Top */
+            opacity: 0; pointer-events: none; transition: 1s ease;
             backdrop-filter: blur(20px);
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .overlay.active { opacity: 1; pointer-events: auto; }
-        
-        .overlay-content {
-            max-width: 700px; text-align: center; padding: 40px;
+        .overlay-content { 
+            max-width: 700px; text-align: center; padding: 40px; 
+            padding-bottom: calc(60px + env(safe-area-inset-bottom)); /* Extra lift for buttons */
         }
         .overlay-content h2 { font-family: inherit; letter-spacing: 5px; color: var(--agate); margin-bottom: 30px; font-weight: 700; font-size: 2rem; }
         .overlay-content p { font-size: 1.1rem; line-height: 1.8; color: #ccc; margin-bottom: 20px; }
@@ -147,172 +119,171 @@
         }
         .btn-action:hover { background: var(--agate); color: #fff; }
 
-        /* Card System */
+        /* Card Stage */
         #card-stage {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; transform-style: preserve-3d;
+            z-index: 100;
+            pointer-events: none; /* Allow clicks through to dots/title/arrows */
         }
 
         .origami-container {
-            width: 400px;
-            height: 400px;
-            position: absolute;
-            transform-style: preserve-3d;
-            cursor: pointer;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            visibility: hidden;
+            width: 400px; height: 400px;
+            position: absolute; transform-style: preserve-3d;
+            cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: auto; /* Keep cards clickable */
         }
 
-        .origami-container.active {
-            opacity: 1;
-            pointer-events: auto;
-            visibility: visible;
+        .card-inner {
+            width: 100%; height: 100%;
+            position: relative; transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
         }
 
         .face {
             position: absolute; width: 100%; height: 100%;
-            background-color: var(--paper);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; box-sizing: border-box;
-            border-radius: 4px;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.05);
-            color: #333;
-            z-index: 1;
-            transition: all 0.8s ease;
-            transform: translateZ(-1px); /* Sit behind flaps */
+            background-color: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; box-sizing: border-box; border-radius: 4px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.05); color: #333; z-index: 1;
+            transition: all 0.8s ease; transform: translateZ(-1px);
         }
 
-        .unfolded .face {
-            transform: translateZ(0px); /* Bring to front when open */
-        }
-
-        .face p {
-            font-size: 1rem;
-            line-height: 1.6;
-            text-align: center;
-            margin-top: 0;
-            color: #333;
-            font-weight: 400;
-        }
-
-        .face p strong {
-            font-size: 1rem;
-            color: #000;
-            font-weight: 700;
-        }
+        .face p { font-size: 1rem; line-height: 1.6; text-align: center; margin: 0; color: #333; font-weight: 400; }
+        .face p strong { font-size: 1rem; color: #000; font-weight: 700; }
+        
+        .face hr { width: 40px; border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px auto; }
 
         .flap {
             position: absolute; width: 100%; height: 50%;
-            background-color: #f4f1ea;
-            left: 0;
-            z-index: 10;
-            display: flex;
-            flex-direction: column; 
-            align-items: center;
-            justify-content: center;
-            font-family: inherit;
-            letter-spacing: 2px;
-            font-weight: 700;
-            color: #222;
+            background-color: var(--paper); left: 0; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: inherit; letter-spacing: 2px; font-weight: 700; color: #222;
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            text-align: center;
-            padding: 10px;
-            box-sizing: border-box;
-            /* Removed backface-visibility: hidden to prevent disappearing flaps */
+            box-shadow: 0 0 20px rgba(0,0,0,0.1); text-align: center; padding: 10px; box-sizing: border-box;
         }
 
-        .flap-top {
-            top: 0; transform-origin: top; border-bottom: 1px solid #ddd; border-radius: 4px 4px 0 0;
-            font-size: 1.4rem; line-height: 1.2;
+        .flap-top { 
+            top: 0; transform-origin: top; border-bottom: 1px solid #ddd; border-radius: 4px 4px 0 0; 
+            font-size: 1.8rem; /* Increased from 1.4rem */
+            line-height: 1.2; 
         }
 
-        .flap-bottom {
-            bottom: 0; transform-origin: bottom; border-top: 1px solid #ddd; border-radius: 0 0 4px 4px;
-            font-size: 3rem;
+        .flap-bottom { 
+            bottom: 0; transform-origin: bottom; border-top: 1px solid #ddd; border-radius: 0 0 4px 4px; 
+            font-size: 4rem; /* Increased from 3rem */
         }
 
         .unfolded .flap-top { transform: rotateX(165deg); }
         .unfolded .flap-bottom { transform: rotateX(-165deg); }
-        .unfolded .face { background-color: #fff; box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
+        .unfolded .face { transform: translateZ(0px); box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
 
-        /* Mobile specific adjustments */
-        @media (max-width: 768px) {
-            #header-branding { top: 20px !important; left: 20px !important; }
-            h1 { font-size: 1rem !important; }
-            .logo-icon { width: 25px !important; height: 25px !important; }
-            .origami-container { width: 320px; height: 320px; }
-            .face p { font-size: 0.85rem; }
-            .nav-arrow { width: 50px; height: 50px; }
-            .nav-left { left: 15px; }
-            .nav-right { right: 15px; }
-            .flap-top { font-size: 1.1rem; }
-            .flap-bottom { font-size: 2.2rem; }
+        .controls {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 15px; 
+            z-index: 10; 
+            pointer-events: auto;
         }
 
+        .dots { display: flex; gap: 15px; justify-content: center; margin-bottom: 10px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
+
+        @media (max-width: 768px) {
+            #header-branding { 
+                top: calc(20px + env(safe-area-inset-top)) !important; 
+                left: calc(20px + env(safe-area-inset-left)) !important; 
+            }
+            h1 { font-size: 1rem !important; }
+            .logo-icon { width: 25px !important; height: 25px !important; }
+            .origami-container { width: 340px; height: 340px; margin-top: -20px; }
+            .face { padding: 20px; }
+            .face p { font-size: 0.85rem; line-height: 1.4; }
+            .face p strong { font-size: 0.85rem; }
+            .face hr { margin: 10px auto; }
+            .nav-arrow { width: 50px; height: 50px; }
+            .nav-left { left: calc(15px + env(safe-area-inset-left)); } 
+            .nav-right { right: calc(15px + env(safe-area-inset-right)); }
+            .flap-top { font-size: 1.4rem; } 
+            .flap-bottom { font-size: 3rem; }
+            .controls { bottom: calc(60px + env(safe-area-inset-bottom)); }
+        }
+
+        @media (max-width: 400px) {
+            .origami-container { width: 300px; height: 300px; }
+            .face p { font-size: 0.75rem; line-height: 1.3; }
+            .face p strong { font-size: 0.75rem; }
+            .overlay-content h2 { font-size: 1.5rem; }
+            .overlay-content p { font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="bg-container">
-        <!-- Backgrounds added by JS -->
+    <div id="bg-container"></div>
+
+    <div id="header-branding">
+        <h1>
+            <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+                <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                Innovate Comms
+            </a>
+        </h1>
+    </div>
+
+    <div id="intro-overlay" class="overlay active">
+        <div class="overlay-content">
+            <div style="color:var(--agate); margin-bottom: 2rem;">
+                <svg class="logo-icon" viewBox="0 0 45 45" style="width: 80px; height: 80px; margin-bottom: 1rem;">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                <div style="font-size: 1.2rem; letter-spacing: 5px; font-weight: 700; color: #fff;">INNOVATE COMMS</div>
+            </div>
+            <h2 id="intro-title"></h2>
+            <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
+            <p id="intro-p2"></p>
+            <button class="btn-action" onclick="startExperience()">EXPLORE STRATEGY</button>
+        </div>
+    </div>
+
+    <div id="conclusion-overlay" class="overlay">
+        <div class="overlay-content">
+            <div style="color:var(--agate); margin-bottom: 2rem;">
+                <svg class="logo-icon" viewBox="0 0 45 45" style="width: 80px; height: 80px; margin-bottom: 1rem;">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                <div style="font-size: 1.2rem; letter-spacing: 5px; font-weight: 700; color: #fff;">INNOVATE COMMS</div>
+            </div>
+            <h2 id="outro-title"></h2>
+            <p id="outro-p1"></p>
+            <p id="outro-p2"></p>
+            <button class="btn-action" onclick="resetExperience()">REPLAY</button>
+        </div>
     </div>
 
     <div class="nav-arrow nav-left" onclick="prevCard()"><i class="fas fa-chevron-left"></i></div>
     <div class="nav-arrow nav-right" onclick="nextCard()"><i class="fas fa-chevron-right"></i></div>
 
-    <div id="ui-layer">
-        <div id="header-branding" style="position: absolute; top: 40px; left: 40px; pointer-events: auto;">
-            <h1>
-                <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
-                    <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
-                        <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
-                        <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
-                        <path d="M31.3047 2.34497V42.9916"></path>
-                        <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
-                    </svg>
-                    Innovate Comms
-                </a>
-            </h1>
-        </div>
-
-        <div id="intro-overlay" class="overlay active">
-            <div class="overlay-content">
-                <h2 id="intro-title"></h2>
-                <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
-                <p id="intro-p2"></p>
-                <button class="btn-action" onclick="startExperience()">EXPLORE STRATEGY</button>
-            </div>
-        </div>
-
-        <div id="conclusion-overlay" class="overlay">
-            <div class="overlay-content">
-                <h2 id="outro-title"></h2>
-                <p id="outro-p1"></p>
-                <p id="outro-p2"></p>
-                <button class="btn-action" onclick="resetExperience()">REPLAY</button>
-            </div>
-        </div>
-
-        <div class="controls">
-            <div class="dots" id="dots">
-                <!-- Dots added by JS -->
-            </div>
-            <div style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px;">TAP CENTER TO UNFOLD DATA</div>
-        </div>
+    <div class="controls">
+        <div class="dots" id="dots"></div>
+        <div style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px;">TAP CENTER TO UNFOLD DATA</div>
     </div>
 
-    <div id="card-stage">
-        <!-- Cards generated by JS -->
-    </div>
+    <div id="card-stage"></div>
 
     <script>
         const stage = document.getElementById('card-stage');
@@ -323,31 +294,17 @@
         
         const config = TELECOMS_CONFIG;
         const trends = config.trends;
-        const cards = [];
+        let cards = [];
         let currentIndex = 0;
         let isTransitioning = false;
         let isExperienceActive = false;
 
-        const LOGO_SVG = `
-            <svg viewBox="0 0 45 45" style="width: 60px; height: 60px; fill: none; stroke: currentColor; stroke-width: 2;">
-                <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
-                <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
-                <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
-                <path d="M31.3047 2.34497V42.9916"></path>
-                <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
-            </svg>
-        `;
-
         function loadMasterContent() {
-            // Intro
             document.getElementById('intro-title').innerText = config.intro.title.toUpperCase();
             document.getElementById('intro-p1').innerText = config.intro.subtitle;
             document.getElementById('intro-p2').innerText = config.intro.p1 + " " + config.intro.p2;
-
-            // Outro
             document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
             document.getElementById('outro-p1').innerText = config.outro.p1;
-            
             const email = config.branding.email;
             let p2 = config.outro.p2;
             p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
@@ -357,137 +314,98 @@
         function createCard(trend, index) {
             const container = document.createElement('div');
             container.className = 'origami-container';
+            const bodyText = `<p>${trend.desc}</p><hr><p><strong>${trend.implication || trend.statDesc}</strong></p>`;
             
-            const title = trend.title;
-            const bodyText = `${trend.desc}<br><br><strong>${trend.implication || trend.statDesc}</strong>`;
-            const iconHtml = `<i class="fas ${trend.icon}"></i>`;
-            const color = trend.color;
-
             container.innerHTML = `
-                <div class="flap flap-top" style="color:${color}">${title.toUpperCase()}</div>
-                <div class="face">
-                    <p>${bodyText}</p>
+                <div class="card-inner">
+                    <div class="flap flap-top" style="color:${trend.color}">${trend.title.toUpperCase()}</div>
+                    <div class="face">${bodyText}</div>
+                    <div class="flap flap-bottom" style="color:${trend.color}"><i class="fas ${trend.icon}"></i></div>
                 </div>
-                <div class="flap flap-bottom" style="color:${color}">${iconHtml}</div>
             `;
 
-            container.onclick = () => container.classList.toggle('unfolded');
+            container.onclick = () => { 
+                if(index === currentIndex) {
+                    if (container.classList.contains('unfolded')) {
+                        container.classList.remove('unfolded');
+                        setTimeout(() => { nextCard(); }, 200);
+                    } else {
+                        container.classList.add('unfolded');
+                    }
+                } 
+            };
             stage.appendChild(container);
-            cards.push(container);
+            
+            const depth = index;
+            gsap.set(container, { z: -depth * 60, y: depth * 10, rotation: (index % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1 });
 
-            // Create Dot
             const dot = document.createElement('div');
             dot.className = 'dot';
             dot.onclick = () => jumpTo(index);
             dotsContainer.appendChild(dot);
 
-            // Create BG Layer
             const bg = document.createElement('div');
             bg.className = 'bg-layer';
             bg.id = `bg-${index}`;
             bg.style.background = `radial-gradient(circle at center, ${trend.color} 0%, var(--bg-dark) 100%)`;
             bgContainer.appendChild(bg);
+
+            return container;
         }
 
         function init() {
             loadMasterContent();
-            trends.forEach((t, i) => createCard(t, i));
-            // Set initial state
-            document.querySelectorAll('.bg-layer')[0].classList.add('active');
-            document.querySelectorAll('.dot')[0].classList.add('active');
+            cards = trends.map((t, i) => createCard(t, i));
+            updateStack();
+        }
+
+        function updateStack() {
+            cards.forEach((card, i) => {
+                const inner = card.querySelector('.card-inner');
+                if (i < currentIndex) {
+                    gsap.to(card, { x: -window.innerWidth, opacity: 1, rotation: -20, duration: 0.6, ease: "power2.inOut", onComplete: () => { card.style.visibility = 'hidden'; } });
+                } else {
+                    const depth = i - currentIndex;
+                    card.style.visibility = 'visible';
+                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out" });
+                    if (depth > 0) gsap.to(inner, { rotationX: 0, rotationY: 0, duration: 0.5 });
+                }
+            });
+            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === currentIndex));
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentIndex));
         }
 
         function startExperience() {
             isExperienceActive = true;
+            document.body.classList.add('active-experience');
             introOverlay.classList.remove('active');
-            
-            // Ensure first card is visible and at center
-            cards.forEach((c, i) => {
-                if(i === 0) {
-                    c.style.visibility = 'visible';
-                    c.classList.add('active');
-                    gsap.fromTo(c, { x: window.innerWidth, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "power2.out" });
-                } else {
-                    c.style.visibility = 'hidden';
-                    c.classList.remove('active');
-                }
-            });
             currentIndex = 0;
-            updateUI(0);
+            updateStack();
         }
 
         function resetExperience() {
             conclusionOverlay.classList.remove('active');
+            document.body.classList.add('active-experience');
             currentIndex = 0;
             isExperienceActive = true;
-            
-            // Reset all cards
-            cards.forEach((c, i) => {
-                c.classList.remove('unfolded');
-                if(i === 0) {
-                    c.style.visibility = 'visible';
-                    c.classList.add('active');
-                    gsap.fromTo(c, { x: -window.innerWidth, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: "power2.out" });
-                } else {
-                    c.style.visibility = 'hidden';
-                    c.classList.remove('active');
-                }
-            });
-            updateUI(0);
-        }
-
-        function updateUI(index) {
-            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === index));
-            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === index));
+            updateStack();
         }
 
         function showConclusion() {
             isExperienceActive = false;
+            document.body.classList.remove('active-experience');
             conclusionOverlay.classList.add('active');
-            cards.forEach(c => {
-                c.classList.remove('unfolded');
-                c.classList.remove('active');
-                c.style.visibility = 'hidden';
-            });
         }
 
-        function jumpTo(index) {
-            if (!isExperienceActive || index === currentIndex || isTransitioning) return;
-            
-            isTransitioning = true;
-            const direction = index > currentIndex ? 1 : -1;
-            const currentCard = cards[currentIndex];
-            const nextCard = cards[index];
-
-            currentCard.classList.remove('unfolded');
-
-            gsap.to(currentCard, {
-                x: -direction * window.innerWidth,
-                rotationY: -direction * 30,
-                duration: 0.7,
-                ease: "power2.inOut",
-                onComplete: () => {
-                    currentCard.classList.remove('active');
-                    currentCard.style.visibility = 'hidden';
-                }
+        function showIntro() {
+            isExperienceActive = false;
+            document.body.classList.remove('active-experience');
+            introOverlay.classList.add('active');
+            // Reset cards to initial stack state but hidden
+            cards.forEach((card, i) => {
+                const depth = i;
+                gsap.set(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, visibility: 'hidden' });
             });
-
-            nextCard.style.visibility = 'visible';
-            nextCard.classList.add('active');
-            gsap.fromTo(nextCard, 
-                { x: direction * window.innerWidth, rotationY: direction * 30, opacity: 1 },
-                { 
-                    x: 0, rotationY: 0, opacity: 1, 
-                    duration: 0.7, 
-                    ease: "power2.inOut", 
-                    onComplete: () => {
-                        isTransitioning = false;
-                    }
-                }
-            );
-
-            currentIndex = index;
-            updateUI(index);
         }
 
         function nextCard() {
@@ -495,34 +413,51 @@
             if (currentIndex === cards.length - 1) {
                 showConclusion();
             } else {
-                jumpTo(currentIndex + 1);
+                cards[currentIndex].classList.remove('unfolded');
+                isTransitioning = true;
+                currentIndex++;
+                updateStack();
+                setTimeout(() => { isTransitioning = false; }, 600);
             }
         }
 
         function prevCard() {
             if (!isExperienceActive || isTransitioning) return;
-            if (currentIndex > 0) {
-                jumpTo(currentIndex - 1);
+            if (currentIndex === 0) {
+                showIntro();
+            } else {
+                cards[currentIndex].classList.remove('unfolded');
+                isTransitioning = true;
+                currentIndex--;
+                updateStack();
+                setTimeout(() => { isTransitioning = false; }, 600);
             }
         }
 
-        // Global Mouse Move Parallax (Only for active card)
-        document.addEventListener('mousemove', (e) => {
-            if (window.innerWidth > 768 && !isTransitioning && isExperienceActive) {
-                const x = (e.clientX / window.innerWidth - 0.5) * 45;
-                const y = (e.clientY / window.innerHeight - 0.5) * -45;
-                gsap.to(cards[currentIndex], { rotationY: x, rotationX: y, duration: 0.1, ease: "power1.out" });
-            }
-        });
+        function jumpTo(index) {
+            if (!isExperienceActive || isTransitioning || index === currentIndex) return;
+            cards[currentIndex].classList.remove('unfolded');
+            isTransitioning = true;
+            currentIndex = index;
+            updateStack();
+            setTimeout(() => { isTransitioning = false; }, 600);
+        }
 
-        // Keyboard Support
         window.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight') nextCard();
             if (e.key === 'ArrowLeft') prevCard();
         });
 
-        init();
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth > 768 && !isTransitioning && isExperienceActive) {
+                const inner = cards[currentIndex].querySelector('.card-inner');
+                const x = (e.clientX / window.innerWidth - 0.5) * 30;
+                const y = (e.clientY / window.innerHeight - 0.5) * -30;
+                gsap.to(inner, { rotationY: x, rotationX: y, duration: 0.15, ease: "power1.out" });
+            }
+        });
 
+        init();
     </script>
 </body>
 </html>
