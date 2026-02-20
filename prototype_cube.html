@@ -107,21 +107,43 @@
 
         .face h2 { 
             font-family: 'Syncopate', sans-serif; 
-            font-size: 1rem; 
+            font-size: 0.9rem; 
             letter-spacing: 2px; 
-            margin: 20px 0 10px; 
+            margin: 15px 0 8px; 
             text-align: center;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            color: var(--agate);
         }
         .face p { 
-            font-size: 0.85rem; 
-            line-height: 1.6; 
-            color: #eee; /* Brighter color for better contrast */
+            font-size: 0.75rem; 
+            line-height: 1.4; 
+            color: #eee; 
             text-align: center; 
             font-weight: 400;
             text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
         }
-        .face .icon { font-size: 3rem; color: var(--agate); }
+        .face .icon { font-size: 2.5rem; color: var(--agate); }
+
+        .impact-box {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        .stat-highlight {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--agate);
+            margin-bottom: 4px;
+        }
+        .stat-desc {
+            font-size: 0.65rem;
+            opacity: 0.7;
+            color: #ccc;
+            line-height: 1.2;
+        }
 
         /* Positioning Faces */
         .front  { transform: rotateY(0deg) translateZ(150px); }
@@ -181,7 +203,7 @@
         <a href="index.html" class="btn-exit">TERMINATE_LINK</a>
     </div>
 
-    <div class="hint">TAP TO ROTATE THE CORE</div>
+    <div class="hint">SCROLL OR TAP TO ROTATE</div>
 
     <div class="scene" id="cube" onclick="rotateNext()">
         <!-- Face 0: Intro -->
@@ -194,42 +216,65 @@
         <!-- Face 1: 5G -->
         <div class="face right">
             <div class="icon" style="color:var(--agate)"><i class="fas fa-tower-broadcast"></i></div>
-            <h2>HYPER-SCALE 5G</h2>
-            <p>Terahertz air interface achieving sub-1ms latency for remote robotics.</p>
+            <h2 style="color:var(--agate)">HYPER-SCALE 5G</h2>
+            <p>Standalone 5G has reached critical mass. 6G pilot testing targeting terahertz frequencies enables remote robotic surgery.</p>
+            <div class="impact-box">
+                <span class="stat-highlight" style="color:var(--agate)">&lt;10ms Latency</span>
+                <div class="stat-desc">Enabling massive machine-type communications (mMTC) at scale.</div>
+            </div>
         </div>
 
         <!-- Face 2: AI -->
         <div class="face back">
             <div class="icon" style="color:var(--azurite)"><i class="fas fa-brain"></i></div>
-            <h2>AUTONOMOUS AI</h2>
-            <p>Zero-touch networks that predict outages and self-heal in real-time.</p>
+            <h2 style="color:var(--azurite)">AUTONOMOUS AI</h2>
+            <p>Networks are now self-healing. AI algorithms manage traffic routing, peak load balancing, and energy consumption in real-time.</p>
+            <div class="impact-box">
+                <span class="stat-highlight" style="color:var(--azurite)">30% OPEX Reduction</span>
+                <div class="stat-desc">Predictive maintenance and automated fault resolution for near-zero downtime.</div>
+            </div>
         </div>
 
         <!-- Face 3: Edge -->
         <div class="face left">
             <div class="icon" style="color:var(--aventurine)"><i class="fas fa-microchip"></i></div>
-            <h2>EDGE_CORE</h2>
-            <p>Processing 90% of data locally to support autonomous urban mobility.</p>
+            <h2 style="color:var(--aventurine)">EDGE_CORE</h2>
+            <p>Processing power moved to the network edge, colocated with base stations to minimize data travel distance.</p>
+            <div class="impact-box">
+                <span class="stat-highlight" style="color:var(--aventurine)">90% Latency Gain</span>
+                <div class="stat-desc">Powering the next generation of AR/VR and autonomous vehicles locally.</div>
+            </div>
         </div>
 
         <!-- Face 4: Sat -->
         <div class="face top">
             <div class="icon" style="color:var(--bloodstone)"><i class="fas fa-satellite"></i></div>
-            <h2>ORBITAL_LINK</h2>
-            <p>Seamless handover between towers and LEO constellations for 100% coverage.</p>
+            <h2 style="color:var(--bloodstone)">ORBITAL_LINK</h2>
+            <p>The convergence of terrestrial networks and LEO satellite constellations has eliminated "dead zones" across the globe.</p>
+            <div class="impact-box">
+                <span class="stat-highlight" style="color:var(--bloodstone)">Zero Connectivity Gaps</span>
+                <div class="stat-desc">High-speed internet for the most remote corners of the planet.</div>
+            </div>
         </div>
 
         <!-- Face 5: Security -->
         <div class="face bottom">
             <div class="icon" style="color:var(--alexandrite)"><i class="fas fa-shield-halved"></i></div>
-            <h2>QUANTUM_SHIELD</h2>
-            <p>Post-Quantum Cryptography securing backbones against next-gen decryption.</p>
+            <h2 style="color:var(--alexandrite)">QUANTUM_SHIELD</h2>
+            <p>Providers are deploying Post-Quantum Cryptography (PQC) to protect national communication backbones.</p>
+            <div class="impact-box">
+                <span class="stat-highlight" style="color:var(--alexandrite)">Quantum-Safe</span>
+                <div class="stat-desc">Ensuring long-term data privacy against next-decade decryption threats.</div>
+            </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Observer.min.js"></script>
     <script>
+        gsap.registerPlugin(Observer);
+
         // --- BACKGROUND ENGINES ---
         const initStars = () => {
             const container = document.getElementById('bg-stars');
@@ -327,6 +372,7 @@
         };
 
         let currentFace = 0;
+        let isTransitioning = false;
 
         const rotations = [
             { x: 0, y: 0 },      // Front (Intro) -> DEFAULT (BLOODSTONE)
@@ -338,16 +384,27 @@
         ];
 
         function rotateNext() {
+            if(isTransitioning) return;
             currentFace = (currentFace + 1) % rotations.length;
             applyRotation();
         }
 
+        function rotatePrev() {
+            if(isTransitioning) return;
+            currentFace = (currentFace - 1 + rotations.length) % rotations.length;
+            applyRotation();
+        }
+
         function rotateTo(idx) {
+            if(isTransitioning) return;
             currentFace = idx;
             applyRotation();
         }
 
         function applyRotation() {
+            isTransitioning = true;
+            stopIdle();
+            
             const rot = rotations[currentFace];
             cube.style.transform = `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`;
             
@@ -365,6 +422,8 @@
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === currentFace);
             });
+
+            setTimeout(() => { isTransitioning = false; }, 1000);
         }
 
         // Initial subtle spin
@@ -378,9 +437,21 @@
             }
         }, 20);
 
-        // Clear idle on first interaction
-        cube.addEventListener('mousedown', () => clearInterval(idle));
-        cube.addEventListener('touchstart', () => clearInterval(idle));
+        const stopIdle = () => clearInterval(idle);
+
+        // Interaction
+        cube.addEventListener('mousedown', stopIdle);
+        cube.addEventListener('touchstart', stopIdle);
+
+        // Scroll Jacking with GSAP Observer
+        Observer.create({
+            target: window,
+            type: "wheel,touch",
+            onUp: () => rotatePrev(),
+            onDown: () => rotateNext(),
+            tolerance: 10,
+            preventDefault: true
+        });
 
     </script>
 </body>
