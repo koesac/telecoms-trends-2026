@@ -143,21 +143,14 @@
             padding-top: 15px;
             width: 100%;
             text-align: center;
-            margin-top: 5px;
-        }
-        .stat-highlight {
-            display: block;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--agate);
-            margin-bottom: 8px;
-            letter-spacing: 1px;
+            margin-top: auto; /* Push to bottom */
         }
         .stat-desc {
-            font-size: 0.8rem;
-            opacity: 0.9;
+            font-size: 0.95rem;
+            opacity: 1;
             color: #eee;
-            line-height: 1.4;
+            line-height: 1.5;
+            font-weight: 400;
         }
 
         /* Positioning Faces */
@@ -408,7 +401,6 @@
                         <h2 style="color:${trend.color}">${trend.title.toUpperCase()}</h2>
                         <p>${trend.desc}</p>
                         <div class="impact-box">
-                            <span class="stat-highlight" style="color:${trend.color}">${trend.stat.toUpperCase()}</span>
                             <div class="stat-desc">${trend.implication || trend.statDesc}</div>
                         </div>
                     `;
