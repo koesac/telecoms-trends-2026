@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Innovate Comms: Strategic Deck (Concept AI)</title>
     <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -34,6 +36,9 @@
             justify-content: center;
             overflow: hidden;
             perspective: 2000px;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(132, 35, 102, 0.15) 1px, transparent 0);
+            background-size: 40px 40px;
         }
 
         /* Atmosphere Layers */
@@ -145,44 +150,59 @@
 
         .card-face {
             position: absolute; width: 100%; height: 100%;
-            background-color: var(--paper);
             backface-visibility: hidden;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 40px; box-sizing: border-box;
-            border: 1px solid rgba(0,0,0,0.05);
+            padding: 30px; box-sizing: border-box;
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
         /* Front Face */
         .card-front {
             z-index: 2;
+            background: linear-gradient(135deg, #1a1d24 0%, #0a0c10 100%);
+            justify-content: space-between;
         }
 
         .card-front .icon {
-            font-size: 4rem; margin-bottom: 30px;
+            font-size: 3rem; margin-top: 20px;
         }
 
         .card-front h2 {
-            font-family: inherit; font-size: 1.8rem; letter-spacing: 2px;
-            text-transform: uppercase; text-align: center; margin: 0;
-            font-weight: 700;
+            font-family: 'Bebas Neue', cursive; 
+            font-size: 2.5rem; 
+            letter-spacing: 2px;
+            text-transform: uppercase; 
+            text-align: center; 
+            margin: 20px 0;
+            font-weight: 400;
+            line-height: 1;
+            color: #fff;
         }
 
         .card-front .flip-hint {
-            position: absolute; bottom: 30px; font-size: 0.6rem; 
-            letter-spacing: 2px; opacity: 0.4; text-transform: uppercase;
+            font-size: 0.7rem; 
+            letter-spacing: 2px; 
+            opacity: 0.4; 
+            text-transform: uppercase;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            width: 100%;
+            text-align: center;
+            padding-top: 15px;
+            margin-bottom: 10px;
         }
 
         /* Back Face */
         .card-back {
             transform: rotateY(180deg);
-            color: #333;
+            color: #fff; /* High contrast white text */
+            border-color: rgba(255,255,255,0.2);
         }
 
-        .card-back p { font-size: 1rem; line-height: 1.6; text-align: center; margin: 0; font-weight: 400; }
-        .card-back p strong { font-size: 1rem; color: #000; font-weight: 700; }
-        .card-back hr { width: 40px; border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px auto; }
+        .card-back p { font-size: 0.95rem; line-height: 1.5; text-align: center; margin: 0; font-weight: 400; color: #fff; }
+        .card-back p strong { font-size: 0.95rem; color: #fff; font-weight: 700; }
+        .card-back hr { width: 40px; border: none; border-top: 1px solid rgba(255,255,255,0.3); margin: 15px auto; }
 
         .controls {
             position: fixed; bottom: calc(60px + env(safe-area-inset-bottom)); 
@@ -315,7 +335,7 @@
                         <h2 style="color:${trend.color}">${trend.title.toUpperCase()}</h2>
                         <div class="flip-hint">TAP TO FLIP</div>
                     </div>
-                    <div class="card-face card-back">${bodyText}</div>
+                    <div class="card-face card-back" style="background-color: ${trend.color}">${bodyText}</div>
                 </div>
             `;
 
