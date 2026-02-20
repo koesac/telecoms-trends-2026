@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Future of Telecoms: Strategy Cube</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --agate: #D6883A;
+            --aventurine: #3E9B9B;
+            --azurite: #842366;
+            --bloodstone: #15404F;
+            --alexandrite: #4C194C;
+            --bg-dark: #050a10;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        /* UI Overlays */
+        #ui {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: space-between; padding: 40px;
+            z-index: 100;
+        }
+
+        h1 {
+            font-family: 'Syncopate', sans-serif; font-size: 1.5rem; letter-spacing: 10px; margin: 0;
+            text-transform: uppercase; color: var(--agate);
+        }
+
+        .hint {
+            position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+            font-size: 0.7rem; letter-spacing: 3px; opacity: 0.5; text-transform: uppercase;
+        }
+
+        /* The Cube */
+        .scene {
+            width: 300px; height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1.2);
+            cursor: pointer;
+        }
+
+        .face {
+            position: absolute; width: 300px; height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; box-sizing: border-box;
+            backface-visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .face.active { border-color: var(--agate); background: rgba(255, 255, 255, 0.1); }
+
+        .face h2 { font-family: 'Syncopate', sans-serif; font-size: 1rem; letter-spacing: 2px; margin: 20px 0 10px; text-align: center; }
+        .face p { font-size: 0.8rem; line-height: 1.5; color: #aaa; text-align: center; }
+        .face .icon { font-size: 3rem; color: var(--agate); }
+
+        /* Positioning Faces */
+        .front  { transform: rotateY(0deg) translateZ(150px); }
+        .right  { transform: rotateY(90deg) translateZ(150px); }
+        .back   { transform: rotateY(180deg) translateZ(150px); }
+        .left   { transform: rotateY(-90deg) translateZ(150px); }
+        .top    { transform: rotateX(90deg) translateZ(150px); }
+        .bottom { transform: rotateX(-90deg) translateZ(150px); }
+
+        /* Navigation Dots */
+        .dots {
+            display: flex; gap: 15px; pointer-events: auto; justify-content: center; margin-bottom: 20px;
+        }
+        .dot {
+            width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2);
+            cursor: pointer; transition: 0.3s;
+        }
+        .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
+
+        .btn-exit { position: fixed; top: 40px; right: 40px; color: #666; text-decoration: none; font-size: 0.7rem; pointer-events: auto; }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 480px) {
+            .scene { width: 250px; height: 250px; }
+            .face { width: 250px; height: 250px; padding: 20px; }
+            .front  { transform: rotateY(0deg) translateZ(125px); }
+            .right  { transform: rotateY(90deg) translateZ(125px); }
+            .back   { transform: rotateY(180deg) translateZ(125px); }
+            .left   { transform: rotateY(-90deg) translateZ(125px); }
+            .top    { transform: rotateX(90deg) translateZ(125px); }
+            .bottom { transform: rotateX(-90deg) translateZ(125px); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <h1>STRATEGY_CUBE</h1>
+        <div class="dots" id="dots">
+            <div class="dot active" onclick="rotateTo(0)"></div>
+            <div class="dot" onclick="rotateTo(1)"></div>
+            <div class="dot" onclick="rotateTo(2)"></div>
+            <div class="dot" onclick="rotateTo(3)"></div>
+            <div class="dot" onclick="rotateTo(4)"></div>
+            <div class="dot" onclick="rotateTo(5)"></div>
+        </div>
+        <a href="index.html" class="btn-exit">TERMINATE_LINK</a>
+    </div>
+
+    <div class="hint">TAP TO ROTATE THE CORE</div>
+
+    <div class="scene" id="cube" onclick="rotateNext()">
+        <!-- Face 0: Intro -->
+        <div class="face front">
+            <div class="icon"><i class="fas fa-cube"></i></div>
+            <h2>TELECOMS 2026</h2>
+            <p>A multi-dimensional view of the future digital backbone.</p>
+        </div>
+        
+        <!-- Face 1: 5G -->
+        <div class="face right">
+            <div class="icon" style="color:var(--agate)"><i class="fas fa-tower-broadcast"></i></div>
+            <h2>HYPER-SCALE 5G</h2>
+            <p>Terahertz air interface achieving sub-1ms latency for remote robotics.</p>
+        </div>
+
+        <!-- Face 2: AI -->
+        <div class="face back">
+            <div class="icon" style="color:var(--azurite)"><i class="fas fa-brain"></i></div>
+            <h2>AUTONOMOUS AI</h2>
+            <p>Zero-touch networks that predict outages and self-heal in real-time.</p>
+        </div>
+
+        <!-- Face 3: Edge -->
+        <div class="face left">
+            <div class="icon" style="color:var(--aventurine)"><i class="fas fa-microchip"></i></div>
+            <h2>EDGE_CORE</h2>
+            <p>Processing 90% of data locally to support autonomous urban mobility.</p>
+        </div>
+
+        <!-- Face 4: Sat -->
+        <div class="face top">
+            <div class="icon" style="color:var(--bloodstone)"><i class="fas fa-satellite"></i></div>
+            <h2>ORBITAL_LINK</h2>
+            <p>Seamless handover between towers and LEO constellations for 100% coverage.</p>
+        </div>
+
+        <!-- Face 5: Security -->
+        <div class="face bottom">
+            <div class="icon" style="color:var(--alexandrite)"><i class="fas fa-shield-halved"></i></div>
+            <h2>QUANTUM_SHIELD</h2>
+            <p>Post-Quantum Cryptography securing backbones against next-gen decryption.</p>
+        </div>
+    </div>
+
+    <script>
+        const cube = document.getElementById('cube');
+        const dots = document.querySelectorAll('.dot');
+        let currentFace = 0;
+
+        const rotations = [
+            { x: 0, y: 0 },      // Front (Intro)
+            { x: 0, y: -90 },    // Right (5G)
+            { x: 0, y: -180 },   // Back (AI)
+            { x: 0, y: -270 },   // Left (Edge)
+            { x: -90, y: 0 },    // Top (Sat)
+            { x: 90, y: 0 }      // Bottom (Security)
+        ];
+
+        function rotateNext() {
+            currentFace = (currentFace + 1) % rotations.length;
+            applyRotation();
+        }
+
+        function rotateTo(idx) {
+            currentFace = idx;
+            applyRotation();
+        }
+
+        function applyRotation() {
+            const rot = rotations[currentFace];
+            cube.style.transform = `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`;
+            
+            // Update Dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentFace);
+            });
+        }
+
+        // Initial subtle spin
+        let initialRot = 0;
+        const idle = setInterval(() => {
+            if (currentFace === 0) {
+                initialRot += 0.2;
+                cube.style.transform = `rotateX(-10deg) rotateY(${initialRot}deg)`;
+            } else {
+                clearInterval(idle);
+            }
+        }, 20);
+
+        // Clear idle on first interaction
+        cube.addEventListener('mousedown', () => clearInterval(idle));
+        cube.addEventListener('touchstart', () => clearInterval(idle));
+
+    </script>
+</body>
+</html>
