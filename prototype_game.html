@@ -456,7 +456,7 @@
 
         function updateLivesHUD() {
             livesHud.innerText = `LIVES: ${currentLives}`;
-            livesHud.style.color = currentLives === 1 ? '#ff0055' : '#fff'; // Red only on 1 life, otherwise white
+            livesHud.style.color = currentLives === 1 ? '#842366' : '#fff'; // Azurite on 1 life, otherwise white
         }
 
         function spawnObstacle() {
@@ -519,7 +519,7 @@
                 return;
             }
             currentLives--; updateLivesHUD();
-            createParticles(player.x, player.y, '#ff0000');
+            createParticles(player.x, player.y, '#842366'); // Azurite particles on hit
             if (currentLives <= 0) gameOver();
             else invincibilityFrames = 60;
         }
@@ -644,7 +644,8 @@
             const maxJumps = activePowerups.doubleJump ? 2 : 1;
             if (player.grounded || jumpCount < maxJumps) {
                 player.dy = JUMP_FORCE; jumpCount++;
-                createParticles(player.x + player.width/2, player.y + player.height, '#842366');
+                const particleColor = (jumpCount === 1) ? '#3E9B9B' : '#4C194C'; // Aventurine for first, Alexandrite for second
+                createParticles(player.x + player.width/2, player.y + player.height, particleColor);
                 if (!hasJumped) { hasJumped = true; jumpHint.style.opacity = '0'; }
             }
         }
@@ -712,7 +713,7 @@
             const best = localStorage.getItem('signalRunnerBest') || 0;
             if (finalScore > best) { localStorage.setItem('signalRunnerBest', finalScore); bestScoreHud.innerText = `BEST: ${finalScore} TB`; }
             finalScoreEl.innerText = finalScore; bestScoreOverEl.innerText = localStorage.getItem('signalRunnerBest') || finalScore;
-            createParticles(player.x, player.y, '#ff0000');
+            createParticles(player.x, player.y, '#842366'); // Azurite particles on game over
             modalOverlay.style.opacity = '1';
             modalOverlay.style.pointerEvents = 'auto';
             gameOverModal.classList.add('active');
