@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Innovate Comms: Signal Runner (Concept F)</title>
     <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Bebas+Neue&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Master Content -->
@@ -53,11 +53,10 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(to bottom, #0a0a2a 0%, #1a1a4a 100%);
+            background: linear-gradient(to bottom, #0a0a2a 0%, #050a10 100%);
             overflow: hidden;
         }
 
-        /* Scanlines */
         #game-container::after {
             content: " ";
             display: block;
@@ -75,7 +74,6 @@
             height: 100%;
         }
 
-        /* UI Overlay */
         #ui-layer {
             position: absolute;
             top: 0;
@@ -87,46 +85,81 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px;
+            padding: 20px calc(20px + env(safe-area-inset-right)) 20px calc(20px + env(safe-area-inset-left));
+            box-sizing: border-box;
         }
 
         .hud-top {
             display: flex;
             justify-content: space-between;
             width: 100%;
+            padding-top: calc(60px + env(safe-area-inset-top)); 
         }
 
         .score-box {
-            font-size: 1.2rem;
-            color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
         .controls-hint {
-            font-family: 'Inter', sans-serif;
+            font-family: inherit;
             font-size: 0.8rem;
             color: rgba(255,255,255,0.5);
             text-align: center;
             margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: opacity 1s ease;
         }
 
-        /* Modal / Cards */
+        .btn-powerup {
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.2);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-powerup.unlocked {
+            border-color: var(--agate);
+            color: #fff;
+            background: rgba(214, 136, 58, 0.2);
+        }
+
+        .btn-powerup.active-pw {
+            background: var(--agate);
+            box-shadow: 0 0 20px var(--agate);
+            transform: scale(1.1);
+        }
+
+        .btn-powerup:disabled {
+            cursor: not-allowed;
+        }
+
         .trend-modal {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(10, 10, 40, 0.95);
-            border: 4px solid #00ffcc;
-            box-shadow: 0 0 30px #00ffcc;
-            padding: 2rem;
-            width: 80%;
+            border: 4px solid var(--agate);
+            box-shadow: 0 0 30px rgba(214, 136, 58, 0.3);
+            padding: 2.5rem;
+            width: 85%;
             max-width: 600px;
             text-align: center;
             display: none;
             pointer-events: auto;
             z-index: 30;
-            border-radius: 10px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
         }
 
         .trend-modal.active {
@@ -140,56 +173,48 @@
         }
 
         .trend-modal h2 {
-            font-size: 1.5rem;
-            color: #ff00ff;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px #000;
-            line-height: 1.4;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
         }
 
         .trend-modal p {
-            font-family: 'Inter', sans-serif;
+            font-family: inherit;
             font-size: 1rem;
-            line-height: 1.5;
+            line-height: 1.6;
             margin-bottom: 1.5rem;
-            color: #fff;
+            color: #ccc;
         }
 
         .btn-continue {
-            background: #00ffcc;
-            color: #000;
+            background: var(--agate);
+            color: #fff;
             border: none;
-            padding: 15px 30px;
+            padding: 15px 40px;
             font-family: 'Press Start 2P', cursive;
-            font-size: 1rem;
+            font-size: 0.8rem;
             cursor: pointer;
             text-transform: uppercase;
-            box-shadow: 0 5px 0 #009977;
+            box-shadow: 0 5px 0 #a06020;
             transition: all 0.1s;
+            border-radius: 4px;
         }
 
-        .btn-continue:active {
-            transform: translateY(5px);
-            box-shadow: 0 0 0 #009977;
-        }
-
-        /* Start Screen */
         #start-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 40;
-            pointer-events: auto;
+            background: rgba(5, 10, 16, 0.9);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 40; pointer-events: auto; backdrop-filter: blur(10px);
         }
 
         #start-screen h1 {
+            font-family: 'Press Start 2P', cursive;
             font-size: 3rem;
-            color: #ff00ff;
-            text-shadow: 4px 4px #00ffcc;
+            color: var(--agate);
+            text-shadow: 4px 4px var(--azurite);
             margin-bottom: 2rem;
             text-align: center;
             line-height: 1.2;
@@ -201,6 +226,14 @@
 
         @keyframes blinker {
             50% { opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            #header-branding { top: 20px; left: 20px; }
+            h1.brand-title { font-size: 1rem; }
+            #start-screen h1 { font-size: 1.8rem; }
+            .score-box { font-size: 0.5rem; }
+            .btn-powerup { width: 40px; height: 40px; font-size: 1rem; }
         }
 
     </style>
@@ -227,39 +260,54 @@
 
         <div id="ui-layer">
             <div class="hud-top">
-                <div class="score-box" style="font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">DATA: <span id="score">0</span> TB</div>
-                <div class="score-box" style="font-family: 'Press Start 2P', cursive; font-size: 0.8rem;">TRENDS: <span id="trend-count">0</span>/5</div>
+                <div class="score-box">DATA: <span id="score">0</span> TB</div>
+                <div class="score-box" id="best-score-hud" style="opacity: 0.6;">BEST: 0 TB</div>
+                <div class="score-box" id="lives-hud" style="color: #ff0055;">LIVES: 1</div>
+                <div class="score-box">TRENDS: <span id="trend-count">0</span>/5</div>
             </div>
-            <div class="controls-hint">PRESS SPACE OR TAP TO JUMP</div>
+            <div id="jump-hint" class="controls-hint">SPACE / CLICK TO JUMP</div>
+            
+            <div id="powerups-bar" style="display: flex; gap: 15px; pointer-events: auto; justify-content: center; margin-bottom: env(safe-area-inset-bottom); padding-bottom: 20px;">
+                <button class="btn-powerup" id="pw-2" onclick="activatePowerup(2)" title="AI Dodge"><i class="fas fa-robot"></i></button>
+                <button class="btn-powerup" id="pw-3" onclick="activatePowerup(3)" title="Fibre Boost"><i class="fas fa-bolt"></i></button>
+                <button class="btn-powerup" id="pw-4" onclick="activatePowerup(4)" title="Sustainability Shield"><i class="fas fa-leaf"></i></button>
+                <button class="btn-powerup" id="pw-5" onclick="activatePowerup(5)" title="6G Blast"><i class="fas fa-bomb"></i></button>
+            </div>
         </div>
 
         <div id="start-screen">
-            <h1 style="font-family: 'Press Start 2P', cursive;">SIGNAL<br>RUNNER</h1>
-            <div id="intro-content" style="margin-bottom: 2rem; max-width: 500px; text-align: center; line-height: 1.6;">
-                <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
+            <h1>SIGNAL<br>RUNNER</h1>
+            <div id="intro-content" style="margin-bottom: 2rem; max-width: 500px; text-align: center; line-height: 1.6; padding: 0 20px;">
+                <p id="intro-p1" style="font-weight: 700; color: var(--agate); margin-bottom: 1rem;"></p>
                 <p id="intro-p2" style="font-size: 0.9rem; opacity: 0.8;"></p>
             </div>
             <button class="btn-continue blink" onclick="startGame()">START RUN</button>
         </div>
 
         <div id="trend-modal" class="trend-modal">
-            <div style="font-size: 3rem; margin-bottom: 1rem;" id="modal-icon"><i class="fas fa-microchip"></i></div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;" id="modal-icon"></div>
             <h2 id="modal-title">TREND UNLOCKED</h2>
-            <p id="modal-desc">Description here...</p>
+            <p id="modal-desc"></p>
             <button class="btn-continue" onclick="resumeGame()">RESUME</button>
         </div>
         
-        <div id="game-over-modal" class="trend-modal">
-             <h2 style="color: #ff0055;">CONNECTION LOST</h2>
-             <p>A latency spike disrupted the stream.</p>
-             <button class="btn-continue" onclick="resetGame()">RETRY</button>
+        <div id="game-over-modal" class="trend-modal" style="border-color: #842366; box-shadow: 0 0 30px rgba(132, 35, 102, 0.4);">
+             <h2 style="color: #842366; font-family: 'Press Start 2P', cursive; font-size: 1.2rem;">CONNECTION LOST</h2>
+             <p style="font-family: 'Press Start 2P', cursive; font-size: 0.7rem; line-height: 1.8;">A latency spike disrupted the stream.<br><br>
+             SCORE: <span id="final-score">0</span> TB<br>
+             BEST: <span id="best-score-over">0</span> TB</p>
+             <button class="btn-continue" style="background: var(--agate); box-shadow: 0 5px 0 #a06020;" onclick="resetGame()">RETRY</button>
         </div>
 
         <div id="victory-modal" class="trend-modal">
              <h2 style="color: var(--agate);">NETWORK OPTIMIZED</h2>
              <p id="outro-p1"></p>
              <p id="outro-p2" style="font-weight: 700;"></p>
-             <button class="btn-continue" onclick="location.reload()">REPLAY</button>
+             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                <button class="btn-continue" onclick="location.reload()">REPLAY</button>
+                <button class="btn-continue" onclick="resumeGame(true)">KEEP RUNNING</button>
+                <a href="mailto:hello@innovatecomms.co.uk" class="btn-continue" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">CONTACT US</a>
+             </div>
         </div>
 
     </div>
@@ -269,6 +317,11 @@
         const ctx = canvas.getContext('2d');
         const scoreEl = document.getElementById('score');
         const trendCountEl = document.getElementById('trend-count');
+        const livesHud = document.getElementById('lives-hud');
+        const jumpHint = document.getElementById('jump-hint');
+        const bestScoreHud = document.getElementById('best-score-hud');
+        const finalScoreEl = document.getElementById('final-score');
+        const bestScoreOverEl = document.getElementById('best-score-over');
         const modal = document.getElementById('trend-modal');
         const gameOverModal = document.getElementById('game-over-modal');
         const victoryModal = document.getElementById('victory-modal');
@@ -281,21 +334,20 @@
             document.getElementById('intro-p1').innerText = config.intro.title.toUpperCase();
             document.getElementById('intro-p2').innerText = config.intro.p1;
             document.getElementById('outro-p1').innerText = config.outro.p1;
-            document.getElementById('outro-p2').innerText = config.outro.p2;
+            const email = config.branding.email;
+            let p2 = config.outro.p2;
+            p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
+            document.getElementById('outro-p2').innerHTML = p2;
+            const best = localStorage.getItem('signalRunnerBest') || 0;
+            bestScoreHud.innerText = `BEST: ${best} TB`;
         }
 
-        // Game State
-        let gameRunning = false;
-        let gameSpeed = 6;
-        let score = 0;
-        let trendsCollected = 0;
-        let frames = 0;
-        let animationId;
+        let gameRunning = false, gameSpeed = 5, score = 0, trendsCollected = 0, frames = 0, animationId;
+        let maxLives = 1, currentLives = 1, invincibilityFrames = 0, hasJumped = false, isInfiniteMode = false;
+        let jumpCount = 0;
+        let activePowerups = { doubleJump: false, aiDodge: { unlocked: false, used: false, charge: 0 }, fibreBoost: { unlocked: false, used: false, charge: 0 }, shield: { unlocked: false, used: false, charge: 0 }, blast: { unlocked: false, used: false, charge: 0 } };
 
-        // Constants
-        let GRAVITY = 0.6;
-        let JUMP_FORCE = -12;
-        let GROUND_HEIGHT = 100;
+        let GRAVITY = 0.5, JUMP_FORCE = -14, GROUND_HEIGHT = 100;
 
         function resize() {
             canvas.width = window.innerWidth;
@@ -305,230 +357,233 @@
         window.addEventListener('resize', resize);
         resize();
 
-        const player = {
-            x: 100, y: 0, width: 40, height: 40, dy: 0,
-            grounded: false, color: '#00ffcc', glow: 20
-        };
+        const player = { x: 100, y: 0, width: 40, height: 40, dy: 0, grounded: false, color: '#D6883A', glow: 20 };
+        let obstacles = [], particles = [], trendGates = [];
 
-        let obstacles = [];
-        let particles = [];
-        let trendGates = [];
-
-        function startGame() {
-            startScreen.style.display = 'none';
-            resetGame();
-        }
+        function startGame() { startScreen.style.display = 'none'; resetGame(); }
 
         function resetGame() {
-            gameRunning = true;
-            gameSpeed = 6;
-            score = 0;
-            trendsCollected = 0;
-            frames = 0;
-            obstacles = [];
-            trendGates = [];
-            particles = [];
-            player.y = canvas.height - GROUND_HEIGHT - player.height;
-            player.dy = 0;
-            gameOverModal.classList.remove('active');
-            modal.classList.remove('active');
-            victoryModal.classList.remove('active');
-            scoreEl.innerText = '0';
-            trendCountEl.innerText = '0';
+            gameRunning = true; gameSpeed = 5; score = 0; trendsCollected = 0; frames = 0;
+            currentLives = maxLives; invincibilityFrames = 0; isInfiniteMode = false; jumpCount = 0;
+            activePowerups = { doubleJump: false, aiDodge: { unlocked: false, used: false, charge: 0 }, fibreBoost: { unlocked: false, used: false, charge: 0 }, shield: { unlocked: false, used: false, charge: 0 }, blast: { unlocked: false, used: false, charge: 0 } };
+            for(let i=2; i<=5; i++) { // Start from 2 to skip pw-1 as it's not a button
+                const btn = document.getElementById(`pw-${i}`);
+                if (btn) {
+                    btn.style.display = 'none'; // Hide the button initially
+                    btn.disabled = true;
+                    btn.classList.remove('unlocked', 'active-pw');
+                }
+            }
+            updateLivesHUD();
+            obstacles = []; trendGates = []; particles = [];
+            player.y = canvas.height - GROUND_HEIGHT - player.height; player.dy = 0; player.height = 40;
+            gameOverModal.classList.remove('active'); modal.classList.remove('active'); victoryModal.classList.remove('active');
+            scoreEl.innerText = '0'; trendCountEl.innerText = '0';
             loop();
         }
 
+        function updateLivesHUD() { livesHud.innerText = `LIVES: ${currentLives}`; }
+
         function spawnObstacle() {
             const height = 50 + Math.random() * 50;
-            obstacles.push({
-                x: canvas.width,
-                y: canvas.height - GROUND_HEIGHT - height,
-                width: 40,
-                height: height,
-                color: '#ff0055'
-            });
+            obstacles.push({ x: canvas.width, y: canvas.height - GROUND_HEIGHT - height, width: 40, height: height, color: '#842366' });
         }
 
         function spawnTrendGate() {
             if (trendsCollected >= trends.length) return;
-            
-            trendGates.push({
-                x: canvas.width,
-                y: canvas.height - GROUND_HEIGHT - 150,
-                width: 60,
-                height: 150,
-                trendIndex: trendsCollected,
-                collected: false
-            });
+            trendGates.push({ x: canvas.width, y: canvas.height - GROUND_HEIGHT - 150, width: 60, height: 150, trendIndex: trendsCollected, collected: false });
         }
 
         function createParticles(x, y, color) {
             for(let i=0; i<10; i++) {
-                particles.push({
-                    x: x, y: y,
-                    dx: (Math.random() - 0.5) * 10,
-                    dy: (Math.random() - 0.5) * 10,
-                    life: 30, color: color
-                });
+                particles.push({ x: x, y: y, dx: (Math.random() - 0.5) * 10, dy: (Math.random() - 0.5) * 10, life: 30, color: color });
             }
+        }
+
+        function activatePowerup(num) {
+            const btn = document.getElementById(`pw-${num}`);
+            let currentPowerup;
+            if (num === 2) currentPowerup = activePowerups.aiDodge;
+            else if (num === 3) currentPowerup = activePowerups.fibreBoost;
+            else if (num === 4) currentPowerup = activePowerups.shield;
+            else if (num === 5) currentPowerup = activePowerups.blast;
+
+            if (!gameRunning || !currentPowerup || !currentPowerup.unlocked || currentPowerup.charge <= 0) return;
+
+            currentPowerup.charge--;
+            if (currentPowerup.charge === 0) {
+                btn.disabled = true;
+                btn.classList.remove('unlocked');
+            }
+            btn.classList.add('active-pw');
+            
+            // Apply powerup effect
+            if (num === 2) { 
+                player.height = 20; invincibilityFrames = 180;
+                setTimeout(() => { player.height = 40; btn.classList.remove('active-pw'); }, 3000);
+            } else if (num === 3) { 
+                const oldSpeed = gameSpeed; gameSpeed *= 2; invincibilityFrames = 180;
+                setTimeout(() => { gameSpeed = oldSpeed; btn.classList.remove('active-pw'); }, 3000);
+                        } else if (num === 4) {
+                            activePowerups.shield.used = true; // Mark shield as used for collision logic
+                            player.color = 'var(--aventurine)'; // Change player color to brand green
+                        } else if (num === 5) { 
+                obstacles = []; createParticles(canvas.width/2, canvas.height/2, 'var(--agate)');
+                setTimeout(() => { btn.classList.remove('active-pw'); }, 500);
+            }
+        }
+
+        function takeHit() {
+            if (activePowerups.shield.used) {
+                activePowerups.shield.used = false; // Shield is consumed
+                document.getElementById('pw-4').classList.remove('active-pw');
+                invincibilityFrames = 60;
+                createParticles(player.x, player.y, 'var(--aventurine)');
+                player.color = 'var(--agate)'; // Revert player color to default
+                return;
+            }
+            currentLives--; updateLivesHUD();
+            createParticles(player.x, player.y, '#ff0000');
+            if (currentLives <= 0) gameOver();
+            else invincibilityFrames = 60;
         }
 
         function update() {
             if (!gameRunning) return;
-
-            player.dy += GRAVITY;
-            player.y += player.dy;
-
+            player.dy += GRAVITY; player.y += player.dy;
             const groundY = canvas.height - GROUND_HEIGHT - player.height;
-            if (player.y > groundY) {
-                player.y = groundY;
-                player.dy = 0;
-                player.grounded = true;
-            } else {
-                player.grounded = false;
-            }
-
+            if (player.y > groundY) { player.y = groundY; player.dy = 0; player.grounded = true; jumpCount = 0; }
+            else { player.grounded = false; }
+            if (invincibilityFrames > 0) invincibilityFrames--;
             for (let i = obstacles.length - 1; i >= 0; i--) {
-                let obs = obstacles[i];
-                obs.x -= gameSpeed;
-                if (player.x < obs.x + obs.width && player.x + player.width > obs.x &&
-                    player.y < obs.y + obs.height && player.y + player.height > obs.y) {
-                    gameOver();
-                }
+                let obs = obstacles[i]; obs.x -= gameSpeed;
+                if (invincibilityFrames === 0 && player.x < obs.x + obs.width && player.x + player.width > obs.x &&
+                    player.y < obs.y + obs.height && player.y + player.height > obs.y) takeHit();
                 if (obs.x + obs.width < 0) obstacles.splice(i, 1);
             }
-
             for (let i = trendGates.length - 1; i >= 0; i--) {
-                let gate = trendGates[i];
-                gate.x -= gameSpeed;
+                let gate = trendGates[i]; gate.x -= gameSpeed;
                 if (!gate.collected && player.x < gate.x + gate.width && player.x + player.width > gate.x &&
                     player.y < gate.y + gate.height && player.y + player.height > gate.y) {
-                    gate.collected = true;
-                    collectTrend(gate.trendIndex);
+                    gate.collected = true; collectTrend(gate.trendIndex);
                 }
                 if (gate.x + gate.width < 0) trendGates.splice(i, 1);
             }
-
             for (let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i];
-                p.x += p.dx; p.y += p.dy; p.life--;
+                let p = particles[i]; p.x += p.dx; p.y += p.dy; p.life--;
                 if(p.life <= 0) particles.splice(i, 1);
             }
-
-            frames++;
-            score++;
-            scoreEl.innerText = Math.floor(score / 10);
-
-            if (frames % 100 === 0 && Math.random() > 0.3) spawnObstacle();
-            if (frames % 600 === 0 && trendsCollected < trends.length) spawnTrendGate();
-            if (frames % 1000 === 0) gameSpeed += 0.5;
+            frames++; score++; scoreEl.innerText = Math.floor(score / 10);
+            if (frames % 150 === 0 && Math.random() > 0.4) spawnObstacle();
+            if (frames % 500 === 0 && trendsCollected < trends.length) spawnTrendGate();
+            if (frames % 1500 === 0) gameSpeed += 0.3;
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#0a0a2a'; 
-            ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
-            ctx.strokeStyle = '#3333aa';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, canvas.height - GROUND_HEIGHT);
-            ctx.lineTo(canvas.width, canvas.height - GROUND_HEIGHT);
-            ctx.stroke();
-
+            ctx.fillStyle = '#050a10'; ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
+            ctx.save(); ctx.font = '80px "Bebas Neue"'; ctx.fillStyle = 'rgba(214, 136, 58, 0.05)'; ctx.textAlign = 'center';
+            const brandX = (frames * gameSpeed * 0.5) % (canvas.width * 2);
+            ctx.fillText("INNOVATE COMMS", canvas.width - brandX, canvas.height - GROUND_HEIGHT / 2);
+            ctx.fillText("INNOVATE COMMS", canvas.width - brandX + canvas.width, canvas.height - GROUND_HEIGHT / 2);
+            ctx.restore();
+            ctx.strokeStyle = 'rgba(62, 155, 155, 0.3)'; ctx.lineWidth = 2; ctx.beginPath();
+            ctx.moveTo(0, canvas.height - GROUND_HEIGHT); ctx.lineTo(canvas.width, canvas.height - GROUND_HEIGHT); ctx.stroke();
             const gridOffset = (frames * gameSpeed) % 100;
             for(let x = -gridOffset; x < canvas.width; x += 100) {
-                 ctx.beginPath();
-                 ctx.moveTo(x + (canvas.width/2 - x)*0.5, canvas.height - GROUND_HEIGHT);
-                 ctx.lineTo(x - 200, canvas.height); 
-                 ctx.stroke();
+                 ctx.beginPath(); ctx.moveTo(x + (canvas.width/2 - x)*0.5, canvas.height - GROUND_HEIGHT);
+                 ctx.lineTo(x - 200, canvas.height); ctx.stroke();
             }
-
-            ctx.fillStyle = player.color;
-            ctx.shadowBlur = player.glow;
-            ctx.shadowColor = player.color;
-            ctx.fillRect(player.x, player.y, player.width, player.height);
+            if (invincibilityFrames === 0 || frames % 10 < 5) {
+                ctx.fillStyle = player.color; ctx.shadowBlur = player.glow; ctx.shadowColor = player.color;
+                ctx.fillRect(player.x, player.y, player.width, player.height); ctx.shadowBlur = 0;
+            }
+            obstacles.forEach(obs => {
+                ctx.fillStyle = obs.color; ctx.shadowColor = obs.color; ctx.shadowBlur = 10;
+                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+            });
             ctx.shadowBlur = 0;
-
-            ctx.fillStyle = '#ff0055';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ff0055';
-            obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
-            ctx.shadowBlur = 0;
-
             trendGates.forEach(gate => {
                 if(gate.collected) return;
                 const trend = trends[gate.trendIndex];
-                ctx.fillStyle = 'rgba(0, 255, 204, 0.2)';
-                ctx.strokeStyle = trend.color;
-                ctx.lineWidth = 4;
-                ctx.fillRect(gate.x, gate.y, gate.width, gate.height);
-                ctx.strokeRect(gate.x, gate.y, gate.width, gate.height);
-                ctx.fillStyle = '#fff';
-                ctx.font = '24px FontAwesome';
-                // Simplified icon drawing for canvas
-                ctx.fillText("?", gate.x + 20, gate.y + 80);
+                ctx.fillStyle = 'rgba(0, 255, 204, 0.2)'; ctx.strokeStyle = trend.color; ctx.lineWidth = 4;
+                ctx.fillRect(gate.x, gate.y, gate.width, gate.height); ctx.strokeRect(gate.x, gate.y, gate.width, gate.height);
+                ctx.fillStyle = '#fff'; ctx.font = '24px "Press Start 2P"'; ctx.fillText("?", gate.x + 15, gate.y + 85);
             });
-
-            particles.forEach(p => {
-                ctx.fillStyle = p.color;
-                ctx.fillRect(p.x, p.y, 4, 4);
-            });
+            particles.forEach(p => { ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, 4, 4); });
         }
 
-        function loop() {
-            if (!gameRunning) return;
-            update();
-            draw();
-            animationId = requestAnimationFrame(loop);
-        }
+        function loop() { if (gameRunning) { update(); draw(); animationId = requestAnimationFrame(loop); } }
 
         function jump() {
-            if (player.grounded) {
-                player.dy = JUMP_FORCE;
+            const maxJumps = activePowerups.doubleJump ? 2 : 1;
+            if (player.grounded || jumpCount < maxJumps) {
+                player.dy = JUMP_FORCE; jumpCount++;
                 createParticles(player.x + player.width/2, player.y + player.height, '#fff');
+                if (!hasJumped) { hasJumped = true; jumpHint.style.opacity = '0'; }
             }
         }
 
         function collectTrend(index) {
-            gameRunning = false; 
-            trendsCollected++;
-            trendCountEl.innerText = trendsCollected;
+            gameRunning = false; trendsCollected++; currentLives++; updateLivesHUD(); trendCountEl.innerText = trendsCollected;
+            
+            if (trendsCollected === 1) {
+                activePowerups.doubleJump = true;
+            } else {
+                const pwBtn = document.getElementById(`pw-${trendsCollected}`);
+                if (pwBtn) {
+                    pwBtn.style.display = 'flex'; // Make button visible
+                    pwBtn.disabled = false;
+                    pwBtn.classList.add('unlocked');
+                    // Set powerup to unlocked and available (charge of 1)
+                    if (trendsCollected === 2) { activePowerups.aiDodge.unlocked = true; activePowerups.aiDodge.charge = 1; }
+                    else if (trendsCollected === 3) { activePowerups.fibreBoost.unlocked = true; activePowerups.fibreBoost.charge = 1; }
+                    else if (trendsCollected === 4) { activePowerups.shield.unlocked = true; activePowerups.shield.charge = 1; }
+                    else if (trendsCollected === 5) { activePowerups.blast.unlocked = true; activePowerups.blast.charge = 1; }
+                }
+            }
             
             const t = trends[index];
+            const powerupInfo = [
+                "PERMANENT: DOUBLE JUMP UNLOCKED",
+                "NEW ABILITY: AI DODGE (1 CHARGE)",
+                "NEW ABILITY: FIBRE BOOST (1 CHARGE)",
+                "NEW ABILITY: SUSTAINABILITY SHIELD (1 CHARGE)",
+                "NEW ABILITY: 6G BLAST (1 CHARGE)"
+            ];
+
             document.getElementById('modal-icon').innerHTML = `<i class="fas ${t.icon}" style="color:${t.color}"></i>`;
             document.getElementById('modal-title').innerText = t.title.toUpperCase();
-            document.getElementById('modal-desc').innerHTML = t.desc + "<br><br><strong>" + (t.implication || t.statDesc) + "</strong>";
-            
-            createParticles(player.x, player.y, t.color);
-            modal.classList.add('active');
+            document.getElementById('modal-desc').innerHTML = `
+                ${t.desc}<br><br>
+                <div style="background: rgba(214, 136, 58, 0.1); border: 1px solid var(--agate); padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <span style="color: var(--agate); font-family: 'Press Start 2P', cursive; font-size: 0.6rem; display: block; margin-bottom: 10px;">POWER-UP UNLOCKED</span>
+                    <strong style="color: #fff; font-size: 0.9rem;">${powerupInfo[trendsCollected-1]}</strong>
+                </div><br>
+                <strong>${t.implication || t.statDesc}</strong>
+            `;
+            createParticles(player.x, player.y, t.color); modal.classList.add('active');
         }
 
-        function resumeGame() {
-            modal.classList.remove('active');
-            if (trendsCollected === trends.length) {
-                victoryModal.classList.add('active');
-            } else {
-                gameRunning = true;
-                obstacles = obstacles.filter(o => o.x > player.x + 300);
-                loop();
-            }
+        function resumeGame(infinite = false) {
+            modal.classList.remove('active'); victoryModal.classList.remove('active');
+            if (infinite) isInfiniteMode = true;
+            if (trendsCollected === trends.length && !isInfiniteMode) victoryModal.classList.add('active');
+            else { gameRunning = true; obstacles = obstacles.filter(o => o.x > player.x + 300); loop(); }
         }
 
         function gameOver() {
-            gameRunning = false;
-            createParticles(player.x, player.y, '#ff0000');
-            gameOverModal.classList.add('active');
+            gameRunning = false; maxLives++; 
+            const finalScore = Math.floor(score / 10);
+            const best = localStorage.getItem('signalRunnerBest') || 0;
+            if (finalScore > best) { localStorage.setItem('signalRunnerBest', finalScore); bestScoreHud.innerText = `BEST: ${finalScore} TB`; }
+            finalScoreEl.innerText = finalScore; bestScoreOverEl.innerText = localStorage.getItem('signalRunnerBest') || finalScore;
+            createParticles(player.x, player.y, '#ff0000'); gameOverModal.classList.add('active');
         }
 
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'ArrowUp') {
-                if (gameRunning) jump();
-            }
-        });
-
-        window.addEventListener('touchstart', (e) => {
-             if (gameRunning) jump();
-        });
+        window.addEventListener('keydown', (e) => { if (e.code === 'Space' || e.code === 'ArrowUp') if (gameRunning) jump(); });
+        window.addEventListener('mousedown', (e) => { if (gameRunning && e.target.tagName !== 'BUTTON' && !e.target.closest('.btn-powerup')) jump(); });
+        window.addEventListener('touchstart', (e) => { if (gameRunning && e.target.tagName !== 'BUTTON' && !e.target.closest('.btn-powerup')) jump(); });
 
         loadMasterContent();
     </script>
