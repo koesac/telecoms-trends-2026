@@ -341,7 +341,15 @@
 
             container.onclick = () => { 
                 if(index === currentIndex) {
-                    container.classList.toggle('flipped');
+                    if (container.classList.contains('flipped')) {
+                        container.classList.remove('flipped');
+                        // Wait for flip, then move to next
+                        setTimeout(() => {
+                            nextCard();
+                        }, 400);
+                    } else {
+                        container.classList.add('flipped');
+                    }
                 } 
             };
             stage.appendChild(container);
@@ -376,7 +384,9 @@
                 } else {
                     const depth = i - currentIndex;
                     card.style.visibility = 'visible';
-                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out" });
+                    // Push active card (depth 0) further forward to z: 50 for tilt room
+                    const zPos = depth === 0 ? 50 : -depth * 60;
+                    gsap.to(card, { x: 0, z: zPos, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out" });
                 }
             });
             document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === currentIndex));
@@ -458,9 +468,10 @@
         document.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768 && !isTransitioning && isExperienceActive) {
                 const card = cards[currentIndex];
-                const x = (e.clientX / window.innerWidth - 0.5) * 30;
-                const y = (e.clientY / window.innerHeight - 0.5) * -30;
-                gsap.to(card, { rotationY: x, rotationX: y, duration: 0.15, ease: "power1.out" });
+                // Subtle hover effect (max 10 degrees) to prevent intersection
+                const x = (e.clientX / window.innerWidth - 0.5) * 20;
+                const y = (e.clientY / window.innerHeight - 0.5) * -20;
+                gsap.to(card, { rotationY: x, rotationX: y, duration: 0.2, ease: "power1.out" });
             }
         });
 

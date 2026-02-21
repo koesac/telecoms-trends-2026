@@ -63,11 +63,15 @@
             background: radial-gradient(circle at center, var(--aventurine) 0%, var(--bg-dark) 100%);
         }
 
-        /* LEO Atmosphere (Stars) */
-        #bg-stars { background: #000; overflow: hidden; }
+        /* LEO Atmosphere (Branded) */
+        #bg-stars { 
+            background: radial-gradient(circle at center, var(--bloodstone) 0%, var(--bg-dark) 100%);
+        }
 
-        /* Quantum Atmosphere (B) */
-        #bg-quantum { background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%); }
+        /* Quantum Atmosphere (Branded) */
+        #bg-quantum { 
+            background: radial-gradient(circle at center, var(--alexandrite) 0%, var(--bg-dark) 100%);
+        }
 
         /* UI Overlays */
         #ui {
@@ -134,16 +138,16 @@
             text-align: center; 
             font-weight: 400;
             text-shadow: 0 1px 5px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
+            margin-bottom: 0; /* Reset to balance impact-box space */
         }
         .face .icon { font-size: 3.5rem; color: var(--agate); }
 
         .impact-box {
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 15px;
+            padding-top: 20px;
             width: 100%;
             text-align: center;
-            margin-top: auto; /* Push to bottom */
+            margin-top: 20px;
         }
         .stat-desc {
             font-size: 0.95rem;
@@ -159,8 +163,8 @@
         .right  { transform: rotateY(90deg) translateZ(200px); }
         .back   { transform: rotateY(180deg) translateZ(200px); }
         .left   { transform: rotateY(-90deg) translateZ(200px); }
-        .top    { transform: rotateX(90deg) translateZ(200px); background: #000; border-color: var(--bloodstone); }
-        .bottom { transform: rotateX(-90deg) translateZ(200px); background: #000; border-color: var(--alexandrite); }
+        .top    { transform: rotateX(90deg) translateZ(200px); }
+        .bottom { transform: rotateX(-90deg) translateZ(200px); }
 
         /* Navigation Dots */
         .dots {
@@ -279,95 +283,10 @@
         <div class="face bottom" id="face-5"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Observer.min.js"></script>
     <script>
         gsap.registerPlugin(Observer);
-
-        // --- BACKGROUND ENGINES ---
-        const initStars = () => {
-            const container = document.getElementById('bg-stars');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-
-            const starGeo = new THREE.BufferGeometry();
-            const starPos = [];
-            for(let i=0; i<2000; i++) {
-                starPos.push((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
-            }
-            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
-            const starMesh = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.1}));
-            scene.add(starMesh);
-            camera.position.z = 5;
-
-            const anim = () => {
-                requestAnimationFrame(anim);
-                starMesh.rotation.y += 0.0005;
-                renderer.render(scene, camera);
-            };
-            anim();
-        };
-
-        const initQuantum = () => {
-            const container = document.getElementById('bg-quantum');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-
-            const particleCount = 1000;
-            const qGeo = new THREE.BufferGeometry();
-            const qPos = new Float32Array(particleCount * 3);
-            const qColors = new Float32Array(particleCount * 3);
-
-            const colorPalette = [
-                new THREE.Color('#D6883A'), // Agate
-                new THREE.Color('#3E9B9B'), // Aventurine
-                new THREE.Color('#842366')  // Azurite
-            ];
-
-            for(let i=0; i<particleCount; i++) {
-                qPos[i * 3] = (Math.random() - 0.5) * 40;
-                qPos[i * 3 + 1] = (Math.random() - 0.5) * 40;
-                qPos[i * 3 + 2] = (Math.random() - 0.5) * 40;
-
-                const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-                qColors[i * 3] = color.r;
-                qColors[i * 3 + 1] = color.g;
-                qColors[i * 3 + 2] = color.b;
-            }
-
-            qGeo.setAttribute('position', new THREE.BufferAttribute(qPos, 3));
-            qGeo.setAttribute('color', new THREE.BufferAttribute(qColors, 3));
-
-            const qMat = new THREE.PointsMaterial({
-                size: 0.15,
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.8,
-                blending: THREE.AdditiveBlending
-            });
-
-            const qMesh = new THREE.Points(qGeo, qMat);
-            scene.add(qMesh);
-            camera.position.z = 10;
-
-            const anim = () => {
-                requestAnimationFrame(anim);
-                qMesh.rotation.z += 0.001;
-                qMesh.rotation.y += 0.0005;
-                renderer.render(scene, camera);
-            };
-            anim();
-        };
-
-        initStars();
-        initQuantum();
 
         // --- MASTER CONTENT LOADER ---
         function loadMasterContent() {
