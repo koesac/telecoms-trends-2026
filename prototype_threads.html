@@ -83,6 +83,8 @@
             padding: 2rem 0;
             position: relative; /* Ensure content is above canvas */
             z-index: 0;
+            /* Added top margin to give space below header */
+            margin-top: 100px; /* Increased from 2rem */
         }
 
         /* Header Styling - Changed to absolute so it scrolls away */
@@ -109,7 +111,8 @@
         
         .header-title {
             font-family: 'Bebas Neue', sans-serif;
-            color: var(--agate);
+            /* Changed to white */
+            color: var(--paper);
             font-size: 1.5rem;
             letter-spacing: 2px;
             line-height: 1;
@@ -137,7 +140,8 @@
 
         .footer-brand {
             font-family: 'Bebas Neue', sans-serif;
-            color: var(--agate);
+            /* Changed to white */
+            color: var(--paper);
             font-size: 1.2rem;
             letter-spacing: 2px;
         }
@@ -167,6 +171,8 @@
 
         .content-block p {
             margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
         }
 
         .content-block .subtitle {
@@ -177,26 +183,44 @@
             color: var(--paper);
             margin-top: -1em;
             margin-bottom: 1.5em;
+            position: relative;
+            z-index: 2;
         }
 
+        /* Frosted Icon Styling */
         .trend-icon {
-            font-size: 2.5em;
-            margin-bottom: 0.5em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg); /* Centered and tilted */
+            font-size: 18em; /* Massive size */
             color: var(--agate); 
-            display: block;
-            text-align: center;
+            opacity: 0.08; /* Slightly increased from 0.06 */
+            pointer-events: none;
+            z-index: 0; /* Behind content */
+            filter: blur(1px) brightness(2.0); 
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
         }
 
         .trend-title {
             text-align: center;
             margin-bottom: 1em;
             color: var(--agate);
+            position: relative;
+            z-index: 2;
         }
 
         .implication-section {
             margin-top: 2em;
             border-top: 1px dashed rgba(255, 255, 255, 0.1);
             padding-top: 1.5em;
+            position: relative;
+            z-index: 2;
         }
 
         .implication-section h4 {
@@ -214,6 +238,8 @@
             margin-top: 1.5em;
             font-style: italic;
             color: rgba(var(--paper), 0.7);
+            position: relative;
+            z-index: 2;
         }
 
         .stat-section strong {
@@ -256,7 +282,7 @@
                 title: "5 THINGS SHAPING UK TELECOMS",
                 subtitle: "And what it means for your comms",
                 p1: "UK telecoms is in the middle of something significant – a period that's reshaping competitive dynamics, investment priorities, and the fundamental question of what telecoms is.",
-                p2: "Long promised mergers are completing. AI is changing how we operate. Investments are being redistributed. And 6G needs a different story if it’s going to avoid 5G’s stumbles. These shifts create both urgency and opportunity and how you communicate matters more now than ever."
+                p2: "Long promised mergers are completing. AI is changing how we operate. Investments are being redistributed. And 6G needs a different story if it’s going-to avoid 5G’s stumbles. These shifts create both urgency and opportunity and how you communicate matters more now than ever."
             },
             outro: {
                 title: "The Common Thread",
@@ -352,7 +378,7 @@
                 };
             };
 
-            const generateThreadPath = (originX, endY, startColor, themeId, triggerY) => {
+            const generateThreadPath = (originX, endY, startColor, themeId, triggerY, speed) => {
                 const guidePoints = [];
                 let currentX = originX;
                 let currentY = 0; // START AT TOP
@@ -408,7 +434,8 @@
                     totalHeight: totalHeight,
                     maxY: endY,
                     themeId: themeId,
-                    triggerY: triggerY 
+                    triggerY: triggerY,
+                    speed: speed // Store dynamic speed
                 };
             };
 
@@ -425,9 +452,9 @@
 
                     const growthStart = thread.triggerY;
                     const pixelsScrolledSinceTrigger = currentScrollY - growthStart;
-                    const catchUpSpeed = 2.5; 
                     
-                    let currentTipY = pixelsScrolledSinceTrigger * catchUpSpeed;
+                    let currentTipY = pixelsScrolledSinceTrigger * thread.speed;
+                    
                     const finalDrawY = Math.min(currentTipY, thread.maxY);
 
                     if (finalDrawY <= 0) return;
@@ -493,12 +520,11 @@
                 canvas.style.width = `${width}px`;
                 canvas.style.height = `${height}px`;
                 
-                // Check if width changed significantly to avoid "shuffling" on vertical resize (mobile scroll)
                 if (Math.abs(width - lastWindowWidth) > 10 || activeThreads.length === 0) {
                     lastWindowWidth = width;
-                    initThreads(); // Full path regeneration
+                    initThreads(); 
                 } else {
-                    updateThreadLimits(); // Only update vertical triggers/limits
+                    updateThreadLimits(); 
                 }
                 
                 if (animationFrameId === null) {
@@ -516,7 +542,7 @@
             // Content Generation
             container.appendChild(createElement('div', 'content-block intro-block')).innerHTML = `
                 <h1>${TELECOMS_CONFIG.intro.title}</h1>
-                <p class="subtitle">${TELECOMS_CONFIG.intro.subtitle}</p>
+                <p class="subtitle">And <span style="color: var(--azurite);">what it means</span> for <span style="color: var(--aventurine);">your comms</span></p>
                 <p>${TELECOMS_CONFIG.intro.p1}</p>
                 <p>${TELECOMS_CONFIG.intro.p2}</p>
             `;
@@ -542,10 +568,22 @@
 
             // Outro Block
             const outroBlock = createElement('div', 'content-block outro-block');
+            
+            // Generate p2 HTML with hyperlink and line break
+            const outroP2 = TELECOMS_CONFIG.outro.p2;
+            const emailAddress = TELECOMS_CONFIG.branding.email;
+            const outroP2Html = outroP2
+                .split('?')
+                .join('?<br>') // Split into two lines after the question mark
+                .replace(
+                    emailAddress,
+                    `<a href="mailto:${emailAddress}" style="color: var(--agate); text-decoration: none; font-weight: bold;">${emailAddress}</a>`
+                );
+
             outroBlock.innerHTML = `
                 <h2>${TELECOMS_CONFIG.outro.title}</h2>
                 <p>${TELECOMS_CONFIG.outro.p1}</p>
-                <p>${TELECOMS_CONFIG.outro.p2}</p>
+                <p>${outroP2Html}</p>
             `;
             container.appendChild(outroBlock);
 
@@ -571,9 +609,7 @@
                 const footer = document.querySelector('.site-footer');
                 const footerRect = footer.getBoundingClientRect();
                 
-                // Track where the footer starts relative to document
                 footerLogoTop = footerRect.top + window.scrollY;
-                
                 const finalEndY = footerLogoTop; 
                 
                 activeThreads = [];
@@ -582,7 +618,15 @@
                     const block = trendBlocks[index];
                     const rect = block.getBoundingClientRect();
                     
-                    const triggerY = (rect.top + window.scrollY) - (window.innerHeight * 0.75);
+                    const absoluteTop = rect.top + window.scrollY;
+                    const triggerY = absoluteTop - window.innerHeight; // Card entering viewport from bottom
+                    
+                    const targetViewY = absoluteTop - (window.innerHeight * 0.25); // Card at 25% from top
+                    const scrollDistance = targetViewY - triggerY; 
+                    
+                    const threadDistance = absoluteTop; 
+                    
+                    const calculatedSpeed = threadDistance / Math.max(1, scrollDistance);
                     
                     const widthPct = 0.8;
                     const startX = (window.innerWidth * (1 - widthPct) / 2) + 
@@ -593,7 +637,8 @@
                         finalEndY, 
                         BRAND_COLORS[trend.id],
                         trend.id,
-                        triggerY 
+                        triggerY,
+                        calculatedSpeed
                     ));
                 });
                 
@@ -602,34 +647,25 @@
                 }
             };
             
-            // Only updates vertical limits, keeping X paths stable
             const updateThreadLimits = () => {
                 const trendBlocks = document.querySelectorAll('.trend-block');
                 const footer = document.querySelector('.site-footer');
                 const footerRect = footer.getBoundingClientRect();
                 
                 footerLogoTop = footerRect.top + window.scrollY;
-                const finalEndY = footerLogoTop;
                 
                 activeThreads.forEach((thread, index) => {
                     const block = trendBlocks[index];
                     const rect = block.getBoundingClientRect();
-                    const triggerY = (rect.top + window.scrollY) - (window.innerHeight * 0.75);
+                    const absoluteTop = rect.top + window.scrollY;
+                    const triggerY = absoluteTop - window.innerHeight;
                     
                     thread.triggerY = triggerY;
-                    thread.maxY = finalEndY;
+                    thread.maxY = footerLogoTop;
                     
-                    // Note: thread.path is NOT updated, so X coordinates remain stable.
-                    // However, we should probably update the totalHeight if page height changed drastically.
-                    // But re-generating path changes X.
-                    // For mobile scroll bar resize, the height change is small enough that scaling the Y might be overkill.
-                    // The path is defined by control points. We can't easily stretch it without regen.
-                    // But since we are drawing segments based on Y, and capping at maxY...
-                    // If page got longer, thread.path might stop short?
-                    // generateThreadPath creates path points up to endY.
-                    // If endY increases, we need more points.
-                    // But usually mobile scroll resize *shrinks* viewport height, not document height.
-                    // Document height stays roughly same. So path is valid.
+                    const targetViewY = absoluteTop - (window.innerHeight * 0.25);
+                    const scrollDistance = targetViewY - triggerY;
+                    thread.speed = absoluteTop / Math.max(1, scrollDistance);
                 });
             }
 
