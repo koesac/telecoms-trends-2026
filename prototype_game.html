@@ -690,7 +690,7 @@
                     </strong>
                     ${trendsCollected !== 1 && powerupInfo[trendsCollected-1].effect !== '' ? `<span style="color: #ccc; font-size: 0.8rem; display: block; margin-top: 5px; text-align: center;">${powerupInfo[trendsCollected-1].effect}</span>` : ''}
                 </div>
-                <p style="font-size: 1.1rem; color: #e0e0e0; margin-top: 1.5rem; line-height: 1.5;"><strong>${t.implication || t.statDesc}</strong></p>
+                <p style="font-size: 1.1rem; color: #a0a0a0; margin-top: 1.5rem; line-height: 1.5;"><strong>${t.implication || t.statDesc}</strong></p>
             `;
             createParticles(player.x, player.y, t.color);
             modalOverlay.style.opacity = '1';
