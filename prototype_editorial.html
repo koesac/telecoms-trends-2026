@@ -185,6 +185,10 @@
             background-position: center;
             position: relative;
             transform-origin: center center;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Visual Overlays/Abstract Shapes */
@@ -237,6 +241,14 @@
                 top: 0;
                 z-index: 5;
             }
+            .background-icon-main { 
+                font-size: 80vw !important; 
+                opacity: 0.15 !important; 
+                right: -10% !important; 
+                top: 40% !important; 
+                z-index: 10 !important;
+            }
+            .background-icon-sub { display: none; }
             .panel h2 {
                 font-size: 2.5rem;
             }
@@ -327,6 +339,8 @@
                     </div>
                     <div class="visual-col">
                         <div class="visual-bg" id="visual-${i+1}" style="background: radial-gradient(circle at 70% 50%, ${trend.color}, var(--bg-dark));">
+                            <i class="fas ${trend.icon} background-icon-main" style="position: absolute; right: -5%; top: 50%; transform: translateY(-50%) rotate(-15deg); font-size: 40vw; color: #fff; opacity: 0.05; pointer-events: none; z-index: 1;"></i>
+                            ${trend.powerupIcon ? `<i class="fas ${trend.powerupIcon} background-icon-sub" style="position: absolute; left: 10%; bottom: 10%; font-size: 15vw; color: #fff; opacity: 0.03; transform: rotate(15deg); pointer-events: none; z-index: 1;"></i>` : ''}
                             <!-- Abstract elements could be added here -->
                         </div>
                     </div>
@@ -366,6 +380,37 @@
                         }
                     }
                 );
+
+                // Parallax for background icons
+                const mainIcon = panel.querySelector('.background-icon-main');
+                const subIcon = panel.querySelector('.background-icon-sub');
+                
+                if (mainIcon) {
+                    gsap.to(mainIcon, {
+                        x: -50,
+                        y: "-=30",
+                        rotation: "-=5",
+                        scrollTrigger: {
+                            trigger: panel,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true
+                        }
+                    });
+                }
+                if (subIcon) {
+                    gsap.to(subIcon, {
+                        x: 30,
+                        y: "-=50",
+                        rotation: "+=10",
+                        scrollTrigger: {
+                            trigger: panel,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true
+                        }
+                    });
+                }
 
                 const text = panel.querySelector('.content-col');
                 gsap.from(text.children, {
