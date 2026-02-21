@@ -31,6 +31,15 @@
             touch-action: none;
         }
 
+        .disable-selection {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Standard */
+            cursor: default;
+        }
+
         #header-branding {
             position: fixed; 
             top: calc(20px + env(safe-area-inset-top)); 
@@ -418,12 +427,14 @@
             startScreen.style.display = 'none';
             modalOverlay.style.opacity = '0';
             modalOverlay.style.pointerEvents = 'none';
+            document.body.classList.add('disable-selection'); // Disable text selection when game starts
             resetGame();
         }
 
         function resetGame() {
             modalOverlay.style.opacity = '0'; // Hide overlay
             modalOverlay.style.pointerEvents = 'none'; // Disable interaction with overlay
+            document.body.classList.remove('disable-selection'); // Re-enable text selection
             gameRunning = true; gameSpeed = 5; score = 0; trendsCollected = 0; frames = 0;
             currentLives = maxLives; invincibilityFrames = 0; isInfiniteMode = false; jumpCount = 0;
             activePowerups = { doubleJump: false, aiDodge: { unlocked: false, used: false, charge: 0 }, fibreBoost: { unlocked: false, used: false, charge: 0 }, shield: { unlocked: false, used: false, charge: 0 }, blast: { unlocked: false, used: false, charge: 0 } };
@@ -556,10 +567,33 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#050a10'; ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
-            ctx.save(); ctx.font = '80px "Bebas Neue"'; ctx.fillStyle = 'rgba(214, 136, 58, 0.05)'; ctx.textAlign = 'center';
-            const brandX = (frames * gameSpeed * 0.5) % (canvas.width * 2);
-            ctx.fillText("INNOVATE COMMS", canvas.width - brandX, canvas.height - GROUND_HEIGHT / 2);
-            ctx.fillText("INNOVATE COMMS", canvas.width - brandX + canvas.width, canvas.height - GROUND_HEIGHT / 2);
+            ctx.save();
+            ctx.font = 'clamp(40px, 6vw, 80px) "Bebas Neue"'; // Fluid font size
+            ctx.fillStyle = 'rgba(214, 136, 58, 0.1)'; // Reduced opacity
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle'; // Ensure vertical centering
+            ctx.shadowBlur = 3; // Reduced glow
+            ctx.shadowColor = '#D6883A'; // Glow color (Agate hex value)
+
+            const text = "INNOVATE COMMS";
+            const scrollSpeed = gameSpeed * 0.5; // Slower scroll for background
+            const textWidth = ctx.measureText(text).width;
+            const spacing = textWidth * 4; // Significantly increased spacing
+            const totalWidth = textWidth + spacing;
+            
+            // Calculate the current offset of the repeating pattern
+            const currentOffset = (frames * scrollSpeed) % totalWidth;
+
+            // Determine where the first text instance should start drawing (potentially off-screen left)
+            // Start one full segment before the visible start to ensure seamless looping
+            const firstInstanceX = -currentOffset - totalWidth;
+
+            // Loop to draw enough instances to cover the entire canvas, plus some padding
+            for (let x = firstInstanceX; x < canvas.width + totalWidth; x += totalWidth) {
+                ctx.fillText(text, x, canvas.height - GROUND_HEIGHT / 2);
+            }
+            
+            ctx.shadowBlur = 0; // Reset shadow
             ctx.restore();
             ctx.strokeStyle = 'rgba(62, 155, 155, 0.3)'; ctx.lineWidth = 2; ctx.beginPath();
             ctx.moveTo(0, canvas.height - GROUND_HEIGHT); ctx.lineTo(canvas.width, canvas.height - GROUND_HEIGHT); ctx.stroke();
@@ -682,6 +716,7 @@
             modalOverlay.style.opacity = '1';
             modalOverlay.style.pointerEvents = 'auto';
             gameOverModal.classList.add('active');
+            document.body.classList.remove('disable-selection'); // Re-enable text selection
         }
 
         window.addEventListener('keydown', (e) => {
