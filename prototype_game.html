@@ -117,6 +117,10 @@
             text-shadow: 0 0 10px rgba(255,255,255,0.5);
         }
 
+        #intro-p1 {
+            font-size: 2.5rem; /* Desktop font size for intro title */
+        }
+
         .controls-hint {
             font-family: 'Press Start 2P', cursive;
             font-size: 0.8rem;
@@ -254,6 +258,8 @@
             }
             .trend-modal h2 {
                 font-size: 1.8rem; /* Reduced font size for mobile */
+                letter-spacing: 0px; /* Reduce letter spacing to prevent overflow */
+                text-align: center; /* Ensure text is centered on mobile */
             }
             #modal-icon {
                 font-size: 2.2rem !important; /* Reduced icon size for mobile */
@@ -265,7 +271,12 @@
                 padding: 12px 30px; /* Adjust button padding */
                 font-size: 0.7rem; /* Adjust button font size */
             }
-        }
+            #intro-p1 {
+                font-size: 1.8rem; /* Mobile font size for intro title */
+            }
+            #game-over-modal h2 {
+                font-size: 1.5rem; /* Mobile font size for game over title */
+            }
 
     </style>
 </head>
@@ -631,7 +642,7 @@
                 { name: "6G BLAST", effect: "" }
             ];
 
-            document.getElementById('modal-icon').innerHTML = `<i class="fas ${t.icon}" style="color:${t.color}"></i>`;
+            document.getElementById('modal-icon').innerHTML = `<i class="fas ${t.powerupIcon || t.icon}" style="color:${t.color}"></i>`;
             document.getElementById('modal-title').innerText = t.title.toUpperCase();
             document.getElementById('modal-desc').innerHTML = `
                 <p style="margin-bottom: 1.5rem;">${t.desc}</p>

@@ -41,7 +41,8 @@ const TELECOMS_CONFIG = {
             stat: "Measurable AI",
             statDesc: "Trust and security are paramount for national infrastructure.",
             icon: "fa-brain",
-            color: "#842366" // Azurite
+            color: "#842366", // Azurite
+            powerupIcon: "fa-robot"
         },
         {
             id: 3,
@@ -52,7 +53,8 @@ const TELECOMS_CONFIG = {
             stat: "Narrative Gap",
             statDesc: "Move the conversation from price to human impact.",
             icon: "fa-network-wired",
-            color: "#3E9B9B" // Aventurine
+            color: "#3E9B9B", // Aventurine
+            powerupIcon: "fa-bolt"
         },
         {
             id: 4,
@@ -63,7 +65,8 @@ const TELECOMS_CONFIG = {
             stat: "Credibility",
             statDesc: "Data and transparency are the new net-zero standards.",
             icon: "fa-leaf",
-            color: "#15404F" // Bloodstone
+            color: "#15404F", // Bloodstone
+            powerupIcon: "fa-leaf"
         },
         {
             id: 5,
@@ -74,7 +77,8 @@ const TELECOMS_CONFIG = {
             stat: "Outcome-Led",
             statDesc: "Maintain UK position through commercial impact, not hype.",
             icon: "fa-bolt",
-            color: "#4C194C" // Alexandrite
+            color: "#4C194C", // Alexandrite
+            powerupIcon: "fa-tower-broadcast"
         }
     ]
 };
