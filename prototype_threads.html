@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>The Common Thread: Dynamic Connections</title>
+    <link href="https://fonts.googleapis.com/css2?family=Avenir+Next+LT:wght@300;400;600;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --agate: #D6883A;
+            --aventurine: #3E9B9B;
+            --azurite: #842366;
+            --bloodstone: #15404F;
+            --alexandrite: #4C194C;
+            --deep-navy: #050a10;
+            --paper: #f4f1ea;
+        }
+
+        body {
+            font-family: 'Avenir Next LT', sans-serif;
+            background-color: var(--deep-navy);
+            color: var(--paper);
+            margin: 0;
+            padding: 0;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative; /* Needed for absolute positioning of canvas */
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2; /* Below body::before if it exists, but behind content */
+            pointer-events: none; /* Allows clicks to pass through to elements below */
+        }
+
+        /* Atmospheric background effect (inherited from prototype_horizon) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(214, 136, 58, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at bottom right, rgba(132, 35, 102, 0.1) 0%, transparent 40%);
+            z-index: -1;
+            animation: atmospheric-glow 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes atmospheric-glow {
+            0% {
+                background-position: 0% 0%, 100% 100%;
+            }
+            100% {
+                background-position: 100% 100%, 0% 0%;
+            }
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Bebas Neue', impact, sans-serif;
+            color: var(--agate);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        h1 { font-size: 3em; }
+        h2 { font-size: 2.5em; }
+        h3 { font-size: 2em; }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem 0;
+            position: relative; /* Ensure content is above canvas */
+            z-index: 0;
+        }
+
+        .content-block {
+            background: rgba(255, 255, 255, 0.05); /* Glassmorphism background */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            opacity: 0; /* Initial state for "over the horizon" effect */
+            transform: translateY(50px); /* Initial state for "over the horizon" effect */
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-block.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .content-block p {
+            margin-bottom: 1rem;
+        }
+
+        .content-block .subtitle {
+            font-family: 'Avenir Next LT', sans-serif;
+            text-transform: none;
+            letter-spacing: normal;
+            font-size: 1.2em;
+            color: var(--paper);
+            margin-top: -1em;
+            margin-bottom: 1.5em;
+        }
+
+        .trend-icon {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+            color: var(--agate); /* Default icon color */
+            display: block;
+            text-align: center;
+        }
+
+        .trend-title {
+            text-align: center;
+            margin-bottom: 1em;
+        }
+
+        .implication-section {
+            margin-top: 2em;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-top: 1.5em;
+        }
+
+        .implication-section h4 {
+            color: var(--aventurine);
+            letter-spacing: 2px;
+            font-size: 1.2em;
+            margin-bottom: 0.8em;
+        }
+
+        .implication-section p {
+            color: var(--paper);
+        }
+
+        .stat-section {
+            margin-top: 1.5em;
+            font-style: italic;
+            color: rgba(var(--paper), 0.7);
+        }
+
+        .stat-section strong {
+            color: var(--agate);
+        }
+
+        /* Styling for brand colors as left border */
+        .intro-block { border-left: 5px solid var(--agate); }
+        .trend-block[data-color="#D6883A"] { border-left: 5px solid var(--agate); }
+        .trend-block[data-color="#3E9B9B"] { border-left: 5px solid var(--aventurine); }
+        .trend-block[data-color="#842366"] { border-left: 5px solid var(--azurite); }
+        .trend-block[data-color="#15404F"] { border-left: 5px solid var(--bloodstone); }
+        .trend-block[data-color="#4C194C"] { border-left: 5px solid var(--alexandrite); }
+        .outro-block { border-left: 5px solid var(--agate); }
+    </style>
+</head>
+<body>
+    <canvas id="threadCanvas"></canvas>
+    <div class="container" id="content-container">
+        <!-- Content will be injected here by JavaScript -->
+    </div>
+
+    <script>
+        const TELECOMS_CONFIG = {
+            branding: {
+                companyName: "Innovate Comms",
+                website: "https://www.innovatecomms.co.uk/",
+                email: "hello@innovatecomms.co.uk"
+            },
+            intro: {
+                title: "5 THINGS SHAPING UK TELECOMS",
+                subtitle: "And what it means for your comms",
+                p1: "UK telecoms is in the middle of something significant – a period that's reshaping competitive dynamics, investment priorities, and the fundamental question of what telecoms is.",
+                p2: "Long promised mergers are completing. AI is changing how we operate. Investments are being redistributed. And 6G needs a different story if it’s going to avoid 5G’s stumbles. These shifts create both urgency and opportunity and how you communicate matters more now than ever."
+            },
+            outro: {
+                title: "The Common Thread",
+                p1: "The next phase of UK telecoms will hinge on smart collaborations to create advanced, sustainable networks that are genuinely useful for the UK’s digital ambitions.",
+                p2: "Ready to do things differently? Say hello@innovatecomms.co.uk"
+            },
+            trends: [
+                {
+                    id: 1,
+                    tag: "MARKET",
+                    title: "Market Consolidation",
+                    desc: "Vodafone and Three are finally one, consuming them in a quagmire of integration. There’s a window of opportunity to communicate with clarity while the biggest player is distracted.",
+                    implication: "With a new giant in the market, no one can compete on scale. Where you can compete is innovation, differentiation and focusing on what’s close to the hearts of your customers. Examine your proposition and don’t get bogged down in what worked before – this is a new playing field.",
+                    stat: "Scale Shift",
+                    statDesc: "Competition moves from scale to innovation.",
+                    icon: "fa-handshake",
+                    color: "#D6883A" // Agate
+                },
+                {
+                    id: 2,
+                    tag: "AI",
+                    title: "AI Reality Check",
+                    desc: "AI is already in the network and the benefit is real and measurable. But the AI narrative is stuck in either being futuristic or in the technical weeds. There’s an opportunity to tell it properly.",
+                    implication: "Communicate what AI actually does in your solution, specifically for a real customer. That’s the story that cuts through. Don’t be afraid to tackle the issues and concerns around it – trust and security are paramount.",
+                    stat: "Measurable AI",
+                    statDesc: "Trust and security are paramount for national infrastructure.",
+                    icon: "fa-brain",
+                    color: "#842366", // Azurite
+                    powerupIcon: "fa-robot"
+                },
+                {
+                    id: 3,
+                    tag: "FIBRE",
+                    title: "The Fibre Narrative",
+                    desc: "Fibre is winning the infrastructure race but losing the public narrative. Confusion in a crowded market and affordability anxiety is currently winning over the impressive achievement.",
+                    implication: "Battle the idea that fibre is a utility by showcasing the innovations it can enable. Shift the conversation from speed and price to impacts for remote business, rural productivity, and economic development.",
+                    stat: "Narrative Gap",
+                    statDesc: "Move the conversation from price to human impact.",
+                    icon: "fa-network-wired",
+                    color: "#3E9B9B", // Aventurine
+                    powerupIcon: "fa-bolt"
+                },
+                {
+                    id: 4,
+                    tag: "SUSTAINABILITY",
+                    title: "Sustainability Proof",
+                    desc: "Sustainability pledges are no longer enough, proof is needed and the industry is facing a credibility problem. Tangible trials, data and transparency around net-zero is key.",
+                    implication: "The era of sustainability-by-announcement is over. Make it tangible for increasingly savvy audiences using data, visualisation, and customer case studies to become a preferred supplier.",
+                    stat: "Credibility",
+                    statDesc: "Data and transparency are the new net-zero standards.",
+                    icon: "fa-leaf",
+                    color: "#15404F", // Bloodstone
+                    powerupIcon: "fa-leaf"
+                },
+                {
+                    id: 5,
+                    tag: "6G",
+                    title: "The 6G Evolution",
+                    desc: "The global race to 6G is on but commercial reception is cool. 5G overpromised and while research is focused, the comms strategy framing it as 'next gen mobile' is not.",
+                    implication: "Against a backdrop of demand-led innovation, your comms needs to support a world where 6G is evolution, not revolution. Lead with business benefits and commercial outcomes.",
+                    stat: "Outcome-Led",
+                    statDesc: "Maintain UK position through commercial impact, not hype.",
+                    icon: "fa-bolt",
+                    color: "#4C194C", // Alexandrite
+                    powerupIcon: "fa-tower-broadcast"
+                }
+            ]
+        };
+
+        const BRAND_COLORS = {
+            1: '#D6883A', // Agate
+            2: '#842366', // Azurite
+            3: '#3E9B9B', // Aventurine
+            4: '#15404F', // Bloodstone
+            5: '#4C194C'  // Alexandrite
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('content-container');
+            const canvas = document.getElementById('threadCanvas');
+            const ctx = canvas.getContext('2d');
+            let animationFrameId = null; 
+            let currentScrollY = 0; 
+            let activeThreads = []; 
+
+            // Helper for Bezier math
+            const getQuadraticBezierPoint = (p0, p1, p2, t) => {
+                const mt = 1 - t;
+                return {
+                    x: mt * mt * p0.x + 2 * mt * t * p1.x + t * t * p2.x,
+                    y: mt * mt * p0.y + 2 * mt * t * p1.y + t * t * p2.y
+                };
+            };
+
+            // SMOOTH PATH GENERATION STRATEGY
+            // Generates points in DOCUMENT COORDINATES (Absolute Y)
+            const generateThreadPath = (originX, originY, startColor, endY, themeId) => {
+                const guidePoints = [];
+                let currentX = originX;
+                let currentY = originY;
+                
+                const totalHeight = endY - originY;
+                const numSegments = Math.max(5, Math.ceil(totalHeight / 150));
+                const segmentHeight = totalHeight / numSegments;
+                
+                // Gentler waves for long threads
+                const amplitude = Math.random() * 40 + 10; 
+                const frequency = Math.random() * 0.3 + 0.1; 
+                // Slight drift to separate threads visually over long distances
+                const drift = (Math.random() - 0.5) * 150; 
+
+                // Start Point
+                guidePoints.push({ x: currentX, y: currentY });
+
+                for (let i = 1; i <= numSegments; i++) {
+                    currentY = originY + (i * segmentHeight);
+                    const progress = i / numSegments;
+                    
+                    // Sine wave + Drift
+                    const wave = Math.sin(i * frequency) * amplitude;
+                    const currentDrift = drift * progress;
+                    
+                    currentX = originX + wave + currentDrift;
+                    
+                    guidePoints.push({ x: currentX, y: currentY });
+                }
+
+                // Smooth Path Construction
+                const path = [];
+                if (guidePoints.length > 2) {
+                    let p0 = guidePoints[0];
+
+                    for (let i = 0; i < guidePoints.length - 1; i++) {
+                        const p1 = guidePoints[i+1]; 
+                        const nextNextP = guidePoints[i+2];
+
+                        let p2;
+                        if (nextNextP) {
+                            p2 = { 
+                                x: (p1.x + nextNextP.x) / 2,
+                                y: (p1.y + nextNextP.y) / 2
+                            };
+                        } else {
+                            p2 = p1; // Last point
+                        }
+
+                        path.push(p0);     // Start
+                        path.push(p1);     // Control
+                        path.push(p2);     // End
+
+                        p0 = p2; 
+                    }
+                }
+
+                return {
+                    path: path, 
+                    color: startColor,
+                    length: path.length / 3, // Number of Bezier segments
+                    totalHeight: totalHeight,
+                    maxY: endY,
+                    themeId: themeId,
+                    lastDrawnY: 0
+                };
+            };
+
+            const drawThreads = () => {
+                const width = canvas.width / (window.devicePixelRatio || 1);
+                const height = canvas.height / (window.devicePixelRatio || 1);
+                
+                // Clear canvas for fresh draw (since we translate context)
+                ctx.clearRect(0, 0, width, height);
+                
+                ctx.save();
+                // Move canvas drawing to match document scroll
+                // This makes the lines "stick" to the content
+                ctx.translate(0, -currentScrollY);
+
+                // Calculate how much of the document is "revealed" or "active"
+                // We want the lines to grow down to the bottom of the viewport
+                const visibleBottomY = currentScrollY + window.innerHeight;
+
+                activeThreads.forEach(thread => {
+                    // Determine how far down this thread should be drawn
+                    // It should grow as we scroll, capped at its specific endY
+                    const targetDrawY = Math.min(thread.maxY, visibleBottomY);
+                    
+                    // Optimisation: If thread is entirely above viewport, maybe skip?
+                    // But we need to draw it because it might be partially visible.
+                    // If targetDrawY < currentScrollY, it's above screen.
+                    if (targetDrawY < currentScrollY) return;
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = thread.color;
+                    ctx.lineWidth = 2; 
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                    ctx.globalAlpha = 0.8;
+                    
+                    // We need to draw segments until we reach targetDrawY
+                    // Iterate through path segments
+                    
+                    // Ensure we start from the very top (0,0)
+                    let pStart = thread.path[0];
+                    ctx.moveTo(pStart.x, pStart.y);
+
+                    for (let i = 0; i < thread.length; i++) {
+                        const idx = i * 3;
+                        const p0 = thread.path[idx];
+                        const p1 = thread.path[idx + 1];
+                        const p2 = thread.path[idx + 2];
+
+                        // Check if this segment is within our draw range
+                        // p2 is the end of the segment.
+                        if (p2.y <= targetDrawY) {
+                            // Draw full segment
+                            ctx.quadraticCurveTo(p1.x, p1.y, p2.x, p2.y);
+                        } else {
+                            // This segment crosses the targetDrawY line. 
+                            // We need to draw PART of it.
+                            // Approximate 't' based on Y height?
+                            // Quadratic Bezier Y is monotonic-ish here (mostly down).
+                            // Let's approximate linear interpolation for 't'
+                            const segHeight = p2.y - p0.y;
+                            if (segHeight > 0) {
+                                const t = Math.max(0, Math.min(1, (targetDrawY - p0.y) / segHeight));
+                                const partial = getQuadraticBezierPoint(p0, p1, p2, t);
+                                ctx.quadraticCurveTo(p1.x, p1.y, partial.x, partial.y);
+                            }
+                            break; // Stop drawing after this partial segment
+                        }
+                    }
+                    ctx.stroke();
+                });
+                
+                ctx.restore();
+                animationFrameId = null;
+            };
+
+            // High-DPI Canvas Handling
+            const resizeCanvas = () => {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                const dpr = window.devicePixelRatio || 1;
+
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                ctx.scale(dpr, dpr);
+                canvas.style.width = `${width}px`;
+                canvas.style.height = `${height}px`;
+                
+                if (animationFrameId === null) {
+                    animationFrameId = requestAnimationFrame(drawThreads);
+                }
+            };
+
+            const createElement = (tag, className, textContent = '') => {
+                const element = document.createElement(tag);
+                element.className = className;
+                element.textContent = textContent;
+                return element;
+            };
+
+            // Content Generation
+            container.appendChild(createElement('div', 'content-block intro-block')).innerHTML = `
+                <h1>${TELECOMS_CONFIG.intro.title}</h1>
+                <p class="subtitle">${TELECOMS_CONFIG.intro.subtitle}</p>
+                <p>${TELECOMS_CONFIG.intro.p1}</p>
+                <p>${TELECOMS_CONFIG.intro.p2}</p>
+            `;
+
+            TELECOMS_CONFIG.trends.forEach(trend => {
+                const trendBlock = createElement('div', 'content-block trend-block');
+                trendBlock.setAttribute('data-color', trend.color);
+                trendBlock.setAttribute('data-theme-id', trend.id);
+                trendBlock.innerHTML = `
+                    <div class="trend-icon"><i class="fa-solid ${trend.icon}"></i></div>
+                    <h2 class="trend-title">${trend.title}</h2>
+                    <p>${trend.desc}</p>
+                    <div class="implication-section">
+                        <h4>IMPLICATION:</h4>
+                        <p>${trend.implication}</p>
+                    </div>
+                    <p class="stat-section"><strong>${trend.stat}:</strong> ${trend.statDesc}</p>
+                `;
+                container.appendChild(trendBlock);
+            });
+
+            const outroBlock = createElement('div', 'content-block outro-block');
+            outroBlock.innerHTML = `
+                <h2>${TELECOMS_CONFIG.outro.title}</h2>
+                <p>${TELECOMS_CONFIG.outro.p1}</p>
+                <p>${TELECOMS_CONFIG.outro.p2}</p>
+                <p style="text-align: center; margin-top: 2em;"><a href="mailto:${TELECOMS_CONFIG.branding.email}" style="color: var(--agate); text-decoration: none; font-weight: bold;">${TELECOMS_CONFIG.branding.email}</a></p>
+            `;
+            container.appendChild(outroBlock);
+
+            const contentObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                    else entry.target.classList.remove('visible');
+                });
+            }, { threshold: 0.3 });
+
+            document.querySelectorAll('.content-block').forEach(block => contentObserver.observe(block));
+
+            // --- Thread Initialization ---
+            const initThreads = () => {
+                const trendBlocks = document.querySelectorAll('.trend-block');
+                const outro = document.querySelector('.outro-block');
+                
+                // Get container center X for distribution
+                const centerX = window.innerWidth / 2;
+                
+                activeThreads = []; // Clear existing
+
+                TELECOMS_CONFIG.trends.forEach((trend, index) => {
+                    const block = trendBlocks[index];
+                    
+                    // Determine End Y: Bottom of NEXT block
+                    let nextElement;
+                    if (index < trendBlocks.length - 1) {
+                        nextElement = trendBlocks[index + 1];
+                    } else {
+                        nextElement = outro;
+                    }
+                    
+                    // Calculate positions relative to document
+                    // Since we run this on load (scrollY might not be 0), we adjust.
+                    const scrollOffset = window.scrollY;
+                    
+                    // Start X: Distribute evenly or clustered?
+                    // "Appear with theme" -> maybe align with theme horizontal center?
+                    // Let's give them distinct "lanes" or random but centered.
+                    // Let's use the trend block's center X as a guide but with random variance
+                    const rect = block.getBoundingClientRect();
+                    const startX = rect.left + rect.width / 2 + (Math.random() - 0.5) * 150; 
+                    
+                    // End Y
+                    const nextRect = nextElement.getBoundingClientRect();
+                    const endY = nextRect.bottom + scrollOffset;
+                    
+                    activeThreads.push(generateThreadPath(
+                        startX,
+                        0, // ALWAYS START AT TOP (0)
+                        BRAND_COLORS[trend.id],
+                        endY,
+                        trend.id
+                    ));
+                });
+                
+                updateScrollAndDraw();
+            };
+
+            const updateScrollAndDraw = () => {
+                currentScrollY = window.scrollY;
+                if (animationFrameId === null) {
+                    animationFrameId = requestAnimationFrame(drawThreads);
+                }
+            };
+
+            window.addEventListener('scroll', updateScrollAndDraw);
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                initThreads(); // Re-calculate paths on resize
+            });
+            
+            // Start up
+            resizeCanvas();
+            // Allow layout to settle?
+            setTimeout(initThreads, 100);
+        });
+    </script>
+</body>
+</html>
