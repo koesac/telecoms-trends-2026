@@ -94,16 +94,9 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             padding: 2.5rem;
             margin-bottom: 3rem;
-            opacity: 0; /* Initial state for "over the horizon" effect */
-            transform: translateY(50px); /* Initial state for "over the horizon" effect */
-            transition: opacity 1s ease-out, transform 1s ease-out;
+            /* Removed fade-in animation styles */
             position: relative;
             overflow: hidden;
-        }
-
-        .content-block.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         .content-block p {
@@ -123,7 +116,7 @@
         .trend-icon {
             font-size: 2.5em;
             margin-bottom: 0.5em;
-            color: var(--agate); /* Default icon color */
+            color: var(--agate); 
             display: block;
             text-align: center;
         }
@@ -131,6 +124,7 @@
         .trend-title {
             text-align: center;
             margin-bottom: 1em;
+            color: var(--agate);
         }
 
         .implication-section {
@@ -140,7 +134,7 @@
         }
 
         .implication-section h4 {
-            color: var(--aventurine);
+            color: var(--theme-color, var(--aventurine)); 
             letter-spacing: 2px;
             font-size: 1.2em;
             margin-bottom: 0.8em;
@@ -157,16 +151,11 @@
         }
 
         .stat-section strong {
-            color: var(--agate);
+            color: var(--theme-color, var(--agate));
         }
 
-        /* Styling for brand colors as left border */
         .intro-block { border-left: 5px solid var(--agate); }
-        .trend-block[data-color="#D6883A"] { border-left: 5px solid var(--agate); }
-        .trend-block[data-color="#3E9B9B"] { border-left: 5px solid var(--aventurine); }
-        .trend-block[data-color="#842366"] { border-left: 5px solid var(--azurite); }
-        .trend-block[data-color="#15404F"] { border-left: 5px solid var(--bloodstone); }
-        .trend-block[data-color="#4C194C"] { border-left: 5px solid var(--alexandrite); }
+        .trend-block { border-left: 5px solid var(--theme-color, var(--agate)); }
         .outro-block { border-left: 5px solid var(--agate); }
     </style>
 </head>
@@ -273,7 +262,6 @@
             let currentScrollY = 0; 
             let activeThreads = []; 
 
-            // Helper for Bezier math
             const getQuadraticBezierPoint = (p0, p1, p2, t) => {
                 const mt = 1 - t;
                 return {
@@ -282,48 +270,41 @@
                 };
             };
 
-            // SMOOTH PATH GENERATION STRATEGY
-            // Generates points in DOCUMENT COORDINATES (Absolute Y)
-            const generateThreadPath = (originX, originY, startColor, endY, themeId) => {
+            const generateThreadPath = (originX, endY, startColor, themeId, triggerY) => {
                 const guidePoints = [];
                 let currentX = originX;
-                let currentY = originY;
+                let currentY = 0; // START AT TOP
                 
-                const totalHeight = endY - originY;
+                const totalHeight = endY; 
                 const numSegments = Math.max(5, Math.ceil(totalHeight / 150));
                 const segmentHeight = totalHeight / numSegments;
                 
-                // Gentler waves for long threads
                 const amplitude = Math.random() * 40 + 10; 
                 const frequency = Math.random() * 0.3 + 0.1; 
-                // Slight drift to separate threads visually over long distances
-                const drift = (Math.random() - 0.5) * 150; 
+                
+                const screenCenterX = window.innerWidth / 2;
+                const totalDrift = (screenCenterX - originX) * 0.6; 
+                const driftPerSegment = totalDrift / numSegments;
 
-                // Start Point
                 guidePoints.push({ x: currentX, y: currentY });
 
                 for (let i = 1; i <= numSegments; i++) {
-                    currentY = originY + (i * segmentHeight);
+                    currentY = i * segmentHeight;
                     const progress = i / numSegments;
                     
-                    // Sine wave + Drift
                     const wave = Math.sin(i * frequency) * amplitude;
-                    const currentDrift = drift * progress;
+                    currentX += driftPerSegment;
+                    const wobblyX = currentX + wave;
                     
-                    currentX = originX + wave + currentDrift;
-                    
-                    guidePoints.push({ x: currentX, y: currentY });
+                    guidePoints.push({ x: wobblyX, y: currentY });
                 }
 
-                // Smooth Path Construction
                 const path = [];
                 if (guidePoints.length > 2) {
                     let p0 = guidePoints[0];
-
                     for (let i = 0; i < guidePoints.length - 1; i++) {
                         const p1 = guidePoints[i+1]; 
                         const nextNextP = guidePoints[i+2];
-
                         let p2;
                         if (nextNextP) {
                             p2 = { 
@@ -331,13 +312,9 @@
                                 y: (p1.y + nextNextP.y) / 2
                             };
                         } else {
-                            p2 = p1; // Last point
+                            p2 = p1; 
                         }
-
-                        path.push(p0);     // Start
-                        path.push(p1);     // Control
-                        path.push(p2);     // End
-
+                        path.push(p0); path.push(p1); path.push(p2);
                         p0 = p2; 
                     }
                 }
@@ -345,11 +322,11 @@
                 return {
                     path: path, 
                     color: startColor,
-                    length: path.length / 3, // Number of Bezier segments
+                    length: path.length / 3, 
                     totalHeight: totalHeight,
                     maxY: endY,
                     themeId: themeId,
-                    lastDrawnY: 0
+                    triggerY: triggerY 
                 };
             };
 
@@ -357,39 +334,32 @@
                 const width = canvas.width / (window.devicePixelRatio || 1);
                 const height = canvas.height / (window.devicePixelRatio || 1);
                 
-                // Clear canvas for fresh draw (since we translate context)
                 ctx.clearRect(0, 0, width, height);
-                
                 ctx.save();
-                // Move canvas drawing to match document scroll
-                // This makes the lines "stick" to the content
                 ctx.translate(0, -currentScrollY);
 
-                // Calculate how much of the document is "revealed" or "active"
-                // We want the lines to grow down to the bottom of the viewport
                 const visibleBottomY = currentScrollY + window.innerHeight;
 
                 activeThreads.forEach(thread => {
-                    // Determine how far down this thread should be drawn
-                    // It should grow as we scroll, capped at its specific endY
-                    const targetDrawY = Math.min(thread.maxY, visibleBottomY);
+                    if (currentScrollY < thread.triggerY) return; 
+
+                    const growthStart = thread.triggerY;
+                    const pixelsScrolledSinceTrigger = currentScrollY - growthStart;
+                    const catchUpSpeed = 4.0; 
                     
-                    // Optimisation: If thread is entirely above viewport, maybe skip?
-                    // But we need to draw it because it might be partially visible.
-                    // If targetDrawY < currentScrollY, it's above screen.
-                    if (targetDrawY < currentScrollY) return;
+                    let currentTipY = pixelsScrolledSinceTrigger * catchUpSpeed;
+                    const actualDrawY = Math.min(currentTipY, visibleBottomY);
+                    const finalDrawY = Math.min(actualDrawY, thread.maxY);
+
+                    if (finalDrawY <= 0) return;
 
                     ctx.beginPath();
                     ctx.strokeStyle = thread.color;
                     ctx.lineWidth = 2; 
                     ctx.lineCap = 'round';
                     ctx.lineJoin = 'round';
-                    ctx.globalAlpha = 0.8;
+                    ctx.globalAlpha = 0.9;
                     
-                    // We need to draw segments until we reach targetDrawY
-                    // Iterate through path segments
-                    
-                    // Ensure we start from the very top (0,0)
                     let pStart = thread.path[0];
                     ctx.moveTo(pStart.x, pStart.y);
 
@@ -399,24 +369,16 @@
                         const p1 = thread.path[idx + 1];
                         const p2 = thread.path[idx + 2];
 
-                        // Check if this segment is within our draw range
-                        // p2 is the end of the segment.
-                        if (p2.y <= targetDrawY) {
-                            // Draw full segment
+                        if (p2.y <= finalDrawY) {
                             ctx.quadraticCurveTo(p1.x, p1.y, p2.x, p2.y);
                         } else {
-                            // This segment crosses the targetDrawY line. 
-                            // We need to draw PART of it.
-                            // Approximate 't' based on Y height?
-                            // Quadratic Bezier Y is monotonic-ish here (mostly down).
-                            // Let's approximate linear interpolation for 't'
                             const segHeight = p2.y - p0.y;
                             if (segHeight > 0) {
-                                const t = Math.max(0, Math.min(1, (targetDrawY - p0.y) / segHeight));
+                                const t = Math.max(0, Math.min(1, (finalDrawY - p0.y) / segHeight));
                                 const partial = getQuadraticBezierPoint(p0, p1, p2, t);
                                 ctx.quadraticCurveTo(p1.x, p1.y, partial.x, partial.y);
                             }
-                            break; // Stop drawing after this partial segment
+                            break; 
                         }
                     }
                     ctx.stroke();
@@ -426,7 +388,6 @@
                 animationFrameId = null;
             };
 
-            // High-DPI Canvas Handling
             const resizeCanvas = () => {
                 const width = window.innerWidth;
                 const height = window.innerHeight;
@@ -438,9 +399,7 @@
                 canvas.style.width = `${width}px`;
                 canvas.style.height = `${height}px`;
                 
-                if (animationFrameId === null) {
-                    animationFrameId = requestAnimationFrame(drawThreads);
-                }
+                initThreads(); 
             };
 
             const createElement = (tag, className, textContent = '') => {
@@ -462,9 +421,11 @@
                 const trendBlock = createElement('div', 'content-block trend-block');
                 trendBlock.setAttribute('data-color', trend.color);
                 trendBlock.setAttribute('data-theme-id', trend.id);
+                trendBlock.style.setProperty('--theme-color', trend.color);
+                
                 trendBlock.innerHTML = `
-                    <div class="trend-icon"><i class="fa-solid ${trend.icon}"></i></div>
-                    <h2 class="trend-title">${trend.title}</h2>
+                    <div class="trend-icon" style="color: var(--theme-color)"><i class="fa-solid ${trend.icon}"></i></div>
+                    <h2 class="trend-title" style="color: var(--theme-color)">${trend.title}</h2>
                     <p>${trend.desc}</p>
                     <div class="implication-section">
                         <h4>IMPLICATION:</h4>
@@ -484,61 +445,40 @@
             `;
             container.appendChild(outroBlock);
 
-            const contentObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('visible');
-                    else entry.target.classList.remove('visible');
-                });
-            }, { threshold: 0.3 });
-
-            document.querySelectorAll('.content-block').forEach(block => contentObserver.observe(block));
+            // Removed contentObserver
 
             // --- Thread Initialization ---
             const initThreads = () => {
                 const trendBlocks = document.querySelectorAll('.trend-block');
                 const outro = document.querySelector('.outro-block');
+                const outroRect = outro.getBoundingClientRect();
                 
-                // Get container center X for distribution
-                const centerX = window.innerWidth / 2;
+                const finalEndY = outroRect.bottom + window.scrollY;
                 
-                activeThreads = []; // Clear existing
+                activeThreads = [];
 
                 TELECOMS_CONFIG.trends.forEach((trend, index) => {
                     const block = trendBlocks[index];
-                    
-                    // Determine End Y: Bottom of NEXT block
-                    let nextElement;
-                    if (index < trendBlocks.length - 1) {
-                        nextElement = trendBlocks[index + 1];
-                    } else {
-                        nextElement = outro;
-                    }
-                    
-                    // Calculate positions relative to document
-                    // Since we run this on load (scrollY might not be 0), we adjust.
-                    const scrollOffset = window.scrollY;
-                    
-                    // Start X: Distribute evenly or clustered?
-                    // "Appear with theme" -> maybe align with theme horizontal center?
-                    // Let's give them distinct "lanes" or random but centered.
-                    // Let's use the trend block's center X as a guide but with random variance
                     const rect = block.getBoundingClientRect();
-                    const startX = rect.left + rect.width / 2 + (Math.random() - 0.5) * 150; 
                     
-                    // End Y
-                    const nextRect = nextElement.getBoundingClientRect();
-                    const endY = nextRect.bottom + scrollOffset;
+                    const triggerY = (rect.top + window.scrollY) - (window.innerHeight * 0.75);
+                    
+                    const widthPct = 0.8;
+                    const startX = (window.innerWidth * (1 - widthPct) / 2) + 
+                                   (window.innerWidth * widthPct * (index / 4));
                     
                     activeThreads.push(generateThreadPath(
                         startX,
-                        0, // ALWAYS START AT TOP (0)
+                        finalEndY, 
                         BRAND_COLORS[trend.id],
-                        endY,
-                        trend.id
+                        trend.id,
+                        triggerY 
                     ));
                 });
                 
-                updateScrollAndDraw();
+                if (animationFrameId === null) {
+                    animationFrameId = requestAnimationFrame(drawThreads);
+                }
             };
 
             const updateScrollAndDraw = () => {
@@ -549,15 +489,11 @@
             };
 
             window.addEventListener('scroll', updateScrollAndDraw);
-            window.addEventListener('resize', () => {
-                resizeCanvas();
-                initThreads(); // Re-calculate paths on resize
-            });
+            window.addEventListener('resize', resizeCanvas);
             
-            // Start up
-            resizeCanvas();
-            // Allow layout to settle?
-            setTimeout(initThreads, 100);
+            setTimeout(() => {
+                resizeCanvas(); 
+            }, 100);
         });
     </script>
 </body>
