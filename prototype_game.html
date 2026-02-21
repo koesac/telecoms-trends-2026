@@ -426,7 +426,7 @@
                 setTimeout(() => { gameSpeed = oldSpeed; btn.classList.remove('active-pw'); }, 3000);
                         } else if (num === 4) {
                             activePowerups.shield.used = true; // Mark shield as used for collision logic
-                            player.color = 'var(--aventurine)'; // Change player color to brand green
+                            player.color = '#3E9B9B'; // Change player color to brand green (Aventurine)
                         } else if (num === 5) { 
                 obstacles = []; createParticles(canvas.width/2, canvas.height/2, 'var(--agate)');
                 setTimeout(() => { btn.classList.remove('active-pw'); }, 500);
@@ -439,7 +439,7 @@
                 document.getElementById('pw-4').classList.remove('active-pw');
                 invincibilityFrames = 60;
                 createParticles(player.x, player.y, 'var(--aventurine)');
-                player.color = 'var(--agate)'; // Revert player color to default
+                player.color = '#D6883A'; // Revert player color to default (Agate)
                 return;
             }
             currentLives--; updateLivesHUD();
