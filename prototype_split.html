@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Innovate Comms: The Split (Concept F)</title>
+    <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Avenir+Next+LT:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Master Content -->
+    <script src="master_content.js"></script>
+    
+    <style>
+        :root {
+            --agate: #D6883A;
+            --aventurine: #3E9B9B;
+            --azurite: #842366;
+            --bloodstone: #15404F;
+            --alexandrite: #4C194C;
+            --bg-dark: #050a10;
+            --paper: #f4f1ea;
+            --text-dark: #0a0a0a;
+            --text-light: #f4f4f4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Avenir Next LT", "Avenir Next", "Avenir", sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Fixed Branding */
+        #header-branding {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: calc(20px + env(safe-area-inset-top)) 40px;
+            z-index: 5000;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            pointer-events: auto;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(244, 241, 234, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .brand-logo h1 {
+            font-family: "Avenir Next LT", sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .logo-svg {
+            width: 25px;
+            height: 25px;
+            fill: none;
+            stroke: var(--agate);
+            stroke-width: 2;
+        }
+
+        /* Progress Dots */
+        .nav-dots {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dot.active {
+            background: var(--agate);
+            transform: scale(1.5);
+        }
+
+        /* Layout Sections */
+        section {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Intro Section */
+        #intro {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+            padding: 40px;
+        }
+
+        #intro h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(4rem, 12vw, 10rem);
+            letter-spacing: 5px;
+            line-height: 0.9;
+            color: var(--agate);
+            margin-bottom: 2rem;
+        }
+
+        #intro p {
+            max-width: 800px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        /* Split Panels */
+        .split-panel {
+            /* background will be set by JS */
+        }
+
+        .split-panel.reverse-layout {
+            flex-direction: row-reverse;
+        }
+
+        .content-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 10% 8%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .visual-col {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visual-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.1s linear;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--agate);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(3rem, 6vw, 6rem);
+            letter-spacing: 2px;
+            line-height: 1;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        .desc {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-dark);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+        }
+
+        .implication {
+            background: var(--paper);
+            padding: 2rem;
+            border-left: 5px solid var(--agate);
+            box-shadow: 20px 20px 60px rgba(0,0,0,0.03);
+            max-width: 500px;
+        }
+
+        .implication p {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--bg-dark);
+            line-height: 1.5;
+        }
+
+        .bg-icon {
+            font-size: 25vw;
+            position: absolute;
+            bottom: -5%;
+            right: -5%;
+            opacity: 0.05;
+            color: var(--bg-dark);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Outro */
+        #outro {
+            background: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        #outro h2 { color: var(--agate); margin-bottom: 3rem; }
+        
+        .cta-btn {
+            display: inline-block;
+            padding: 1.2rem 3.5rem;
+            background: var(--agate);
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 0;
+            transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .cta-btn:hover {
+            background: var(--paper);
+            color: var(--bg-dark);
+            transform: translateY(-5px);
+        }
+
+        /* Mobile */
+        @media (max-width: 992px) {
+            section { height: auto; flex-direction: column !important; }
+            .content-col { padding: 80px 30px; order: 2; }
+            .visual-col { height: 50vh; order: 1; }
+            .nav-dots { display: none; }
+            #header-branding { padding: 20px; }
+
+            .brand-logo h1 { display: flex; align-items: center; gap: 10px;}
+            .logo-svg { width: 20px; height: 20px; }
+
+            h2 { font-size: 3.5rem; }
+            .bg-icon {
+                font-size: 50vw;
+                bottom: 0;
+                right: 0;
+                left: 0;
+                top: 0;
+                margin: auto;
+                opacity: 0.03;
+                transform: none;
+            }
+        }
+
+        /* Animations */
+        .reveal-up { opacity: 0; transform: translateY(40px); }
+    </style>
+</head>
+<body>
+
+    <header id="header-branding">
+        <a href="https://www.innovatecomms.co.uk/" class="brand-logo">
+            <h1 class="brand-title">
+                <svg class="logo-svg" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
+                    <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
+                    <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
+                    <path d="M31.3047 2.34497V42.9916"></path>
+                    <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
+                </svg>
+                Innovate Comms
+            </h1>
+        </a>
+    </header>
+
+    <div class="nav-dots" id="dots-container"></div>
+
+    <main id="main-content">
+        <!-- Intro -->
+        <section id="intro">
+            <h1 id="intro-title" class="reveal-up"></h1>
+            <p id="intro-p" class="reveal-up"></p>
+        </section>
+
+        <!-- Dynamic Trends -->
+        <div id="trends-container"></div>
+
+        <!-- Outro -->
+        <section id="outro">
+            <div style="max-width: 800px;">
+                <h2 id="outro-title" class="reveal-up"></h2>
+                <p id="outro-p" class="desc reveal-up" style="color: var(--text-light); margin: 0 auto 3rem auto;"></p>
+                <a href="mailto:hello@innovatecomms.co.uk" class="cta-btn reveal-up">Get in touch</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const config = TELECOMS_CONFIG;
+        const trendsContainer = document.getElementById('trends-container');
+        const dotsContainer = document.getElementById('dots-container');
+
+        function init() {
+            // Load Intro/Outro
+            document.getElementById('intro-title').innerText = config.intro.title;
+            document.getElementById('intro-p').innerText = config.intro.p1;
+            document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
+            document.getElementById('outro-p').innerText = config.outro.p1;
+
+            // Load Trends
+            config.trends.forEach((trend, i) => {
+                const section = document.createElement('section');
+                section.className = `split-panel ${i % 2 === 1 ? 'reverse-layout' : ''}`;
+                section.id = `trend-${i+1}`;
+                // section.style.backgroundColor will NOT be set here, instead it's handled by children
+
+                // Function to determine if a color is light or dark (for visual-col icon color)
+                function isDarkColor(hexColor) {
+                    const r = parseInt(hexColor.slice(1, 3), 16);
+                    const g = parseInt(hexColor.slice(3, 5), 16);
+                    const b = parseInt(hexColor.slice(5, 7), 16);
+                    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                    return luminance < 0.5;
+                }
+                const isTrendColorDark = isDarkColor(trend.color);
+                const contentTextColor = isTrendColorDark ? 'var(--text-light)' : 'var(--text-dark)';
+                const implicationBgColor = isTrendColorDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+                const visualIconColor = isTrendColorDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+
+                section.innerHTML = `
+                    <div class="content-col" style="background-color: ${trend.color}; color: ${contentTextColor};">
+                        <span class="tag reveal-up">${trend.tag} / 0${i+1}</span>
+                        <h2 class="reveal-up">${trend.title}</h2>
+                        <p class="desc reveal-up" style="color: ${contentTextColor};">${trend.desc}</p>
+                        <div class="implication reveal-up" style="background-color: ${implicationBgColor}; border-left-color: ${contentTextColor};">
+                            <p style="color: ${contentTextColor};">${trend.implication}</p>
+                        </div>
+                        <i class="fas ${trend.icon} bg-icon" style="color: ${contentTextColor};"></i>
+                    </div>
+                    <div class="visual-col">
+                        <div class="visual-bg" style="background: radial-gradient(circle at center, ${trend.color}, var(--bg-dark));">
+                            <i class="fas ${trend.icon}" style="font-size: 15vw; color: ${visualIconColor};"></i>
+                        </div>
+                    </div>
+                `;
+                trendsContainer.appendChild(section);
+
+                // Add Dot
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = () => gsap.to(window, { scrollTo: section, duration: 1 });
+                dotsContainer.appendChild(dot);
+            });
+
+            setupAnimations();
+        }
+
+        function setupAnimations() {
+            // Intro Reveal
+            gsap.to("#intro .reveal-up", {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                stagger: 0.2,
+                ease: "power4.out"
+            });
+
+            // Panel Animations
+            const panels = document.querySelectorAll('section');
+            panels.forEach((panel, i) => {
+                // Reveal Content
+                const reveals = panel.querySelectorAll('.reveal-up');
+                gsap.to(reveals, {
+                    scrollTrigger: {
+                        trigger: panel,
+                        start: "top 70%",
+                        toggleActions: "play none none reverse"
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    stagger: 0.1,
+                    ease: "power3.out"
+                });
+
+                // Parallax Visual
+                const bg = panel.querySelector('.visual-bg');
+                if (bg) {
+                    gsap.to(bg, {
+                        scrollTrigger: {
+                            trigger: panel,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true
+                        },
+                        y: "15%",
+                        ease: "none"
+                    });
+                }
+
+                // Update Dots
+                ScrollTrigger.create({
+                    trigger: panel,
+                    start: "top 50%",
+                    end: "bottom 50%",
+                    onToggle: self => {
+                        if (self.isActive) {
+                            const dots = document.querySelectorAll('.dot');
+                            dots.forEach(d => d.classList.remove('active'));
+                            if (dots[i]) dots[i].classList.add('active');
+                        }
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
