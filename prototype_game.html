@@ -220,7 +220,7 @@
 
         .trend-modal h2 {
             font-family: 'Press Start 2P', cursive;
-            font-size: clamp(1.2rem, 3vw, 3rem); /* Fluid font size for proper scaling */
+            font-size: clamp(1.2rem, 3vw, 2.5rem); /* Reduced max font size to prevent overflow on wide displays */
             color: var(--agate);
             text-shadow: 4px 4px var(--azurite);
             margin-bottom: 1.5rem;
@@ -587,7 +587,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#050a10'; ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
             ctx.save();
-            ctx.font = 'clamp(40px, 6vw, 80px) "Bebas Neue"'; // Fluid font size
+            ctx.font = 'clamp(40px, 8vw, 80px) "Bebas Neue"'; // Increased vw for better scaling on larger mobile screens
             ctx.fillStyle = 'rgba(214, 136, 58, 0.1)'; // Reduced opacity
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle'; // Ensure vertical centering
@@ -601,15 +601,15 @@
             const totalWidth = textWidth + spacing;
             
             // Calculate the current offset of the repeating pattern
-            const currentOffset = (frames * scrollSpeed) % totalWidth;
+            const scrollPos = (frames * scrollSpeed);
+            const adjustedOffset = scrollPos % totalWidth;
 
             // Determine where the first text instance should start drawing (potentially off-screen left)
-            // Start one full segment before the visible start to ensure seamless looping
-            const firstInstanceX = -currentOffset - totalWidth;
+            const startDrawingX = -adjustedOffset - totalWidth;
 
-            // Loop to draw enough instances to cover the entire canvas, plus some padding
-            for (let x = firstInstanceX; x < canvas.width + totalWidth; x += totalWidth) {
-                ctx.fillText(text, x, canvas.height - GROUND_HEIGHT / 2);
+            // Loop to draw enough instances to cover the entire canvas, plus a generous buffer on the right
+            for (let x = startDrawingX; x < canvas.width + totalWidth * 2; x += totalWidth) {
+                ctx.fillText(text, Math.floor(x), canvas.height - GROUND_HEIGHT / 2);
             }
             
             ctx.shadowBlur = 0; // Reset shadow
