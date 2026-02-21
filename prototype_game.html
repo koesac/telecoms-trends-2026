@@ -194,11 +194,12 @@
 
         .trend-modal h2 {
             font-family: 'Press Start 2P', cursive;
-            font-size: 2.5rem;
+            font-size: clamp(1.2rem, 3vw, 3rem); /* Fluid font size for proper scaling */
             color: var(--agate);
             text-shadow: 4px 4px var(--azurite);
             margin-bottom: 1.5rem;
             letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .trend-modal p {
@@ -259,7 +260,6 @@
                 padding: 1rem; /* Further reduced padding for mobile */
             }
             .trend-modal h2 {
-                font-size: 1.2rem; /* Further reduced font size for mobile for very long titles */
                 letter-spacing: 0px; /* Reduce letter spacing to prevent overflow */
                 text-align: center; /* Ensure text is centered on mobile */
             }
@@ -351,9 +351,10 @@
              <h2 style="color: var(--agate);">The Common Thread</h2>
              <p id="outro-p1"></p>
              <p id="outro-p2" style="font-weight: 700;"></p>
+             <p style="font-weight: 700;">Say <a href="mailto:hello@innovatecomms.co.uk" style="color:var(--agate); text-decoration:none; font-weight:bold; white-space: nowrap;">hello@innovatecomms.co.uk</a></p>
              <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
                 <button class="btn-continue" onclick="resumeGame(true)">KEEP RUNNING</button>
-                <a href="mailto:hello@innovatecomms.co.uk" class="btn-continue" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">CONTACT US</a>
+                <button class="btn-continue" onclick="shareGame()" style="text-decoration: none; display: flex; align-items: center; justify-content: center;"><i class="fas fa-share-alt" style="margin-right: 8px;"></i>SHARE</button>
              </div>
         </div>
 
@@ -388,10 +389,7 @@
             introSubtitle.innerText = config.intro.subtitle;
             introP2.innerText = config.intro.p1;
             document.getElementById('outro-p1').innerText = config.outro.p1;
-            const email = config.branding.email;
-            let p2 = config.outro.p2;
-            p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
-            document.getElementById('outro-p2').innerHTML = p2;
+            document.getElementById('outro-p2').innerText = config.outro.p2;
             const best = localStorage.getItem('signalRunnerBest') || 0;
             bestScoreHud.innerText = `BEST: ${best} TB`;
         }
@@ -400,6 +398,7 @@
         let maxLives = 1, currentLives = 1, invincibilityFrames = 0, hasJumped = false, isInfiniteMode = false;
         let jumpCount = 0;
         let activePowerups = { doubleJump: false, aiDodge: { unlocked: false, used: false, charge: 0 }, fibreBoost: { unlocked: false, used: false, charge: 0 }, shield: { unlocked: false, used: false, charge: 0 }, blast: { unlocked: false, used: false, charge: 0 } };
+        let debugMode = false;
 
         let GRAVITY = 0.5, JUMP_FORCE = -14, GROUND_HEIGHT = 100;
 
@@ -684,9 +683,74 @@
             gameOverModal.classList.add('active');
         }
 
-        window.addEventListener('keydown', (e) => { if (e.code === 'Space' || e.code === 'ArrowUp') if (gameRunning) jump(); });
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyD') { // Toggle debug mode
+                debugMode = !debugMode;
+                console.log('Debug Mode:', debugMode ? 'ON' : 'OFF');
+            }
+
+            if (debugMode && !gameRunning) { // Debug controls when game is not running
+                e.preventDefault();
+                switch (e.code) {
+                    case 'Digit1': // Show Trend Modal
+                        collectTrend(0); // Show first trend
+                        break;
+                    case 'Digit2': // Show Game Over Modal
+                        gameOver();
+                        break;
+                    case 'Digit3': // Show Victory Modal
+                        victoryModal.classList.add('active');
+                        modalOverlay.style.opacity = '1';
+                        modalOverlay.style.pointerEvents = 'auto';
+                        break;
+                    case 'Digit0': // Show Start Screen
+                        startScreen.style.display = 'flex';
+                        modalOverlay.style.opacity = '0'; // Ensure overlay is hidden if not needed
+                        modalOverlay.style.pointerEvents = 'none';
+                        break;
+                }
+            } else if (e.code === 'Space' || e.code === 'ArrowUp') {
+                e.preventDefault(); // Prevent default spacebar behavior (e.g., scrolling)
+                if (startScreen.style.display === 'flex') {
+                    startGame();
+                } else if (modal.classList.contains('active')) {
+                    resumeGame();
+                } else if (gameOverModal.classList.contains('active')) {
+                    resetGame();
+                } else if (victoryModal.classList.contains('active')) {
+                    resumeGame(true); // 'KEEP RUNNING'
+                } else if (gameRunning) {
+                    jump();
+                }
+            }
+        });
         window.addEventListener('mousedown', (e) => { if (gameRunning && e.target.tagName !== 'BUTTON' && !e.target.closest('.btn-powerup')) jump(); });
         window.addEventListener('touchstart', (e) => { if (gameRunning && e.target.tagName !== 'BUTTON' && !e.target.closest('.btn-powerup')) jump(); });
+
+        async function shareGame() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Innovate Comms: Signal Runner',
+                        text: 'Check out this game from Innovate Comms!',
+                        url: window.location.href
+                    });
+                    console.log('Content shared successfully');
+                } catch (error) {
+                    console.error('Error sharing:', error);
+                }
+            } else {
+                // Fallback for browsers that do not support Web Share API
+                try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert('Game link copied to clipboard!');
+                    console.log('Game link copied to clipboard');
+                } catch (err) {
+                    alert('Could not copy link to clipboard.');
+                    console.error('Could not copy text: ', err);
+                }
+            }
+        }
 
         loadMasterContent();
     </script>
