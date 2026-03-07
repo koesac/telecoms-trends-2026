@@ -473,6 +473,8 @@
         const config = TELECOMS_CONFIG;
         const trends = config.trends;
         let cards = [];
+        let dots = [];
+        let bgLayers = [];
         let currentIndex = 0;
         let isTransitioning = false;
         let isExperienceActive = false;
@@ -498,6 +500,10 @@
             container.className = 'origami-container';
             container.setAttribute('aria-label', `${trend.title} card`);
             container.setAttribute('aria-expanded', 'false');
+            
+            // Cache reference for performance
+            const inner = clone.querySelector('.card-inner');
+            container.innerElement = inner;
             
             // Fill structure using textContent (Safe and robust)
             const topFlap = clone.querySelector('.flap-top');
@@ -526,18 +532,22 @@
             dot.setAttribute('aria-label', `Go to card ${index + 1}`);
             dot.onclick = () => jumpTo(index);
             dotsContainer.appendChild(dot);
+            dots.push(dot);
 
             const bg = document.createElement('div');
             bg.className = 'bg-layer';
             bg.id = `bg-${index}`;
             bg.style.background = `radial-gradient(circle at center, ${trend.color} 0%, var(--bg-dark) 100%)`;
             bgContainer.appendChild(bg);
+            bgLayers.push(bg);
 
             return container;
         }
 
         function init() {
             loadMasterContent();
+            dots = [];
+            bgLayers = [];
             cards = trends.map((t, i) => createCard(t, i));
             updateStack();
             // Initial state is intro overlay
@@ -552,7 +562,7 @@
 
         function updateStack() {
             cards.forEach((card, i) => {
-                const inner = card.querySelector('.card-inner');
+                const inner = card.innerElement;
                 const isCurrent = i === currentIndex;
                 const isPast = i < currentIndex;
 
@@ -576,8 +586,8 @@
                     if (depth > 0) gsap.to(inner, { rotationX: 0, rotationY: 0, duration: 0.5 });
                 }
             });
-            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === currentIndex));
-            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+            bgLayers.forEach((l, i) => l.classList.toggle('active', i === currentIndex));
+            dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
         }
 
         function startExperience() {
@@ -687,7 +697,7 @@
 
         document.addEventListener('mousemove', (e) => {
             if (window.innerWidth > 768 && !isTransitioning && isExperienceActive) {
-                const inner = cards[currentIndex].querySelector('.card-inner');
+                const inner = cards[currentIndex].innerElement;
                 // Limit tilt to 15 degrees to prevent clipping through the stack (z-gap is 60px)
                 const x = (e.clientX / window.innerWidth - 0.5) * 15;
                 const y = (e.clientY / window.innerHeight - 0.5) * -15;
