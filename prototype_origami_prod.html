@@ -479,6 +479,13 @@
         let isTransitioning = false;
         let isExperienceActive = false;
 
+        let xSetter, ySetter;
+        function initQuickTo(target) {
+            if (!target) return;
+            xSetter = gsap.quickTo(target, "rotationY", {duration: 0.15, ease: "power1.out"});
+            ySetter = gsap.quickTo(target, "rotationX", {duration: 0.15, ease: "power1.out"});
+        }
+
         function loadMasterContent() {
             document.getElementById('intro-title').textContent = config.intro.title.toUpperCase();
             document.getElementById('intro-p1').textContent = config.intro.subtitle;
@@ -588,6 +595,10 @@
             });
             bgLayers.forEach((l, i) => l.classList.toggle('active', i === currentIndex));
             dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+            
+            if (isExperienceActive) {
+                initQuickTo(cards[currentIndex].innerElement);
+            }
         }
 
         function startExperience() {
@@ -696,12 +707,12 @@
         });
 
         document.addEventListener('mousemove', (e) => {
-            if (window.innerWidth > 768 && !isTransitioning && isExperienceActive) {
-                const inner = cards[currentIndex].innerElement;
+            if (window.innerWidth > 768 && !isTransitioning && isExperienceActive && xSetter && ySetter) {
                 // Limit tilt to 15 degrees to prevent clipping through the stack (z-gap is 60px)
                 const x = (e.clientX / window.innerWidth - 0.5) * 15;
                 const y = (e.clientY / window.innerHeight - 0.5) * -15;
-                gsap.to(inner, { rotationY: x, rotationX: y, duration: 0.15, ease: "power1.out" });
+                xSetter(x);
+                ySetter(y);
             }
         });
 
