@@ -482,10 +482,13 @@
         const config = TELECOMS_CONFIG;
         const trends = config.trends;
         let cards = [];
+        let cardInnerRefs = [];
+        let dots = [];
+        let bgLayers = [];
         let currentIndex = 0;
         let isTransitioning = false;
         let isExperienceActive = false;
-
+        let lastFocusedElement;
         function loadMasterContent() {
             document.getElementById('intro-title').textContent = config.intro.title.toUpperCase();
             document.getElementById('intro-p1').textContent = config.intro.subtitle;
@@ -521,6 +524,7 @@
             clone.querySelector('.card-implication strong').textContent = trend.implication || trend.statDesc;
 
             container.appendChild(clone);
+            cardInnerRefs.push(container.querySelector('.card-inner'));
 
             container.onclick = () => { 
                 if(index === currentIndex) nextCard();
@@ -535,12 +539,14 @@
             dot.setAttribute('aria-label', `Go to card ${index + 1}`);
             dot.onclick = () => jumpTo(index);
             dotsContainer.appendChild(dot);
+            dots.push(dot);
 
             const bg = document.createElement('div');
             bg.className = 'bg-layer';
             bg.id = `bg-${index}`;
             bg.style.background = `radial-gradient(circle at center, ${trend.color} 0%, var(--bg-dark) 100%)`;
             bgContainer.appendChild(bg);
+            bgLayers.push(bg);
 
             return container;
         }
@@ -561,7 +567,7 @@
 
         function updateStack() {
             cards.forEach((card, i) => {
-                const inner = card.querySelector('.card-inner');
+                const inner = cardInnerRefs[i];
                 const isCurrent = i === currentIndex;
                 const isPast = i < currentIndex;
 
@@ -585,8 +591,8 @@
                     if (depth > 0) gsap.to(inner, { rotationX: 0, rotationY: 0, duration: 0.5 });
                 }
             });
-            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === currentIndex));
-            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+            bgLayers.forEach((l, i) => l.classList.toggle('active', i === currentIndex));
+            dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
         }
 
         function startExperience() {
