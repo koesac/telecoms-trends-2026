@@ -100,34 +100,38 @@
             height: 100vh;
             height: 100dvh;
             background: rgba(5, 10, 16, 0.95);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 5000; /* Absolute Top */
+            display: flex; 
+            justify-content: center;
+            align-items: flex-start; /* Better for scrolling content */
+            z-index: 5000;
             opacity: 0; pointer-events: none; transition: 1s ease;
             backdrop-filter: blur(20px);
-            padding: 20px;
+            padding: calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)) 20px;
             box-sizing: border-box;
+            overflow-y: auto; /* Scroll the overlay itself */
         }
         .overlay.active { opacity: 1; pointer-events: auto; }
         .overlay-content { 
             max-width: 700px; text-align: center; width: 100%;
             display: flex; flex-direction: column; align-items: center;
-            max-height: 90vh; overflow-y: auto;
-            padding: 20px;
+            margin: auto; /* Centering trick that handles overflow correctly */
+            padding: 20px 0;
+            box-sizing: border-box;
         }
         .overlay-content h2 { 
             font-family: inherit; letter-spacing: 5px; color: var(--agate); 
-            margin-bottom: 1.5rem; font-weight: 700; 
+            margin-bottom: 1rem; font-weight: 700; 
             font-size: clamp(1.8rem, 6vw, 3.5rem); 
         }
         .overlay-content p { 
-            font-size: clamp(1.1rem, 3vw, 1.4rem); 
-            line-height: 1.6; color: #ccc; margin-bottom: 1.2rem; 
+            font-size: clamp(1rem, 2.5vw, 1.2rem); 
+            line-height: 1.5; color: #ccc; margin-bottom: 0.8rem; 
         }
 
         .btn-action {
             background: transparent; border: 1px solid var(--agate); color: var(--agate);
             padding: 12px 30px; border-radius: 50px; cursor: pointer; font-family: inherit;
-            font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; margin-top: 1rem;
+            font-size: 0.75rem; letter-spacing: 2px; transition: 0.3s; margin-top: 0.5rem;
             font-weight: 700; pointer-events: auto;
             flex-shrink: 0;
         }
@@ -148,7 +152,11 @@
             position: absolute; transform-style: preserve-3d;
             cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             pointer-events: auto; /* Keep cards clickable */
+            background: none; border: none; padding: 0; outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
+        
+
 
         .card-inner {
             width: 100%; height: 100%;
@@ -268,10 +276,10 @@
         </h1>
     </div>
 
-    <div id="intro-overlay" class="overlay active">
+    <div id="intro-overlay" class="overlay active" role="dialog" aria-modal="true" aria-labelledby="intro-title">
         <div class="overlay-content">
-            <div style="color:var(--agate); margin-bottom: 1.5rem;">
-                <svg class="logo-icon" viewBox="0 0 45 45" style="width: clamp(40px, 15vw, 80px); height: clamp(40px, 15vw, 80px); margin-bottom: 0.5rem;">
+            <div style="color:var(--agate); margin-bottom: 0.5rem;">
+                <svg class="logo-icon" viewBox="0 0 45 45" style="width: clamp(30px, 10vw, 60px); height: clamp(30px, 10vw, 60px); margin-bottom: 0.2rem;">
                     <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
                     <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
                     <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
@@ -283,14 +291,14 @@
             <h2 id="intro-title"></h2>
             <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
             <p id="intro-p2"></p>
-            <button class="btn-action" onclick="startExperience()">EXPLORE STRATEGY</button>
+            <button id="start-btn" class="btn-action" onclick="startExperience()">EXPLORE STRATEGY</button>
         </div>
     </div>
 
-    <div id="conclusion-overlay" class="overlay">
+    <div id="conclusion-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="outro-title">
         <div class="overlay-content">
-            <div style="color:var(--agate); margin-bottom: 1.5rem;">
-                <svg class="logo-icon" viewBox="0 0 45 45" style="width: clamp(40px, 15vw, 80px); height: clamp(40px, 15vw, 80px); margin-bottom: 0.5rem;">
+            <div style="color:var(--agate); margin-bottom: 0.5rem;">
+                <svg class="logo-icon" viewBox="0 0 45 45" style="width: clamp(30px, 10vw, 60px); height: clamp(30px, 10vw, 60px); margin-bottom: 0.2rem;">
                     <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
                     <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
                     <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
@@ -302,7 +310,7 @@
             <h2 id="outro-title"></h2>
             <p id="outro-p1"></p>
             <p id="outro-p2"></p>
-            <button class="btn-action" onclick="resetExperience()">REPLAY</button>
+            <button id="replay-btn" class="btn-action" onclick="resetExperience()">REPLAY</button>
         </div>
     </div>
 
@@ -408,6 +416,47 @@
         const introOverlay = document.getElementById('intro-overlay');
         const conclusionOverlay = document.getElementById('conclusion-overlay');
         
+        let lastFocusedElement;
+
+        function toggleBackgroundInert(isInert) {
+            const selectors = ['#header-branding', '.nav-arrow', '.controls', '#card-stage'];
+            selectors.forEach(s => {
+                document.querySelectorAll(s).forEach(el => {
+                    if (isInert) {
+                        el.setAttribute('inert', '');
+                        el.setAttribute('aria-hidden', 'true');
+                    } else {
+                        el.removeAttribute('inert');
+                        el.removeAttribute('aria-hidden');
+                    }
+                });
+            });
+        }
+
+        function trapFocus(e, overlay) {
+            const focusableElements = overlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (focusableElements.length === 0) return;
+            const firstFocusableElement = focusableElements[0];
+            const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+            if (e.key === 'Tab') {
+                if (e.shiftKey) { // Shift + Tab
+                    if (document.activeElement === firstFocusableElement) {
+                        lastFocusableElement.focus();
+                        e.preventDefault();
+                    }
+                } else { // Tab
+                    if (document.activeElement === lastFocusableElement) {
+                        firstFocusableElement.focus();
+                        e.preventDefault();
+                    }
+                }
+            }
+        }
+
+        introOverlay.addEventListener('keydown', (e) => trapFocus(e, introOverlay));
+        conclusionOverlay.addEventListener('keydown', (e) => trapFocus(e, conclusionOverlay));
+        
         const config = TELECOMS_CONFIG;
         const trends = config.trends;
         let cards = [];
@@ -428,8 +477,10 @@
         }
 
         function createCard(trend, index) {
-            const container = document.createElement('div');
+            const container = document.createElement('button');
             container.className = 'origami-container';
+            container.setAttribute('aria-label', `${trend.title} card`);
+            container.setAttribute('aria-expanded', 'false');
             const bodyText = `<p>${trend.desc}</p><hr><p><strong>${trend.implication || trend.statDesc}</strong></p>`;
             
             container.innerHTML = `
@@ -467,16 +518,38 @@
             loadMasterContent();
             cards = trends.map((t, i) => createCard(t, i));
             updateStack();
+            // Initial state is intro overlay
+            toggleBackgroundInert(true);
+            // Initial focus for the intro overlay
+            setTimeout(() => {
+                if (introOverlay.classList.contains('active')) {
+                    document.getElementById('start-btn').focus();
+                }
+            }, 500);
         }
 
         function updateStack() {
             cards.forEach((card, i) => {
                 const inner = card.querySelector('.card-inner');
-                if (i < currentIndex) {
+                const isCurrent = i === currentIndex;
+                const isPast = i < currentIndex;
+
+                if (isPast) {
                     gsap.to(card, { x: -window.innerWidth, opacity: 1, rotation: -20, duration: 0.6, ease: "power2.inOut", onComplete: () => { card.style.visibility = 'hidden'; } });
+                    card.tabIndex = -1;
+                    card.setAttribute('aria-hidden', 'true');
+                } else if (isCurrent) {
+                    const depth = i - currentIndex;
+                    card.style.visibility = 'visible';
+                    card.tabIndex = 0;
+                    card.setAttribute('aria-hidden', 'false');
+                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out" });
+                    if (isExperienceActive) card.focus();
                 } else {
                     const depth = i - currentIndex;
                     card.style.visibility = 'visible';
+                    card.tabIndex = -1;
+                    card.setAttribute('aria-hidden', 'true');
                     gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out" });
                     if (depth > 0) gsap.to(inner, { rotationX: 0, rotationY: 0, duration: 0.5 });
                 }
@@ -490,6 +563,7 @@
             cards.forEach(c => c.classList.remove('unfolded'));
             document.body.classList.add('active-experience');
             introOverlay.classList.remove('active');
+            toggleBackgroundInert(false);
             currentIndex = 0;
             updateStack();
         }
@@ -498,6 +572,7 @@
             conclusionOverlay.classList.remove('active');
             cards.forEach(c => c.classList.remove('unfolded'));
             document.body.classList.add('active-experience');
+            toggleBackgroundInert(false);
             currentIndex = 0;
             isExperienceActive = true;
             updateStack();
@@ -505,17 +580,24 @@
 
         function showConclusion() {
             isExperienceActive = false;
+            lastFocusedElement = document.activeElement;
             document.body.classList.remove('active-experience');
             conclusionOverlay.classList.add('active');
+            toggleBackgroundInert(true);
+            document.getElementById('replay-btn').focus();
         }
 
         function showIntro() {
             isExperienceActive = false;
+            lastFocusedElement = document.activeElement;
             document.body.classList.remove('active-experience');
             introOverlay.classList.add('active');
+            toggleBackgroundInert(true);
+            document.getElementById('start-btn').focus();
             // Reset cards to initial stack state but hidden
             cards.forEach((card, i) => {
                 card.classList.remove('unfolded');
+                card.setAttribute('aria-expanded', 'false');
                 const depth = i;
                 gsap.set(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, visibility: 'hidden' });
             });
@@ -527,13 +609,16 @@
             const currentCard = cards[currentIndex];
             if (!currentCard.classList.contains('unfolded')) {
                 currentCard.classList.add('unfolded');
+                currentCard.setAttribute('aria-expanded', 'true');
                 return;
             }
 
             if (currentIndex === cards.length - 1) {
+                currentCard.setAttribute('aria-expanded', 'false');
                 showConclusion();
             } else {
                 currentCard.classList.remove('unfolded');
+                currentCard.setAttribute('aria-expanded', 'false');
                 isTransitioning = true;
                 setTimeout(() => {
                     currentIndex++;
@@ -549,6 +634,7 @@
                 showIntro();
             } else {
                 cards[currentIndex].classList.remove('unfolded');
+                cards[currentIndex].setAttribute('aria-expanded', 'false');
                 isTransitioning = true;
                 currentIndex--;
                 updateStack();
@@ -565,6 +651,7 @@
             }
 
             cards[currentIndex].classList.remove('unfolded');
+            cards[currentIndex].setAttribute('aria-expanded', 'false');
             isTransitioning = true;
             currentIndex = index;
             updateStack();
