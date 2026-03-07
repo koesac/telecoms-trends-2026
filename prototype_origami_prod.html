@@ -559,14 +559,25 @@
             }, 500);
         }
 
-        function updateStack() {
+        function updateStack(onComplete) {
+            let animationsFinished = 0;
+            const checkFinished = () => {
+                animationsFinished++;
+                if (animationsFinished === cards.length && typeof onComplete === 'function') {
+                    onComplete();
+                }
+            };
+
             cards.forEach((card, i) => {
                 const inner = card.innerElement;
                 const isCurrent = i === currentIndex;
                 const isPast = i < currentIndex;
 
                 if (isPast) {
-                    gsap.to(card, { x: -window.innerWidth, opacity: 1, rotation: -20, duration: 0.6, ease: "power2.inOut", onComplete: () => { card.style.visibility = 'hidden'; } });
+                    gsap.to(card, { x: -window.innerWidth, opacity: 1, rotation: -20, duration: 0.6, ease: "power2.inOut", onComplete: () => { 
+                        card.style.visibility = 'hidden'; 
+                        checkFinished();
+                    }});
                     card.tabIndex = -1;
                     card.setAttribute('aria-hidden', 'true');
                 } else if (isCurrent) {
@@ -574,14 +585,14 @@
                     card.style.visibility = 'visible';
                     card.tabIndex = 0;
                     card.setAttribute('aria-hidden', 'false');
-                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out" });
+                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out", onComplete: checkFinished });
                     if (isExperienceActive) card.focus();
                 } else {
                     const depth = i - currentIndex;
                     card.style.visibility = 'visible';
                     card.tabIndex = -1;
                     card.setAttribute('aria-hidden', 'true');
-                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out" });
+                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out", onComplete: checkFinished });
                     if (depth > 0) gsap.to(inner, { rotationX: 0, rotationY: 0, duration: 0.5 });
                 }
             });
@@ -648,14 +659,15 @@
                 currentCard.setAttribute('aria-expanded', 'false');
                 showConclusion();
             } else {
+                isTransitioning = true;
                 currentCard.classList.remove('unfolded');
                 currentCard.setAttribute('aria-expanded', 'false');
-                isTransitioning = true;
-                setTimeout(() => {
+                
+                // Wait for fold-back transition before updating stack
+                gsap.delayedCall(0.3, () => {
                     currentIndex++;
-                    updateStack();
-                    setTimeout(() => { isTransitioning = false; }, 600);
-                }, 200);
+                    updateStack(() => { isTransitioning = false; });
+                });
             }
         }
 
@@ -664,12 +676,12 @@
             if (currentIndex === 0) {
                 showIntro();
             } else {
+                isTransitioning = true;
                 cards[currentIndex].classList.remove('unfolded');
                 cards[currentIndex].setAttribute('aria-expanded', 'false');
-                isTransitioning = true;
+                
                 currentIndex--;
-                updateStack();
-                setTimeout(() => { isTransitioning = false; }, 600);
+                updateStack(() => { isTransitioning = false; });
             }
         }
 
@@ -681,12 +693,12 @@
                 return;
             }
 
+            isTransitioning = true;
             cards[currentIndex].classList.remove('unfolded');
             cards[currentIndex].setAttribute('aria-expanded', 'false');
-            isTransitioning = true;
+            
             currentIndex = index;
-            updateStack();
-            setTimeout(() => { isTransitioning = false; }, 600);
+            updateStack(() => { isTransitioning = false; });
         }
 
         window.addEventListener('keydown', (e) => {
