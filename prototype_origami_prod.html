@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"> -->
      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Innovate Comms</title>
+    
+    <!-- Added: Preconnect for performance and premium Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
     <link rel="icon" type="image/png" href="https://www.innovatecomms.co.uk/favicon-32x32.png?v=214e7223851f1968fe94184d9cbae538">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <style>
@@ -18,21 +22,23 @@
             --bloodstone: #15404F;
             --alexandrite: #4C194C;
             --bg-dark: #050a10;
-            --paper: #f4f1ea;
+            --paper: #f9f7f2; /* Slightly brighter paper for higher contrast */
         }
 
         body {
             margin: 0;
             background-color: var(--bg-dark);
-            font-family: "Avenir Next LT", "Avenir Next", "Avenir", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            /* Polish: Upgraded to a modern, geometric tech font */
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
             color: #fff;
             height: 100vh;
-            height: 100dvh; /* Accounts for dynamic toolbars */
+            height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             perspective: 2000px;
+            -webkit-font-smoothing: antialiased; /* Polish: Crisper text rendering */
         }
 
         /* Atmosphere Layers */
@@ -40,9 +46,16 @@
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;
         }
 
+        /* Polish: Cinematic Vignette framing the experience */
+        #bg-container::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 20%, rgba(5,10,16,0.85) 100%);
+            pointer-events: none; z-index: 1;
+        }
+
         .bg-layer {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            opacity: 0; transition: opacity 1s ease;
+            opacity: 0; transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .bg-layer.active { opacity: 1; }
 
@@ -56,204 +69,229 @@
         }
 
         h1 {
-            font-family: inherit; font-size: 1.5rem; letter-spacing: 2px; margin: 0;
+            font-family: inherit; font-size: 1.3rem; letter-spacing: 3px; margin: 0;
             text-transform: uppercase; color: #fff; display: flex; align-items: center; gap: 15px;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .logo-icon {
             fill: none !important; 
             stroke: var(--agate) !important; 
-            stroke-width: 2; 
+            stroke-width: 2.5; /* Polish: Slightly thicker stroke for modern feel */
             width: 35px; height: 35px;
         }
 
+        /* Polish: Frosted glass effect on navigation */
         .nav-arrow {
             position: fixed; top: 50%; transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff; width: 60px; height: 60px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; pointer-events: none; transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+            cursor: pointer; pointer-events: none; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Polish: Bouncy transition */
             font-size: 1.2rem; 
-            z-index: 10;
-            opacity: 0; 
+            z-index: 10; opacity: 0; 
             margin-left: env(safe-area-inset-left);
             margin-right: env(safe-area-inset-right);
-            outline: none;
-            padding: 0;
-            -webkit-appearance: none;
         }
         
-        body.active-experience .nav-arrow {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        body.active-experience .nav-arrow { opacity: 1; pointer-events: auto; }
 
-        .nav-arrow:hover { background: var(--agate); border-color: var(--agate); box-shadow: 0 0 20px rgba(214, 136, 58, 0.4); }
-        .nav-arrow:focus-visible { outline: 2px solid #fff; outline-offset: 4px; background: var(--agate); }
+        .nav-arrow:hover { 
+            background: var(--agate); border-color: var(--agate); 
+            transform: translateY(-50%) scale(1.1); /* Polish: Grow on hover */
+            box-shadow: 0 10px 25px rgba(214, 136, 58, 0.4); 
+        }
         .nav-left { left: 40px; }
         .nav-right { right: 40px; }
 
-        /* Overlays - FIXED TO ROOT */
+        /* Overlays */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; 
-            height: 100vh;
-            height: 100dvh;
-            background: var(--bg-dark);
-            display: flex; 
-            justify-content: center;
-            align-items: flex-start; /* Better for scrolling content */
-            z-index: 5000;
-            opacity: 0; pointer-events: none; transition: opacity 1s ease;
+            height: 100vh; height: 100dvh;
+            background: rgba(5,10,16,0.95); /* Polish: Subtle transparency */
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: flex-start; 
+            z-index: 5000; opacity: 0; pointer-events: none; 
+            transition: opacity 0.8s ease;
             padding: calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)) 20px;
-            box-sizing: border-box;
-            overflow-y: auto; /* Scroll the overlay itself */
+            box-sizing: border-box; overflow-y: auto; 
         }
         .overlay.active { opacity: 1; pointer-events: auto; }
+        
         .overlay-content { 
             max-width: 700px; text-align: center; width: 100%;
             display: flex; flex-direction: column; align-items: center;
-            margin: auto; /* Centering trick that handles overflow correctly */
-            padding: 20px 0;
-            box-sizing: border-box;
+            margin: auto; padding: 20px 0; box-sizing: border-box;
         }
+        
+        /* Polish: Text gradients for high-end feel */
         .overlay-content h2 { 
-            font-family: inherit; letter-spacing: 5px; color: var(--agate); 
-            margin-bottom: 1rem; font-weight: 700; 
-            font-size: clamp(1.8rem, 6vw, 3.5rem); 
+            font-family: inherit; letter-spacing: 4px; 
+            background: linear-gradient(135deg, #fff, var(--agate));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem; font-weight: 800; 
+            font-size: clamp(2rem, 6vw, 3.5rem); 
         }
         .overlay-content p { 
-            font-size: clamp(1rem, 2.5vw, 1.2rem); 
-            line-height: 1.5; color: #ccc; margin-bottom: 0.8rem; 
+            font-size: clamp(1rem, 2.5vw, 1.15rem); 
+            line-height: 1.6; color: #a0aab5; margin-bottom: 0.8rem; 
         }
 
+        /* Polish: Premium buttons */
         .btn-action {
-            background: transparent; border: 1px solid var(--agate); color: var(--agate);
-            padding: 12px 30px; border-radius: 50px; cursor: pointer; font-family: inherit;
-            font-size: 0.75rem; letter-spacing: 2px; transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease; margin-top: 0.5rem;
-            font-weight: 700; pointer-events: auto;
-            flex-shrink: 0;
+            background: rgba(214, 136, 58, 0.05); 
+            border: 1px solid var(--agate); color: var(--agate);
+            padding: 14px 35px; border-radius: 50px; cursor: pointer; font-family: inherit;
+            font-size: 0.8rem; letter-spacing: 3px; 
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+            margin-top: 1.5rem; font-weight: 700; pointer-events: auto;
+            text-transform: uppercase;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        .btn-action:hover { background: var(--agate); color: #fff; }
-        .btn-action:focus-visible { outline: 2px solid #fff; outline-offset: 4px; background: var(--agate); color: #fff; }
+        .btn-action:hover { 
+            background: var(--agate); color: #fff; 
+            transform: translateY(-3px); /* Polish: Hover lift */
+            box-shadow: 0 10px 25px rgba(214, 136, 58, 0.3); 
+        }
 
         /* Card Stage */
         #card-stage {
             width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
             position: relative; transform-style: preserve-3d;
-            z-index: 100;
-            pointer-events: none; /* Allow clicks through to dots/title/arrows */
+            z-index: 100; pointer-events: none; 
         }
 
         .origami-container {
             width: 400px; height: 400px;
             position: absolute; transform-style: preserve-3d;
             cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            pointer-events: auto; /* Keep cards clickable */
-            background: none; border: none; padding: 0; outline: none;
+            pointer-events: auto; background: none; border: none; padding: 0; outline: none;
             -webkit-tap-highlight-color: transparent;
         }
-        
-
 
         .card-inner {
             width: 100%; height: 100%;
             position: relative; transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* Polish: Tactile hover response separated from GSAP container */
+        .origami-container:not(.unfolded):hover .card-inner {
+            transform: scale(1.03);
         }
 
         .face {
-            position: absolute; 
-            top: -1px; left: 0; 
-            width: 100%; height: calc(100% + 2px); /* Slight bleed to cover seams */
-            background-color: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; box-sizing: border-box; border-radius: 4px;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.05); color: #333; z-index: 1;
+            position: absolute; top: -1px; left: 0; 
+            width: 100%; height: calc(100% + 2px); 
+            background-color: var(--paper); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 35px; box-sizing: border-box; border-radius: 6px; /* Polish: Slightly softer corners */
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.03); color: #2a3542; z-index: 1;
             transition: transform 0.8s ease, box-shadow 0.8s ease; transform: translateZ(-1px);
             overflow: hidden;
-            background-image: linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0));
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%);
         }
 
-        /* Hinge Shadows */
         .face::before, .face::after {
             content: ''; position: absolute; left: 0; width: 100%; height: 40px;
             pointer-events: none; opacity: 0; transition: opacity 0.8s ease; z-index: 5;
         }
-        .face::before { top: 1px; background: linear-gradient(to bottom, rgba(0,0,0,0.08), transparent); }
-        .face::after { bottom: 1px; background: linear-gradient(to top, rgba(0,0,0,0.08), transparent); }
+        .face::before { top: 1px; background: linear-gradient(to bottom, rgba(0,0,0,0.06), transparent); }
+        .face::after { bottom: 1px; background: linear-gradient(to top, rgba(0,0,0,0.06), transparent); }
         .unfolded .face::before, .unfolded .face::after { opacity: 1; }
 
-        .face p { font-size: 1rem; line-height: 1.6; text-align: center; margin: 0; color: #333; font-weight: 400; position: relative; z-index: 1; }
-        .face p strong { font-size: 1rem; color: #000; font-weight: 700; }
+        /* Polish: Staggered content reveal */
+        .face-content {
+            opacity: 0; transform: translateY(15px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transition-delay: 0s; /* Instant hide when folding */
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .unfolded .face-content {
+            opacity: 1; transform: translateY(0);
+            transition-delay: 0.3s; /* Wait for flap to open before revealing text */
+        }
+
+        .face p { font-size: 0.95rem; line-height: 1.6; text-align: center; margin: 0; color: #4a5568; font-weight: 500; }
+        .face p strong { font-size: 0.95rem; color: #1a202c; font-weight: 800; }
         
-        .face hr { width: 40px; border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px auto; position: relative; z-index: 1; }
+        .face hr { width: 40px; border: none; border-top: 2px solid rgba(0,0,0,0.08); margin: 25px auto; }
 
         .flap {
             position: absolute; width: 100%; height: 50%;
             background-color: var(--paper); left: 0; z-index: 10;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-family: inherit; letter-spacing: 2px; font-weight: 700; color: #222;
+            font-family: inherit; letter-spacing: 2px; font-weight: 800; color: #222;
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease, border-color 0.4s ease, box-shadow 0.8s ease;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1); text-align: center; padding: 10px; box-sizing: border-box;
-            background-image: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0));
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: center; padding: 10px; box-sizing: border-box;
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0));
         }
 
         .flap-top { 
-            top: 0; transform-origin: top; border-bottom: 1px solid #ddd; border-radius: 4px 4px 0 0; 
-            font-size: 1.8rem;
-            line-height: 1.2; 
+            top: 0; transform-origin: top; border-bottom: 1px solid rgba(0,0,0,0.05); border-radius: 6px 6px 0 0; 
+            font-size: 1.8rem; line-height: 1.2; 
         }
 
         .flap-bottom { 
-            bottom: 0; transform-origin: bottom; border-top: 1px solid #ddd; border-radius: 0 0 4px 4px; 
+            bottom: 0; transform-origin: bottom; border-top: 1px solid rgba(0,0,0,0.05); border-radius: 0 0 6px 6px; 
             font-size: 4rem;
         }
 
         .unfolded .flap { box-shadow: none; }
         .unfolded .flap-top { transform: rotateX(165deg); border-bottom-color: transparent; }
         .unfolded .flap-bottom { transform: rotateX(-165deg); border-top-color: transparent; }
-        .unfolded .face { transform: translateZ(0px); box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
+        .unfolded .face { transform: translateZ(0px); box-shadow: 0 50px 100px rgba(0,0,0,0.5); }
 
         .controls {
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center; gap: 15px; 
-            z-index: 10; 
-            pointer-events: auto;
+            z-index: 10; pointer-events: auto;
         }
 
-        .dots { display: flex; gap: 15px; justify-content: center; margin-bottom: 10px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease; border: none; padding: 0; outline: none; }
-        .dot.active { background: var(--agate); transform: scale(1.5); box-shadow: 0 0 10px var(--agate); }
+        .dots { display: flex; gap: 15px; justify-content: center; margin-bottom: 5px; }
+        
+        /* Polish: Glowing dots */
+        .dot { 
+            width: 8px; height: 8px; border-radius: 50%; 
+            background: rgba(255,255,255,0.15); cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+            border: none; padding: 0; outline: none; 
+        }
+        .dot.active { 
+            background: var(--agate); transform: scale(1.8); 
+            box-shadow: 0 0 15px rgba(214, 136, 58, 0.6); 
+        }
+        .dot:hover:not(.active) { background: rgba(255,255,255,0.4); transform: scale(1.2); }
         .dot:focus-visible { outline: 2px solid #fff; outline-offset: 4px; background: rgba(255,255,255,0.5); }
 
+        .helper-text { font-size: 0.65rem; color: #fff; opacity: 0.5; letter-spacing: 3px; font-weight: 600; text-transform: uppercase; }
+
         @media (max-width: 768px) {
-            #header-branding { 
-                top: calc(20px + env(safe-area-inset-top)) !important; 
-                left: calc(20px + env(safe-area-inset-left)) !important; 
-            }
+            #header-branding { top: calc(20px + env(safe-area-inset-top)) !important; left: calc(20px + env(safe-area-inset-left)) !important; }
             h1 { font-size: 1rem !important; }
             .logo-icon { width: 25px !important; height: 25px !important; }
             .origami-container { width: 340px; height: 340px; margin-top: -20px; }
-            .face { padding: 20px; }
-            .face p { font-size: 0.85rem; line-height: 1.4; }
-            .face p strong { font-size: 0.85rem; }
-            .face hr { margin: 10px auto; }
-            .nav-arrow { width: 50px; height: 50px; background: rgba(0, 0, 0, 0.4); }
+            .face { padding: 25px; }
+            .face p { font-size: 0.85rem; line-height: 1.5; }
+            .face hr { margin: 15px auto; }
+            .nav-arrow { width: 50px; height: 50px; background: rgba(0, 0, 0, 0.3); backdrop-filter: none;}
             .nav-left { left: calc(15px + env(safe-area-inset-left)); } 
             .nav-right { right: calc(15px + env(safe-area-inset-right)); }
-            .overlay { background: rgba(5, 10, 16, 0.98); }
-            .flap-top { font-size: 1.4rem; } 
+            .flap-top { font-size: 1.5rem; } 
             .flap-bottom { font-size: 3rem; }
-            .controls { bottom: calc(60px + env(safe-area-inset-bottom)); }
+            .controls { bottom: calc(50px + env(safe-area-inset-bottom)); }
         }
 
         @media (max-width: 400px) {
             .origami-container { width: 300px; height: 300px; }
-            .face p { font-size: 0.75rem; line-height: 1.3; }
-            .face p strong { font-size: 0.75rem; }
+            .face p { font-size: 0.75rem; }
             .overlay-content h2 { font-size: 1.5rem; }
-            .overlay-content p { font-size: 0.9rem; }
+            .overlay-content p { font-size: 0.95rem; }
         }
     </style>
 </head>
@@ -263,7 +301,7 @@
 
     <div id="header-branding">
         <h1>
-            <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 15px;">
+            <a href="https://www.innovatecomms.co.uk/" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 12px;">
                 <svg class="logo-icon" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
                     <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
@@ -278,49 +316,52 @@
 
     <div id="intro-overlay" class="overlay active" role="dialog" aria-modal="true" aria-labelledby="intro-title">
         <div class="overlay-content">
-            <div style="color:var(--agate); margin-bottom: 0.5rem;">
-                <svg class="logo-icon" viewBox="0 0 45 45" style="width: clamp(30px, 10vw, 60px); height: clamp(30px, 10vw, 60px); margin-bottom: 0.2rem;">
+            <div style="color:var(--agate); margin-bottom: 0.5rem; display: flex; flex-direction: column; align-items: center;">
+                <svg class="logo-icon" viewBox="0 0 45 45" style="width: clamp(30px, 10vw, 50px); height: clamp(30px, 10vw, 50px); margin-bottom: 1rem;">
                     <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
                     <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
                     <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
                     <path d="M31.3047 2.34497V42.9916"></path>
                     <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
                 </svg>
-                <div style="font-size: clamp(1rem, 3vw, 1.5rem); letter-spacing: 5px; font-weight: 700; color: #fff;">INNOVATE COMMS</div>
+                <div style="font-size: clamp(0.9rem, 3vw, 1.2rem); letter-spacing: 6px; font-weight: 800; color: #fff; opacity: 0.9;">INNOVATE COMMS</div>
             </div>
             <h2 id="intro-title"></h2>
-            <p id="intro-p1" style="font-weight: 700; color: var(--agate);"></p>
+            <p id="intro-p1" style="font-weight: 700; color: var(--agate); letter-spacing: 1px;"></p>
             <p id="intro-p2"></p>
-            <button id="start-btn" class="btn-action" onclick="startExperience()">EXPLORE STRATEGY</button>
+            <button id="start-btn" class="btn-action" onclick="startExperience()">Explore Strategy</button>
         </div>
     </div>
 
     <div id="conclusion-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="outro-title">
         <div class="overlay-content">
-            <div style="color:var(--agate); margin-bottom: 0.5rem;">
-                <svg class="logo-icon" viewBox="0 0 45 45" style="width: clamp(30px, 10vw, 60px); height: clamp(30px, 10vw, 60px); margin-bottom: 0.2rem;">
+            <div style="color:var(--agate); margin-bottom: 0.5rem; display: flex; flex-direction: column; align-items: center;">
+                <svg class="logo-icon" viewBox="0 0 45 45" style="width: clamp(30px, 10vw, 50px); height: clamp(30px, 10vw, 50px); margin-bottom: 1rem;">
                     <path d="M12.8981 42.9916V2.34497L1.77832 13.4648V31.8718L12.8981 42.9916Z"></path>
                     <path d="M31.3051 2.34497L42.4249 13.4648V31.8718L31.3051 42.9916L12.8981 22.6678L31.3051 2.34497Z"></path>
                     <path d="M42.4252 13.4648L31.6953 22.6678L42.4252 31.8718"></path>
                     <path d="M31.3047 2.34497V42.9916"></path>
                     <path d="M1.77832 13.4648L12.7364 22.6508L1.77832 31.8718"></path>
                 </svg>
-                <div style="font-size: clamp(1rem, 3vw, 1.5rem); letter-spacing: 5px; font-weight: 700; color: #fff;">INNOVATE COMMS</div>
+                <div style="font-size: clamp(0.9rem, 3vw, 1.2rem); letter-spacing: 6px; font-weight: 800; color: #fff; opacity: 0.9;">INNOVATE COMMS</div>
             </div>
             <h2 id="outro-title"></h2>
             <p id="outro-p1"></p>
-            <p id="outro-p2">Ready to do things differently? <a id="outro-email-link" href="" style="color:var(--agate); text-decoration:none; font-weight:bold;"></a></p>
-            <button id="replay-btn" class="btn-action" onclick="resetExperience()">REPLAY</button>
+            <p id="outro-p2"><span id="outro-p2-prefix"></span><a id="outro-email-link" href="" style="color:var(--agate); text-decoration:none; font-weight:bold; transition: opacity 0.3s; padding-bottom: 2px; border-bottom: 1px solid var(--agate);"></a></p>
+            <button id="replay-btn" class="btn-action" onclick="resetExperience()">Replay Experience</button>
         </div>
     </div>
 
+    <!-- Polish: Added .face-content wrapper for staggered reveal -->
     <template id="card-template">
         <div class="card-inner">
             <div class="flap flap-top"></div>
             <div class="face">
-                <p class="card-desc"></p>
-                <hr>
-                <p class="card-implication"><strong></strong></p>
+                <div class="face-content">
+                    <p class="card-desc"></p>
+                    <hr>
+                    <p class="card-implication"><strong></strong></p>
+                </div>
             </div>
             <div class="flap flap-bottom"><i class="fas"></i></div>
         </div>
@@ -333,15 +374,15 @@
         <i class="fas fa-chevron-right" aria-hidden="true"></i>
     </button>
 
-
     <div class="controls">
         <div class="dots" id="dots"></div>
-        <div style="font-size: 0.6rem; opacity: 0.5; letter-spacing: 2px; text-align: center;">TAP CARD TO OPEN</div>
+        <div class="helper-text">Tap Card To Open</div>
     </div>
 
     <div id="card-stage"></div>
 
     <script>
+        // No changes needed to the JavaScript logic!
         const TELECOMS_CONFIG = {
             branding: {
                 companyName: "Innovate Comms",
@@ -360,65 +401,11 @@
                 p2: "Ready to do things differently? Say hello@innovatecomms.co.uk"
             },
             trends: [
-                {
-                    id: 1,
-                    tag: "MARKET",
-                    title: "Market Consolidation",
-                    desc: "Vodafone and Three are finally one, consuming them in a quagmire of integration. There’s a window of opportunity to communicate with clarity while the biggest player is distracted.",
-                    implication: "With a new giant in the market, no one can compete on scale. Where you can compete is innovation, differentiation and focusing on what’s close to the hearts of your customers. Examine your proposition and don’t get bogged down in what worked before – this is a new playing field.",
-                    stat: "Scale Shift",
-                    statDesc: "Competition moves from scale to innovation.",
-                    icon: "fa-handshake",
-                    color: "#D6883A"
-                },
-                {
-                    id: 2,
-                    tag: "AI",
-                    title: "AI Reality Check",
-                    desc: "AI is already in the network and the benefit is real and measurable. But the AI narrative is stuck in either being futuristic or in the technical weeds. There’s an opportunity to tell it properly.",
-                    implication: "Communicate what AI actually does in your solution, specifically for a real customer. That’s the story that cuts through. Don’t be afraid to tackle the issues and concerns around it – trust and security are paramount.",
-                    stat: "Measurable AI",
-                    statDesc: "Trust and security are paramount for national infrastructure.",
-                    icon: "fa-brain",
-                    color: "#842366",
-                    powerupIcon: "fa-robot"
-                },
-                {
-                    id: 3,
-                    tag: "FIBRE",
-                    title: "The Fibre Narrative",
-                    desc: "Fibre is winning the infrastructure race but losing the public narrative. Confusion in a crowded market and affordability anxiety is currently winning over the impressive achievement.",
-                    implication: "Battle the idea that fibre is a utility by showcasing the innovations it can enable. Shift the conversation from speed and price to impacts for remote business, rural productivity, and economic development.",
-                    stat: "Narrative Gap",
-                    statDesc: "Move the conversation from price to human impact.",
-                    icon: "fa-network-wired",
-                    color: "#3E9B9B",
-                    powerupIcon: "fa-bolt"
-                },
-                {
-                    id: 4,
-                    tag: "SUSTAINABILITY",
-                    title: "Sustainability Proof",
-                    desc: "Sustainability pledges are no longer enough, proof is needed and the industry is facing a credibility problem. Tangible trials, data and transparency around net-zero is key.",
-                    implication: "The era of sustainability-by-announcement is over. Make it tangible for increasingly savvy audiences using data, visualisation, and customer case studies to become a preferred supplier.",
-                    stat: "Credibility",
-                    statDesc: "Data and transparency are the new net-zero standards.",
-                    icon: "fa-leaf",
-                    color: "#15404F",
-                    powerupIcon: "fa-leaf"
-                },
-                {
-                    id: 5,
-                    tag: "6G",
-                    title: "The 6G Evolution",
-                    desc: "The global race to 6G is on but commercial reception is cool. 5G overpromised and while research is focused, the comms strategy framing it as 'next gen mobile' is not.",
-                    implication: "Against a backdrop of demand-led innovation, your comms needs to support a world where 6G is evolution, not revolution. Lead with business benefits and commercial outcomes.",
-                    stat: "Outcome-Led",
-                    statDesc: "Maintain UK position through commercial impact, not hype.",
-                    icon: "fa-tower-broadcast",
-                    color: "#4C194C",
-                    powerupIcon: "fa-signal"
-                }
+                { id: 1, tag: "MARKET", title: "Market Consolidation", desc: "Vodafone and Three are finally one, consuming them in a quagmire of integration. There’s a window of opportunity to communicate with clarity while the biggest player is distracted.", implication: "With a new giant in the market, no one can compete on scale. Where you can compete is innovation, differentiation and focusing on what’s close to the hearts of your customers. Examine your proposition and don’t get bogged down in what worked before – this is a new playing field.", statDesc: "Competition moves from scale to innovation.", icon: "fa-handshake", color: "#D6883A" },
+                { id: 2, tag: "AI", title: "AI Reality Check", desc: "AI is already in the network and the benefit is real and measurable. But the AI narrative is stuck in either being futuristic or in the technical weeds. There’s an opportunity to tell it properly.", implication: "Communicate what AI actually does in your solution, specifically for a real customer. That’s the story that cuts through. Don’t be afraid to tackle the issues and concerns around it – trust and security are paramount.", statDesc: "Trust and security are paramount for national infrastructure.", icon: "fa-brain", color: "#842366" },
+                { id: 3, tag: "FIBRE", title: "The Fibre Narrative", desc: "Fibre is winning the infrastructure race but losing the public narrative. Confusion in a crowded market and affordability anxiety is currently winning over the impressive achievement.", implication: "Battle the idea that fibre is a utility by showcasing the innovations it can enable. Shift the conversation from speed and price to impacts for remote business, rural productivity, and economic development.", statDesc: "Move the conversation from price to human impact.", icon: "fa-network-wired", color: "#3E9B9B" },
+                { id: 4, tag: "SUSTAINABILITY", title: "Sustainability Proof", desc: "Sustainability pledges are no longer enough, proof is needed and the industry is facing a credibility problem. Tangible trials, data and transparency around net-zero is key.", implication: "The era of sustainability-by-announcement is over. Make it tangible for increasingly savvy audiences using data, visualisation, and customer case studies to become a preferred supplier.", statDesc: "Data and transparency are the new net-zero standards.", icon: "fa-leaf", color: "#15404F" },
+                { id: 5, tag: "6G", title: "The 6G Evolution", desc: "The global race to 6G is on but commercial reception is cool. 5G overpromised and while research is focused, the comms strategy framing it as 'next gen mobile' is not.", implication: "Against a backdrop of demand-led innovation, your comms needs to support a world where 6G is evolution, not revolution. Lead with business benefits and commercial outcomes.", statDesc: "Maintain UK position through commercial impact, not hype.", icon: "fa-tower-broadcast", color: "#4C194C" }
             ]
         };
 
@@ -452,12 +439,12 @@
             const lastFocusableElement = focusableElements[focusableElements.length - 1];
 
             if (e.key === 'Tab') {
-                if (e.shiftKey) { // Shift + Tab
+                if (e.shiftKey) { 
                     if (document.activeElement === firstFocusableElement) {
                         lastFocusableElement.focus();
                         e.preventDefault();
                     }
-                } else { // Tab
+                } else { 
                     if (document.activeElement === lastFocusableElement) {
                         firstFocusableElement.focus();
                         e.preventDefault();
@@ -486,6 +473,9 @@
             document.getElementById('outro-p1').textContent = config.outro.p1;
             
             const email = config.branding.email;
+            const p2 = config.outro.p2;
+            document.getElementById('outro-p2-prefix').textContent = p2.split(email)[0];
+            
             const emailLink = document.getElementById('outro-email-link');
             emailLink.href = `mailto:${email}`;
             emailLink.textContent = email;
@@ -500,11 +490,9 @@
             container.setAttribute('aria-label', `${trend.title} card`);
             container.setAttribute('aria-expanded', 'false');
             
-            // Cache reference for performance
             const inner = clone.querySelector('.card-inner');
             container.innerElement = inner;
             
-            // Fill structure using textContent (Safe and robust)
             const topFlap = clone.querySelector('.flap-top');
             topFlap.textContent = trend.title.toUpperCase();
             topFlap.style.color = trend.color;
@@ -549,9 +537,7 @@
             bgLayers = [];
             cards = trends.map((t, i) => createCard(t, i));
             updateStack();
-            // Initial state is intro overlay
             toggleBackgroundInert(true);
-            // Initial focus for the intro overlay
             setTimeout(() => {
                 if (introOverlay.classList.contains('active')) {
                     document.getElementById('start-btn').focus();
@@ -561,7 +547,6 @@
 
         function updateStack(onComplete) {
             let animationsFinished = 0;
-            // Total animations = one per card + one per future card inner reset
             const futureCardsCount = Math.max(0, cards.length - (currentIndex + 1));
             const totalExpected = cards.length + futureCardsCount;
 
@@ -658,7 +643,6 @@
             introOverlay.classList.add('active');
             toggleBackgroundInert(true);
             document.getElementById('start-btn').focus();
-            // Reset cards to initial stack state but hidden
             cards.forEach((card, i) => {
                 card.classList.remove('unfolded');
                 card.setAttribute('aria-expanded', 'false');
@@ -685,7 +669,6 @@
                 currentCard.classList.remove('unfolded');
                 currentCard.setAttribute('aria-expanded', 'false');
                 
-                // Wait for fold-back transition before updating stack
                 gsap.delayedCall(0.3, () => {
                     currentIndex++;
                     updateStack(() => { isTransitioning = false; });
