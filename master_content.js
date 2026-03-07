@@ -76,12 +76,12 @@ const TELECOMS_CONFIG = {
             implication: "Against a backdrop of demand-led innovation, your comms needs to support a world where 6G is evolution, not revolution. Lead with business benefits and commercial outcomes.",
             stat: "Outcome-Led",
             statDesc: "Maintain UK position through commercial impact, not hype.",
-            icon: "fa-bolt",
+            icon: "fa-tower-broadcast",
             color: "#4C194C", // Alexandrite
-            powerupIcon: "fa-tower-broadcast"
-        }
-    ]
-};
+            powerupIcon: "fa-signal"
+            }
+            ]
+            };
 
 // Export for use in prototypes
 if (typeof module !== 'undefined') {
