@@ -309,10 +309,22 @@
             </div>
             <h2 id="outro-title"></h2>
             <p id="outro-p1"></p>
-            <p id="outro-p2"></p>
+            <p id="outro-p2">Ready to do things differently? <a id="outro-email-link" href="" style="color:var(--agate); text-decoration:none; font-weight:bold;"></a></p>
             <button id="replay-btn" class="btn-action" onclick="resetExperience()">REPLAY</button>
         </div>
     </div>
+
+    <template id="card-template">
+        <div class="card-inner">
+            <div class="flap flap-top"></div>
+            <div class="face">
+                <p class="card-desc"></p>
+                <hr>
+                <p class="card-implication"><strong></strong></p>
+            </div>
+            <div class="flap flap-bottom"><i class="fas"></i></div>
+        </div>
+    </template>
 
     <button class="nav-arrow nav-left" type="button" aria-label="Previous card" onclick="prevCard()">
         <i class="fas fa-chevron-left" aria-hidden="true"></i>
@@ -465,31 +477,40 @@
         let isExperienceActive = false;
 
         function loadMasterContent() {
-            document.getElementById('intro-title').innerText = config.intro.title.toUpperCase();
-            document.getElementById('intro-p1').innerText = config.intro.subtitle;
-            document.getElementById('intro-p2').innerText = config.intro.p1 + " " + config.intro.p2;
-            document.getElementById('outro-title').innerText = config.outro.title.toUpperCase();
-            document.getElementById('outro-p1').innerText = config.outro.p1;
+            document.getElementById('intro-title').textContent = config.intro.title.toUpperCase();
+            document.getElementById('intro-p1').textContent = config.intro.subtitle;
+            document.getElementById('intro-p2').textContent = config.intro.p1 + " " + config.intro.p2;
+            document.getElementById('outro-title').textContent = config.outro.title.toUpperCase();
+            document.getElementById('outro-p1').textContent = config.outro.p1;
+            
             const email = config.branding.email;
-            let p2 = config.outro.p2;
-            p2 = p2.replace(email, `<a href="mailto:${email}" style="color:var(--agate); text-decoration:none; font-weight:bold;">${email}</a>`);
-            document.getElementById('outro-p2').innerHTML = p2;
+            const emailLink = document.getElementById('outro-email-link');
+            emailLink.href = `mailto:${email}`;
+            emailLink.textContent = email;
         }
 
         function createCard(trend, index) {
+            const template = document.getElementById('card-template');
+            const clone = template.content.cloneNode(true);
+            
             const container = document.createElement('button');
             container.className = 'origami-container';
             container.setAttribute('aria-label', `${trend.title} card`);
             container.setAttribute('aria-expanded', 'false');
-            const bodyText = `<p>${trend.desc}</p><hr><p><strong>${trend.implication || trend.statDesc}</strong></p>`;
             
-            container.innerHTML = `
-                <div class="card-inner">
-                    <div class="flap flap-top" style="color:${trend.color}">${trend.title.toUpperCase()}</div>
-                    <div class="face">${bodyText}</div>
-                    <div class="flap flap-bottom" style="color:${trend.color}"><i class="fas ${trend.icon}"></i></div>
-                </div>
-            `;
+            // Fill structure using textContent (Safe and robust)
+            const topFlap = clone.querySelector('.flap-top');
+            topFlap.textContent = trend.title.toUpperCase();
+            topFlap.style.color = trend.color;
+
+            const bottomFlap = clone.querySelector('.flap-bottom');
+            bottomFlap.style.color = trend.color;
+            bottomFlap.querySelector('i').classList.add(trend.icon);
+
+            clone.querySelector('.card-desc').textContent = trend.desc;
+            clone.querySelector('.card-implication strong').textContent = trend.implication || trend.statDesc;
+
+            container.appendChild(clone);
 
             container.onclick = () => { 
                 if(index === currentIndex) nextCard();
