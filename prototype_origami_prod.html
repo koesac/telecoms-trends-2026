@@ -561,9 +561,13 @@
 
         function updateStack(onComplete) {
             let animationsFinished = 0;
+            // Total animations = one per card + one per future card inner reset
+            const futureCardsCount = Math.max(0, cards.length - (currentIndex + 1));
+            const totalExpected = cards.length + futureCardsCount;
+
             const checkFinished = () => {
                 animationsFinished++;
-                if (animationsFinished === cards.length && typeof onComplete === 'function') {
+                if (animationsFinished === totalExpected && typeof onComplete === 'function') {
                     onComplete();
                 }
             };
@@ -574,10 +578,14 @@
                 const isPast = i < currentIndex;
 
                 if (isPast) {
-                    gsap.to(card, { x: -window.innerWidth, opacity: 1, rotation: -20, duration: 0.6, ease: "power2.inOut", onComplete: () => { 
-                        card.style.visibility = 'hidden'; 
-                        checkFinished();
-                    }});
+                    gsap.to(card, { 
+                        x: -window.innerWidth, opacity: 1, rotation: -20, duration: 0.6, ease: "power2.inOut", 
+                        overwrite: "auto",
+                        onComplete: () => { 
+                            card.style.visibility = 'hidden'; 
+                            checkFinished();
+                        }
+                    });
                     card.tabIndex = -1;
                     card.setAttribute('aria-hidden', 'true');
                 } else if (isCurrent) {
@@ -585,15 +593,29 @@
                     card.style.visibility = 'visible';
                     card.tabIndex = 0;
                     card.setAttribute('aria-hidden', 'false');
-                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out", onComplete: checkFinished });
+                    gsap.to(card, { 
+                        x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out", 
+                        overwrite: "auto",
+                        onComplete: checkFinished 
+                    });
                     if (isExperienceActive) card.focus();
                 } else {
                     const depth = i - currentIndex;
                     card.style.visibility = 'visible';
                     card.tabIndex = -1;
                     card.setAttribute('aria-hidden', 'true');
-                    gsap.to(card, { x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out", onComplete: checkFinished });
-                    if (depth > 0) gsap.to(inner, { rotationX: 0, rotationY: 0, duration: 0.5 });
+                    gsap.to(card, { 
+                        x: 0, z: -depth * 60, y: depth * 10, rotation: (i % 2 === 0 ? 1 : -1) * (depth * 2), opacity: 1, duration: 0.6, ease: "power2.out", 
+                        overwrite: "auto",
+                        onComplete: checkFinished 
+                    });
+                    if (depth > 0) {
+                        gsap.to(inner, { 
+                            rotationX: 0, rotationY: 0, duration: 0.5, 
+                            overwrite: "auto",
+                            onComplete: checkFinished 
+                        });
+                    }
                 }
             });
             bgLayers.forEach((l, i) => l.classList.toggle('active', i === currentIndex));
