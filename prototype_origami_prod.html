@@ -229,16 +229,6 @@
         .dot:focus-visible { outline: 2px solid #fff; outline-offset: 4px; background: rgba(255,255,255,0.5); }
 
         @media (max-width: 768px) {
-            .nav-arrow { 
-                backdrop-filter: none; 
-                -webkit-backdrop-filter: none;
-                background: rgba(25, 30, 35, 0.9);
-            }
-            .overlay { 
-                backdrop-filter: none; 
-                -webkit-backdrop-filter: none;
-                background: rgba(5, 10, 16, 0.98);
-            }
             #header-branding { 
                 top: calc(20px + env(safe-area-inset-top)) !important; 
                 left: calc(20px + env(safe-area-inset-left)) !important; 
@@ -250,9 +240,10 @@
             .face p { font-size: 0.85rem; line-height: 1.4; }
             .face p strong { font-size: 0.85rem; }
             .face hr { margin: 10px auto; }
-            .nav-arrow { width: 50px; height: 50px; }
+            .nav-arrow { width: 50px; height: 50px; backdrop-filter: none; background: rgba(0, 0, 0, 0.4); }
             .nav-left { left: calc(15px + env(safe-area-inset-left)); } 
             .nav-right { right: calc(15px + env(safe-area-inset-right)); }
+            .overlay { backdrop-filter: none; background: rgba(5, 10, 16, 0.98); }
             .flap-top { font-size: 1.4rem; } 
             .flap-bottom { font-size: 3rem; }
             .controls { bottom: calc(60px + env(safe-area-inset-bottom)); }
@@ -482,13 +473,10 @@
         const config = TELECOMS_CONFIG;
         const trends = config.trends;
         let cards = [];
-        let cardInnerRefs = [];
-        let dots = [];
-        let bgLayers = [];
         let currentIndex = 0;
         let isTransitioning = false;
         let isExperienceActive = false;
-        let lastFocusedElement;
+
         function loadMasterContent() {
             document.getElementById('intro-title').textContent = config.intro.title.toUpperCase();
             document.getElementById('intro-p1').textContent = config.intro.subtitle;
@@ -524,7 +512,6 @@
             clone.querySelector('.card-implication strong').textContent = trend.implication || trend.statDesc;
 
             container.appendChild(clone);
-            cardInnerRefs.push(container.querySelector('.card-inner'));
 
             container.onclick = () => { 
                 if(index === currentIndex) nextCard();
@@ -539,14 +526,12 @@
             dot.setAttribute('aria-label', `Go to card ${index + 1}`);
             dot.onclick = () => jumpTo(index);
             dotsContainer.appendChild(dot);
-            dots.push(dot);
 
             const bg = document.createElement('div');
             bg.className = 'bg-layer';
             bg.id = `bg-${index}`;
             bg.style.background = `radial-gradient(circle at center, ${trend.color} 0%, var(--bg-dark) 100%)`;
             bgContainer.appendChild(bg);
-            bgLayers.push(bg);
 
             return container;
         }
@@ -567,7 +552,7 @@
 
         function updateStack() {
             cards.forEach((card, i) => {
-                const inner = cardInnerRefs[i];
+                const inner = card.querySelector('.card-inner');
                 const isCurrent = i === currentIndex;
                 const isPast = i < currentIndex;
 
@@ -591,8 +576,8 @@
                     if (depth > 0) gsap.to(inner, { rotationX: 0, rotationY: 0, duration: 0.5 });
                 }
             });
-            bgLayers.forEach((l, i) => l.classList.toggle('active', i === currentIndex));
-            dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+            document.querySelectorAll('.bg-layer').forEach((l, i) => l.classList.toggle('active', i === currentIndex));
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentIndex));
         }
 
         function startExperience() {
